@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import "../../styles/side-bar.css";
 import { AiOutlineHome } from "react-icons/ai";
 import { IoSettingsOutline } from "react-icons/io5";
-import { FaRegMessage } from "react-icons/fa6";
+import { FaPlus, FaRegMessage } from "react-icons/fa6";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
 import Button from "../button/Button";
@@ -13,7 +13,7 @@ function Sidebar() {
 
             <nav className="side-nav">
                 <div className="side-btn-box">
-                    <Button>New post</Button>
+                    <Button icon={<FaPlus />}>New post</Button>
                 </div>
                 <div className="side-lay">
                     <NavLink

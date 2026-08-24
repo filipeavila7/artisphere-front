@@ -2,7 +2,9 @@
     background-color: var(--color-primary);
     width: 22%;
     height: 100vh;
-    padding-top: 40px;
+    padding-top: 60px;
+    position: sticky;
+    top: 0;
 
 }
 

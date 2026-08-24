@@ -27,7 +27,7 @@ function Feed() {
 
         // fazer a requisição
         queryFn: ({ pageParam }) => getFeed(pageParam, PAGE_SIZE),  // começa com (0, 12)
-        
+
         // pegar proxima pagina
         getNextPageParam: (lastPage) => {
             if (lastPage.last) { // se for a ultima, retorna undefined
@@ -36,6 +36,35 @@ function Feed() {
             return lastPage.number + 1; // se não for a ultima, aumenta mais 1
         },
     });
+
+    useEffect(() => {
+        const handleScroll = () => {
+            sessionStorage.setItem(
+                "feed-scroll",
+                window.scrollY.toString()
+            );
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
+
+    useEffect(() => {
+        if (!data) return;
+
+        const savedScroll = sessionStorage.getItem("feed-scroll");
+
+        if (savedScroll) {
+            window.scrollTo({
+                top: Number(savedScroll),
+                behavior: "instant"
+            });
+        }
+    }, [data]);
 
     // useEffect com infinte scroll
     useEffect(() => {
