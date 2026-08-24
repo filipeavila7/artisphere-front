@@ -1,5 +1,5 @@
 import { useMe } from "../../hooks/useMe";
-
+import "../../styles/side-bar.css"
 
 function UserSideBar() {
     const { data: user, isLoading, error } = useMe();
@@ -11,10 +11,10 @@ function UserSideBar() {
     if (error) {
         return (
             <div className="user-side-box">
-                <p>Você não está logado.</p>
+                <p>You are not logged in.</p>
 
                 <a href="/login">
-                    Fazer login
+                    Login
                 </a>
             </div>
         );
