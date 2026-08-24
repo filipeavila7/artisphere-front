@@ -1,22 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Press+Start+2P&family=Quicksand:wght@300..700&display=swap');
+
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-primary);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-secundary);
+}
+
+.app-layout{
+  display: flex;
+}
+
+.app-box{
+  width: 100%;
+}
+
+.app-content{
+  width: 100%;
+  padding: var(--spacing-xg);
+}
+
 :root {
     /* Cores */
-    --color-primary: #7c3aed;
-    --color-background: #0f0f0f;
+    --color-primary: #320C35;
+    --color-secundary: #F2EEBF;
     --color-surface: #181818;
     --color-text: #ffffff;
-    --color-text-secondary: #a1a1aa;
+    --color-text-secondary: #a1a1aa; 
 
     /* Espaçamento */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
+    --spacing-p: 4px;
+    --spacing-m: 8px;
+    --spacing-g: 16px;
+    --spacing-gg: 24px;
+    --spacing-xg: 32px;
 
     /* Bordas */
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
+    --radius-p: 6px;
+    --radius-m: 10px;
+    --radius-g: 16px;
 
     /* Tamanho */
     --header-height: 64px;
@@ -25,4 +57,11 @@
     /* Transições */
     --transition-fast: 150ms ease;
     --transition-normal: 250ms ease;
+
+    /* fontes */
+    --font-primary : "Quicksand", sans-serif;
+    --font-secundary : 'Playfair Display', serif;
+    --font-size-p : 10px;
+    --font-size-m : 15px;
+    --font-size-p : 20px;
 }

@@ -1,0 +1,8 @@
+.nav-bar{
+    width: 100%;
+    background-color: var(--color-primary);
+    position: static;
+    top: 0;
+    left: 0;
+    
+}
