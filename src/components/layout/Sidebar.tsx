@@ -6,6 +6,7 @@ import { FaPlus, FaRegMessage } from "react-icons/fa6";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
 import Button from "../button/Button";
+import UserSideBar from "./UserSideBar";
 
 function Sidebar() {
     return (
@@ -77,7 +78,10 @@ function Sidebar() {
                     </NavLink>
                 </div>
 
+               
+
             </nav>
+             <UserSideBar/>
         </aside>
     );
 }

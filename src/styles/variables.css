@@ -9,6 +9,8 @@
 
 body {
   font-family: var(--font-primary);
+  color: var(--color-primary);
+  background-color: var(--color-secundary);
 }
 
 h1,
