@@ -10,7 +10,7 @@ function UserSideBar() {
 
     if (error) {
         return (
-            <div className="user-side-box">
+            <div className="user-side-box-error">
                 <p>You are not logged in.</p>
 
                 <a href="/login">
@@ -22,8 +22,12 @@ function UserSideBar() {
 
     return (
        <div className="user-side-box">
-            <img src={user?.profileImageUrl} />
-            <span>{user?.userName}</span>
+            <img className="user-side-img" src={user?.profileImageUrl} />
+            <div className="user-data-box">
+                <p className="side-name">{user?.name}</p>
+                <span>@{user?.userName}</span>
+            </div>
+            
         </div>
     );
     

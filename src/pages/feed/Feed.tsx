@@ -37,34 +37,74 @@ function Feed() {
         },
     });
 
+    const restoredScroll = useRef(false);
+
+    const scrollPosition = useRef(0);
+
     useEffect(() => {
         const handleScroll = () => {
-            sessionStorage.setItem(
-                "feed-scroll",
-                window.scrollY.toString()
-            );
+            scrollPosition.current = window.scrollY;
         };
 
         window.addEventListener("scroll", handleScroll);
 
         return () => {
+            sessionStorage.setItem(
+                "feed-scroll",
+                String(scrollPosition.current)
+            );
+
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
-
     useEffect(() => {
-        if (!data) return;
+        if (!data || restoredScroll.current) return;
 
         const savedScroll = sessionStorage.getItem("feed-scroll");
 
-        if (savedScroll) {
-            window.scrollTo({
-                top: Number(savedScroll),
-                behavior: "instant"
-            });
+        // se não tem nada salvo, não tem o que restaurar, então já marca como concluído
+        // (senão esse efeito ficaria rodando à toa a cada nova página carregada)
+        if (!savedScroll) {
+            restoredScroll.current = true;
+            return;
         }
-    }, [data]);
+
+        const target = Number(savedScroll);
+
+        // altura máxima que dá pra rolar com o conteúdo que já está renderizado agora
+        const maxScrollAvailable =
+            document.documentElement.scrollHeight - window.innerHeight;
+
+        // O BUG ERA AQUI: antes a gente tentava restaurar assim que a 1ª página
+        // chegava (só 12 posts), e se a posição salva era mais funda do que
+        // esses 12 posts alcançavam, o scrollTo "clampava" no máximo possível
+        // e nunca mais tentava de novo, porque restoredScroll.current já tinha
+        // virado true. Por isso às vezes voltava pro lugar certo (quando dava
+        // pra alcançar só com a página atual) e às vezes voltava pro começo.
+        //
+        // Agora: só desiste de esperar mais conteúdo quando já dá pra alcançar
+        // a posição salva OU quando não tem mais página nenhuma pra carregar
+        // (hasNextPage === false), ou seja, aquele é o máximo que dá pra rolar mesmo.
+        const canReachTarget = maxScrollAvailable >= target;
+
+        if (!canReachTarget && hasNextPage) {
+            // ainda não tem conteúdo suficiente carregado, espera a próxima
+            // página chegar (o IntersectionObserver lá embaixo cuida de
+            // disparar o fetchNextPage) e esse efeito roda de novo quando
+            // `data` mudar
+            return;
+        }
+
+        restoredScroll.current = true;
+
+        requestAnimationFrame(() => {
+            window.scrollTo({
+                top: target,
+                behavior: "instant",
+            });
+        });
+    }, [data, hasNextPage]);
 
     // useEffect com infinte scroll
     useEffect(() => {

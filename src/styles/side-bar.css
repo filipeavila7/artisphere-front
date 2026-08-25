@@ -64,19 +64,49 @@
 
 
 .user-side-box{
+    padding-left: 10px;
+    padding-bottom: 20px;
+    display: flex;
+    border-top: 1px solid #56275a;
+    gap: 20px;
+    padding-top: 20px;
+    
+}
+
+.user-data-box span{
+    color: #baabbc;
+    font-size: 14px;
+}
+
+.user-side-box-error{
     padding: 20px;
     display: flex;
     flex-direction: column;
-    border-top: 1px solid #56275a
+    border-top: 1px solid #56275a;
+    
 }
 
-.user-side-box p{
+.user-side-box-error p{
     color: var(--color-secundary);
     text-decoration: underline;
+}
+
+.side-name{
+    color: var(--color-secundary);
 }
 
 .user-side-box a{
     text-decoration: none;
      color: var(--color-secundary);
      text-decoration: underline;
+}
+
+.user-side-img{
+    width: 40px;
+    border-radius: 100px;
+}
+
+.user-data-box{
+    display: flex;
+    flex-direction: column;
 }
