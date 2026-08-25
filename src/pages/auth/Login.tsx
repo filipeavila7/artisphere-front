@@ -1,3 +1,4 @@
+import Button from "../../components/button/Button"
 import "../../styles/login.css"
 
 function Login() {
@@ -18,7 +19,22 @@ function Login() {
       <div className="login-box-right">
         <h1>Login</h1>
         <div className="login-box">
-            
+            <form className="login-form" action="">
+              <label htmlFor="email">Email</label>
+              <input type="text" id="email" />
+
+              <label htmlFor="">Password</label>
+              <input type="password" />
+              <div className="btn-login-box">
+                <Button type="submit">Login</Button>
+              </div>
+              
+            </form>
+            <div className="line"></div>
+
+            <div className="sign-box">
+              <p>Don’t have an account? Sign up</p>
+            </div>
         </div>
       </div>
     </div>
