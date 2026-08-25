@@ -1,4 +1,5 @@
 import type { Toast } from "../../context/ToastContext";
+import "../../styles/toast.css"
 
 interface ToastContainerProps {
     toasts: Toast[];
