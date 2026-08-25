@@ -46,7 +46,7 @@
 
 
 .p-r-box{
-    padding-top: 20px;
+    padding-top: 10px;
     padding-bottom: 20px;
     width: 400px;
     border-bottom: 4px solid var(--color-secundary);
@@ -70,6 +70,7 @@
     color: var(--color-secundary);
     flex-direction: column;
     gap: 20px;
+    width: 100%;
 }
 
 .login-form label{
@@ -92,7 +93,41 @@
 
 .line{
     width: 100%;
-    margin-top: 50px;
+    margin-top: 20px;
     height: 3px;
     background-color: var(--color-secundary);
+}
+
+.sign-box{
+    padding-top: 20px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-align: center;
+    color: var(--color-secundary);
+}
+
+.forgot-box{
+    display: flex;
+    justify-content: center;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.login-icons-box{
+    display: flex;
+    gap: 15px;
+    padding-top: 20px;
+}
+
+.login-icon-box{
+    padding: 15px 20px;
+    border-radius: 20px;
+    display: flex;
+    cursor: pointer;
+    background-color: var(--color-secundary);
+}
+
+.login-icon{
+    color: var(--color-primary);
+    font-size: 30px;
 }
