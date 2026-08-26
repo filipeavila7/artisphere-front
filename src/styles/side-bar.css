@@ -38,7 +38,7 @@
 .side-link{
     text-decoration: none;
     border: none;
-    color:#b7b49c ;
+    color:#c5c5c2 ;
     padding: 10px 10px 10px 12px;
     border-radius: 20px;
     font-size: 16px;
@@ -50,12 +50,12 @@
 
 .side-link:hover{
     color: var(--color-secundary);
-    background-color: #4B2947;
+    background-color: #47285a;
 }
 
 .side-link.active{
     color: var(--color-secundary);
-    background-color: #4B2947;
+    background-color: #47285a;
 }
 
 

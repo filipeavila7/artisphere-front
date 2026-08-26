@@ -12,7 +12,7 @@ const PAGE_SIZE = 12; // quantidade de posts por pagina
 // breakpoints -> quantidade de colunas
 // substitui os @media do CSS antigo
 const breakpointColumns = {
-    default: 4, // começa com 4 colunas
+    default: 5, // começa com 4 colunas
     1200: 4, // com 1200 -> 4 colunas
     900: 3, // 900 -> 3
     640: 2, //...
