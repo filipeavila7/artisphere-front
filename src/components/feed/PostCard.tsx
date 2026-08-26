@@ -27,10 +27,7 @@ function PostCard({ post }: PostCardProps) {
                 />
             </div>
 
-            <p>{post.title}</p>
-            <p>{post.id}</p>
-            <span>{post.likedByMe ? "❤️" : "🤍"} {post.likesCount}</span>
-            <span>💬 {post.commentsCount}</span>
+           
         </div>
     );
 }

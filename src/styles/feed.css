@@ -9,12 +9,12 @@
 }
 
 .masonry-grid_column {
-    padding-left: 16px; /* esse é o "gap" horizontal entre colunas */
+    padding-left: 20px; /* esse é o "gap" horizontal entre colunas */
     background-clip: padding-box;
 }
 
 .masonry-grid_column > .post-card {
-    margin-bottom: 16px; /* gap vertical entre cards */
+    margin-bottom: 30px; /* gap vertical entre cards */
 }
 
 .post-card {
@@ -27,10 +27,11 @@
     background: #fff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     transition: transform 0.15s ease;
+    cursor: pointer;
 }
 
 .post-card:hover {
-    transform: translateY(-2px);
+    filter: brightness(80%);
 }
 
 .post-card img {
