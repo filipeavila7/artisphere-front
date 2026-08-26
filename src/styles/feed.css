@@ -1,0 +1,156 @@
+/* feed.css */
+
+/* feed.css — trocar o bloco antigo do .feed-grid por este */
+
+.masonry-grid {
+    display: flex;
+    margin-left: -16px; /* compensa o gap que cada coluna vai ter */
+    width: 100%;
+}
+
+.masonry-grid_column {
+    padding-left: 16px; /* esse é o "gap" horizontal entre colunas */
+    background-clip: padding-box;
+}
+
+.masonry-grid_column > .post-card {
+    margin-bottom: 16px; /* gap vertical entre cards */
+}
+
+.post-card {
+    break-inside: avoid;      /* impede o card de ser cortado entre colunas */
+    margin-bottom: 16px;
+    display: inline-block;    /* necessário pro break-inside funcionar em alguns browsers */
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: transform 0.15s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+}
+
+.post-card img {
+    width: 100%;
+    height: auto;      /* essencial: preserva a proporção original da imagem */
+    display: block;
+}
+
+.post-card p,
+.post-card span {
+    padding: 0 12px;
+    font-size: 14px;
+}
+
+.post-card p:first-of-type {
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.post-card span {
+    display: inline-block;
+    margin: 6px 12px 10px 0;
+    color: #555;
+}
+
+/* feed.css — adicionar */
+
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #e4e4e4;
+}
+
+/* enquanto carrega, força uma proporção fixa pro skeleton ter altura */
+.image-wrapper.is-loading {
+    aspect-ratio: 3 / 4;
+}
+
+.skeleton {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #e2e2e2 25%, #efefef 37%, #e2e2e2 63%);
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.post-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.post-card img.is-loaded {
+    opacity: 1;
+}
+
+
+
+.skeleton-card {
+    pointer-events: none;
+}
+
+.skeleton-image {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: linear-gradient(
+        90deg,
+        #e2e2e2 25%,
+        #efefef 37%,
+        #e2e2e2 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+}
+
+.skeleton-title {
+    height: 16px;
+    width: 70%;
+    margin: 12px;
+    border-radius: 6px;
+
+    background: linear-gradient(
+        90deg,
+        #e2e2e2 25%,
+        #efefef 37%,
+        #e2e2e2 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+}
+
+.skeleton-info {
+    display: flex;
+    gap: 8px;
+    padding: 0 12px 12px;
+}
+
+.skeleton-text {
+    height: 12px;
+    width: 45px;
+    border-radius: 6px;
+
+    background: linear-gradient(
+        90deg,
+        #e2e2e2 25%,
+        #efefef 37%,
+        #e2e2e2 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+}
+
+.skeleton-text.small {
+    width: 35px;
+}

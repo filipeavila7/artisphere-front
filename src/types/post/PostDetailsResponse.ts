@@ -3,7 +3,7 @@ import type { UserResponse } from "../user/UserResponse";
 export interface PostDetailsResponse {
     id: number;
     title: string;
-    imageUrl: string | null;
+    imageUrl: string;
     user: UserResponse;
     createdAt: string;
     description: string | null;

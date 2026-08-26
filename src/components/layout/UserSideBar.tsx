@@ -1,3 +1,4 @@
+import { IoSettingsOutline } from "react-icons/io5";
 import { useMe } from "../../hooks/useMe";
 import "../../styles/side-bar.css"
 
@@ -21,16 +22,21 @@ function UserSideBar() {
     }
 
     return (
-       <div className="user-side-box">
-            <img className="user-side-img" src={user?.profileImageUrl} />
-            <div className="user-data-box">
-                <p className="side-name">{user?.name}</p>
-                <span>@{user?.userName}</span>
+        <div className="user-side-box">
+            <div className="user-side-lay">
+                <img className="user-side-img" src={user?.profileImageUrl} />
+                <div className="user-data-box">
+                    <p className="side-name">{user?.name}</p>
+                    <span>@{user?.userName}</span>
+                </div>
             </div>
-            
+
+            <div className="side-cog-box">
+                <IoSettingsOutline className="cog-side" />
+            </div>
         </div>
     );
-    
+
 }
 
 export default UserSideBar
