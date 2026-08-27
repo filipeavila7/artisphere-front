@@ -3,7 +3,11 @@ import "../../styles/nav-bar.css"
 function NavBar() {
   return (
     <nav className="nav-bar">
-        teste
+        <div className="nav-search-box">
+            <div className="search">
+              
+            </div>
+        </div>
     </nav>
   )
 }

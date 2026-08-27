@@ -10,79 +10,85 @@ import UserSideBar from "./UserSideBar";
 
 function Sidebar() {
     return (
-        <aside className="sidebar">
-
-            <nav className="side-nav">
-                <div className="side-btn-box">
-                    <Button icon={<FaPlus />}>New post</Button>
+        <>
+            <aside className="sidebar">
+                <div className="side-title-box">
+                    <h2>Artisphere</h2>
                 </div>
-                <div className="side-lay">
-                    <NavLink
-                        to="/feed"
-                        className={({ isActive }) =>
-                            isActive ? "side-link active" : "side-link"
-                        }
-                    >
-                        <AiOutlineHome className="side-icon" />
-                        Feed
-                    </NavLink>
+                <div className="side-box">
+                    <nav className="side-nav">
+                        <div className="side-btn-box">
+                            <Button icon={<FaPlus />}>New post</Button>
+                        </div>
+                        <div className="side-lay">
+                            <NavLink
+                                to="/feed"
+                                className={({ isActive }) =>
+                                    isActive ? "side-link active" : "side-link"
+                                }
+                            >
+                                <AiOutlineHome className="side-icon" />
+                                Feed
+                            </NavLink>
+                        </div>
+
+
+
+                        <div className="side-lay">
+                            <NavLink
+                                to="/contatos"
+                                className={({ isActive }) =>
+                                    isActive ? "side-link active" : "side-link"
+                                }
+                            >
+                                <FaRegMessage className="side-icon" />
+                                Messages
+                            </NavLink>
+                        </div>
+
+                        <div className="side-lay">
+                            <NavLink
+                                to="/notifications"
+                                className={({ isActive }) =>
+                                    isActive ? "side-link active" : "side-link"
+                                }
+                            >
+                                <IoNotificationsOutline className="side-icon-g" />
+                                Notifications
+                            </NavLink>
+                        </div>
+
+                        <div className="side-lay">
+                            <NavLink
+                                to="/perfil"
+                                className={({ isActive }) =>
+                                    isActive ? "side-link active" : "side-link"
+                                }
+                            >
+                                <FaRegUser className="side-icon" />
+                                Profile
+                            </NavLink>
+                        </div>
+
+                        <div className="side-lay">
+                            <NavLink
+                                to="/settings"
+                                className={({ isActive }) =>
+                                    isActive ? "side-link active" : "side-link"
+                                }
+                            >
+                                <IoSettingsOutline className="side-icon" />
+                                Settings
+                            </NavLink>
+                        </div>
+
+
+
+                    </nav>
+                    <UserSideBar />
                 </div>
-
-
-
-                <div className="side-lay">
-                    <NavLink
-                        to="/contatos"
-                        className={({ isActive }) =>
-                            isActive ? "side-link active" : "side-link"
-                        }
-                    >
-                        <FaRegMessage className="side-icon" />
-                        Messages
-                    </NavLink>
-                </div>
-
-                <div className="side-lay">
-                    <NavLink
-                        to="/notifications"
-                        className={({ isActive }) =>
-                            isActive ? "side-link active" : "side-link"
-                        }
-                    >
-                        <IoNotificationsOutline className="side-icon-g" />
-                        Notifications
-                    </NavLink>
-                </div>
-
-                <div className="side-lay">
-                    <NavLink
-                        to="/perfil"
-                        className={({ isActive }) =>
-                            isActive ? "side-link active" : "side-link"
-                        }
-                    >
-                        <FaRegUser className="side-icon" />
-                        Profile
-                    </NavLink>
-                </div>
-
-                <div className="side-lay">
-                    <NavLink
-                        to="/settings"
-                        className={({ isActive }) =>
-                            isActive ? "side-link active" : "side-link"
-                        }
-                    >
-                        <IoSettingsOutline className="side-icon" />
-                        Settings
-                    </NavLink>
-                </div>
-
-               
-
-            </nav>
-             <UserSideBar/>
-        </aside>
+            </aside>
+        </>
     );
 }
 

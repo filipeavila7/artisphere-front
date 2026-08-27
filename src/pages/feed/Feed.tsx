@@ -3,9 +3,11 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import Masonry from "react-masonry-css";
 import { getFeed } from "../../service/post/PostService";
 import PostCard from "../../components/feed/PostCard";
+import { useToast } from "../../hooks/useToast";
 
 import "../../styles/feed.css"
 import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
+
 
 const PAGE_SIZE = 12; // quantidade de posts por pagina
 
@@ -19,6 +21,8 @@ const breakpointColumns = {
 };
 
 function Feed() {
+    
+    const { showToast } = useToast();
     // sentinel para ficar no final e souber quando deve buscar mais posts
     const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -62,6 +66,7 @@ function Feed() {
                 "feed-scroll", 
                 String(scrollPosition.current)
             );
+            showToast("success", "salvou o scroll")
             // evita deixar o listener ativo depois que o Feed sumiu.
             window.removeEventListener("scroll", handleScroll);
         };
@@ -77,6 +82,7 @@ function Feed() {
         // se não tiver, não tem nada pra restaurar e não faz nada
         if (!savedScroll) {
             restoredScroll.current = true;
+            showToast("success", "Nada pra restaurar")
             return;
         }
 
@@ -95,6 +101,7 @@ function Feed() {
         }
 
         restoredScroll.current = true; // restaura 
+        showToast("success", `scroll restaurado ${target}`)
 
         requestAnimationFrame(() => { // move o usuario para o local
             window.scrollTo({
@@ -139,6 +146,15 @@ function Feed() {
 
     // pega os posts dentro da pagina de posts
     const posts = data?.pages.flatMap((page) => page.content) ?? [];
+
+// const ids = posts.map((post) => post.id);
+
+// const duplicatedIds = ids.filter(
+//     (id, index) => ids.indexOf(id) !== index
+// );
+
+// console.log("POSTS:", posts.length);
+// console.log("IDS DUPLICADOS:", duplicatedIds);
 
     return (
         <main className="feed-lay">

@@ -7,7 +7,7 @@ export const queryClient = new QueryClient({
         queries: {
             // O staleTime diz por quanto tempo os dados são considerados frescos (fresh).
             // evita fazer nova requisição enquanto os dados estao frescos 
-            staleTime: 1000 * 60, 
+            staleTime: 1000 * 60 * 10, 
             // Se uma requisição falhar, tente novamente uma vez.
             retry: 1,
         },
