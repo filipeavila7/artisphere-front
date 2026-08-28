@@ -4,7 +4,51 @@
     position: sticky;
     top: 0;
     left: 0;
-    height: 60px;
+    height: 70px;
     z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 60px;
+}
+
+
+.nav-search-box{
+    width: 100%;
     
+     
+}
+
+
+.search{
+    display: flex;
+    align-items: center;
+}
+
+.search-icon{
+    color: #adada7;
+    font-size: 14px;
+}
+
+.search-icon-box{
+    position: absolute;
+    left: 75px;
+    z-index: 1;
+}
+
+.search-input{
+    background-color: #362043;
+    border: #686865 1px solid;
+    border-radius: 12px;
+    padding: 7px;
+    width: 50%;
+    outline: none;
+    color: white;
+    font-size: 14px;
+    position: relative;
+    padding-left: 35px;
+    transition: all 0.2s ease;
+}
+
+.search-input:focus{
+    width: 60%;
 }
