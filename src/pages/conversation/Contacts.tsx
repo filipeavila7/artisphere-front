@@ -4,6 +4,7 @@ import { getConversations } from "../../service/conversation/ConversationService
 import { formatTime } from "../../hooks/formateData";
 
 import "../../styles/contacts.css"
+import MyFollows from "../../components/follow/MyFollows";
 
 const PAGE_SIZE = 20;
 
@@ -69,28 +70,32 @@ function Contacts() {
         <p>Carregando conversas...</p>
       )}
 
-      {conversations.map((conversation) => (
-        <div className="contact-box" key={conversation.conversationId}>
-          <div className="data-lay">
-            <div className="contact-pfp-box">
-              <img src={
-                conversation.otherUserPhoto ? conversation.otherUserPhoto : "null-pfp-l.png"} alt="" className="contact-pfp" />
+      <div className="contact-list">
+        {conversations.map((conversation) => (
+          <div className="contact-box" key={conversation.conversationId}>
+            <div className="data-lay">
+              <div className="contact-pfp-box">
+                <img src={
+                  conversation.otherUserPhoto ? conversation.otherUserPhoto : "null-pfp-l.png"} alt="" className="contact-pfp" />
+              </div>
+              <div className="contact-data-box">
+                <p className="contact-name">{conversation.otherUserName}</p>
+                <p className="last-message">{
+                  conversation.lastMessage ? conversation.lastMessage : "Nehuma mensagem"}</p>
+
+              </div>
             </div>
-            <div className="contact-data-box">
-              <p className="contact-name">{conversation.otherUserName}</p>
-              <p className="last-message">{
-                conversation.lastMessage ? conversation.lastMessage : "Nehuma mensagem"}</p>
 
+
+            <div className="message-at-box">
+              <p>{formatTime(conversation.lastMessageAt)}</p>
             </div>
+
           </div>
+        ))}
+      </div>
 
-
-          <div className="message-at-box">
-            <p>{formatTime(conversation.lastMessageAt)}</p>
-          </div>
-
-        </div>
-      ))}
+      <MyFollows />
 
       {isFetchingNextPage && (
         <p>Carregando mais conversas...</p>
@@ -100,6 +105,8 @@ function Contacts() {
         ref={sentinelRef}
         style={{ height: "10px" }}
       />
+
+
     </main>
   );
 }
