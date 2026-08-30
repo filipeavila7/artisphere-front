@@ -1,0 +1,48 @@
+
+.contact-lay{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.data-lay{
+    display: flex;
+}
+
+
+.contact-box{
+    display: flex;
+    color: white;
+    padding: 20px;
+    background-color: var(--color-primary);
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 15px;
+}
+
+
+.contact-pfp{
+    width: 60px;
+}
+
+.contact-data-box{
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+      
+}
+
+.contact-name{
+    font-size: 18px;
+}
+
+.last-message{
+    padding-top: 5px;
+    margin-left: 8px;
+    font-size: 14px;
+    color: rgb(212, 208, 208);
+}
+
+.message-at-box{
+    font-size: 14px;
+}
