@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/layout/AppLayout";
 import Feed from "./pages/feed/Feed";
 import Login from "./pages/auth/Login";
-import Contacts from "./pages/Contacts";
+import Contacts from "./pages/conversation/Contacts";
 
 function AppRoutes() {
     return (
