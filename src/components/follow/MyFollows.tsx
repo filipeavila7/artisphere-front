@@ -75,14 +75,23 @@ function MyFollows() {
                 {isOpen ? ">>" : "<<"}
             </button>
 
-            {isOpen && (
+            {isOpen && (    
                 <div className="contacts-content">
                     {followings.map((following) => (
-                        <div key={following.userId} >
-                            <p>{following.nome}</p>
+                        <div className="following" key={following.userId} >
+                           <div className="following-data">
+                            <img className="following-pfp" src={following.imageUrlProfile} alt="" />
+                            <p className="following-name">{following.userName}</p>
+                           </div>
+                           <div className="message-status-box">
+                                <p className="message-status">
+                                    {following.messageStatus}
+                                </p>
+                           </div>
                         </div>
+                        
                     ))}
-
+                    
 
                 </div>
             )}

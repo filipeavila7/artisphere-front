@@ -1,51 +1,24 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import Masonry from "react-masonry-css";
 import { getFeed } from "../../service/post/PostService";
 import PostCard from "../../components/feed/PostCard";
-import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
+import { useToast } from "../../hooks/useToast";
 import "../../styles/feed.css";
+import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
 
 const PAGE_SIZE = 12;
-const SCROLL_STORAGE_KEY = "feed-scroll:v1";
 
-const breakpointColumns = { default: 5, 1200: 4, 900: 3, 640: 2 };
-
-type SavedFeedPosition = { y: number };
-
-function readSavedPosition(): SavedFeedPosition | null {
-    try {
-        const value = sessionStorage.getItem(SCROLL_STORAGE_KEY);
-        if (value) {
-            const parsed: unknown = JSON.parse(value);
-            if (
-                typeof parsed === "object" && parsed !== null && "y" in parsed &&
-                typeof parsed.y === "number" && Number.isFinite(parsed.y) && parsed.y >= 0
-            ) {
-                return { y: parsed.y };
-            }
-        }
-    } catch {
-        // A corrupted value or a value from an older format is ignored.
-    }
-
-    // Compatibility with the previous implementation, which stored only the
-    // numeric value under this key.
-    const legacyValue = Number(sessionStorage.getItem("feed-scroll"));
-    if (Number.isFinite(legacyValue) && legacyValue > 0) {
-        return { y: legacyValue };
-    }
-    return null;
-}
+const breakpointColumns = {
+    default: 5,
+    1200: 4,
+    900: 3,
+    640: 2,
+};
 
 function Feed() {
+    const { showToast } = useToast();
     const sentinelRef = useRef<HTMLDivElement>(null);
-    const feedRef = useRef<HTMLElement>(null);
-    // Read once: a browser clamp while the route mounts must not overwrite the
-    // position saved when the user left the Feed.
-    const savedPosition = useRef<SavedFeedPosition | null>(readSavedPosition());
-    const restoredScroll = useRef(savedPosition.current === null);
-    const restoringScroll = useRef(savedPosition.current !== null);
 
     const {
         data,
@@ -58,102 +31,122 @@ function Feed() {
         queryKey: ["feed"],
         initialPageParam: 0,
         queryFn: ({ pageParam }) => getFeed(pageParam, PAGE_SIZE),
-        getNextPageParam: (lastPage) => lastPage.last ? undefined : lastPage.number + 1,
+        getNextPageParam: (lastPage) => {
+            if (lastPage.last) return undefined;
+            return lastPage.number + 1;
+        },
     });
 
-    const posts = useMemo(
-        () => data?.pages.flatMap((page) => page.content) ?? [],
-        [data],
-    );
+    const restoredScroll = useRef(false);
+    const scrollPosition = useRef(0);
 
-    // Persist only user-driven scrolls. During a route change the browser can
-    // clamp the old position before Feed renders (for example, 2784 -> 2200).
     useEffect(() => {
-        let frame: number | null = null;
-        const saveScroll = () => {
-            if (restoringScroll.current || frame !== null) return;
-            frame = requestAnimationFrame(() => {
-                frame = null;
-                sessionStorage.setItem(SCROLL_STORAGE_KEY, JSON.stringify({ y: window.scrollY }));
-            });
+        console.log("🟢 FEED MONTOU");
+
+        const handleScroll = () => {
+            scrollPosition.current = window.scrollY;
+            sessionStorage.setItem("feed-scroll", String(window.scrollY));
         };
 
-        window.addEventListener("scroll", saveScroll, { passive: true });
+        window.addEventListener("scroll", handleScroll);
         return () => {
-            window.removeEventListener("scroll", saveScroll);
-            if (frame !== null) cancelAnimationFrame(frame);
+            console.log("🔴 FEED DESMONTOU");
+            console.log("📌 ÚLTIMO SCROLL:", scrollPosition.current);
+            window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
-    // Fetch pages explicitly during restoration. Depending only on the sentinel
-    // can leave the rendered document permanently shorter than the target.
     useEffect(() => {
-        const target = savedPosition.current?.y;
-        if (target === undefined || restoredScroll.current || !data) return;
+        console.log("🔄 EFEITO DE RESTAURAÇÃO EXECUTOU", {
+            temData: !!data,
+            jaRestaurou: restoredScroll.current,
+            hasNextPage,
+            scrollAtual: window.scrollY,
+        });
 
-        const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-        if (maxScroll < target && hasNextPage && !isFetchingNextPage) {
-            void fetchNextPage();
-        }
-    }, [data, fetchNextPage, hasNextPage, isFetchingNextPage, posts.length]);
+        if (!data || restoredScroll.current) return;
 
-    // Card placeholders have a temporary 3/4 ratio. Wait for the images that
-    // are currently rendered to decode, then check the *final* layout height.
-    useEffect(() => {
-        const target = savedPosition.current?.y;
-        if (target === undefined || restoredScroll.current || !data) return;
+        const savedScroll = sessionStorage.getItem("feed-scroll");
+        console.log("💾 SCROLL SALVO:", savedScroll);
 
-        let cancelled = false;
-        const restore = async () => {
-            const images = Array.from(feedRef.current?.querySelectorAll("img") ?? []);
-            await Promise.all(images.map((image) => image.decode().catch(() => undefined)));
-            await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-            if (cancelled || restoredScroll.current) return;
-
-            const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-            if (maxScroll < target && hasNextPage) {
-                if (!isFetchingNextPage) void fetchNextPage();
-                return;
-            }
-
+        if (!savedScroll) {
             restoredScroll.current = true;
-            window.scrollTo({ top: Math.min(target, maxScroll), behavior: "auto" });
-            requestAnimationFrame(() => { restoringScroll.current = false; });
-        };
+            showToast("success", "Nada pra restaurar");
+            return;
+        }
 
-        void restore();
-        return () => { cancelled = true; };
-    }, [data, fetchNextPage, hasNextPage, isFetchingNextPage, posts.length]);
+        const target = Number(savedScroll);
+        console.log("🎯 TARGET:", target);
+
+        const maxScrollAvailable =
+            document.documentElement.scrollHeight - window.innerHeight;
+        const canReachTarget = maxScrollAvailable >= target;
+
+        console.log("📏 ALTURA DISPONÍVEL:", maxScrollAvailable);
+        console.log("🎯 PODE CHEGAR NO TARGET?", canReachTarget);
+
+        if (!canReachTarget && hasNextPage) {
+            console.log("⏳ AINDA NÃO CONSEGUE CHEGAR NO TARGET, ESPERANDO MAIS POSTS...");
+            return;
+        }
+
+        restoredScroll.current = true;
+        showToast("success", "scroll restaurado");
+        console.log("🚀 VAI RESTAURAR SCROLL PARA:", target);
+
+        requestAnimationFrame(() => {
+            console.log("➡️ ANTES DO SCROLL:", window.scrollY);
+            window.scrollTo({ top: target, behavior: "instant" });
+            console.log("➡️ DEPOIS DO SCROLL:", window.scrollY);
+
+            setTimeout(() => {
+                console.log("⏱️ 500ms DEPOIS DO SCROLL:", window.scrollY);
+            }, 500);
+            setTimeout(() => {
+                console.log("⏱️ 1000ms DEPOIS DO SCROLL:", window.scrollY);
+            }, 1000);
+        });
+    }, [data, hasNextPage]);
 
     useEffect(() => {
         const sentinel = sentinelRef.current;
         if (!sentinel) return;
 
         const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-                    void fetchNextPage();
+            (entries) => {
+                if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+                    fetchNextPage();
                 }
             },
             { threshold: 0.1, rootMargin: "600px 0px" },
         );
+
         observer.observe(sentinel);
         return () => observer.disconnect();
-    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     if (isError) return <p>Erro ao carregar o feed.</p>;
 
+    const posts = data?.pages.flatMap((page) => page.content) ?? [];
+
     return (
-        <main ref={feedRef} className="feed-lay">
-            <Masonry breakpointCols={breakpointColumns} className="masonry-grid" columnClassName="masonry-grid_column">
+        <main className="feed-lay">
+            <Masonry
+                breakpointCols={breakpointColumns}
+                className="masonry-grid"
+                columnClassName="masonry-grid_column"
+            >
                 {isLoading && Array.from({ length: 10 }).map((_, index) => (
                     <PostCardSkeleton key={`initial-${index}`} />
                 ))}
+
                 {posts.map((post) => <PostCard key={post.id} post={post} />)}
+
                 {isFetchingNextPage && Array.from({ length: 5 }).map((_, index) => (
                     <PostCardSkeleton key={`next-${index}`} />
                 ))}
             </Masonry>
+
             <div ref={sentinelRef} style={{ height: "10px" }} />
         </main>
     );

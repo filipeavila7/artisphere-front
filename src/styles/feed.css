@@ -158,9 +158,3 @@
 .skeleton-text.small {
     width: 35px;
 }
-
-/* Keep browser scroll anchoring from changing window.scrollY while image
-   heights settle; Feed restores the position itself. */
-.feed-lay {
-    overflow-anchor: none;
-}
