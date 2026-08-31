@@ -82,7 +82,7 @@ function MyFollows() {
                         <div className="following" key={following.userId} >
                             <div className="following-data">
                                 <img className="following-pfp" src={formatePfpL(following.imageUrlProfile)} alt="" />
-                                <p className="following-name">{following.userName}</p>
+                                <p className="following-name">{following.nome}</p>
                             </div>
                             {following.messageStatus && (
                                 <div className="message-status-box">

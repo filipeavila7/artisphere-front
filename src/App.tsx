@@ -4,6 +4,7 @@ import AppLayout from "./components/layout/AppLayout";
 import Feed from "./pages/feed/Feed";
 import Login from "./pages/auth/Login";
 import Contacts from "./pages/conversation/Contacts";
+import Notifications from "./pages/notifications/Notifications";
 
 function AppRoutes() {
     return (
@@ -17,12 +18,13 @@ function AppRoutes() {
 
                 <Route path="feed" element={<Feed />} />
                 <Route path="contatos" element={<Contacts />}/>
-
+                <Route path="notifications" element={<Notifications />} />
+                
                 {/* Vamos adicionar as outras depois */}
                 {/* 
                 <Route path="perfil" element={<Perfil />} />
                 <Route path="contatos" element={<Contatos />} />
-                <Route path="notifications" element={<Notifications />} />
+                
                 */}
             </Route>
         </Routes>
