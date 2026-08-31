@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "../../styles/contacts.css"
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMyFollowing } from "../../service/follow/FollowService";
+import { formatePfpL } from "../../utils/formateImgProfile";
 
 function MyFollows() {
     const [isOpen, setIsOpen] = useState(false);
@@ -80,9 +81,7 @@ function MyFollows() {
                     {followings.map((following) => (
                         <div className="following" key={following.userId} >
                             <div className="following-data">
-                                <img className="following-pfp" src={following.imageUrlProfile
-                                    ? following.imageUrlProfile : "null-pfp-l.png"
-                                } alt="" />
+                                <img className="following-pfp" src={formatePfpL(following.imageUrlProfile)} alt="" />
                                 <p className="following-name">{following.userName}</p>
                             </div>
                             {following.messageStatus && (

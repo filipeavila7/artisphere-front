@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getConversations } from "../../service/conversation/ConversationService";
-import { formatTime } from "../../hooks/formateData";
+import { formatTime } from "../../utils/formateData";
 
 import "../../styles/contacts.css"
 import MyFollows from "../../components/follow/MyFollows";
