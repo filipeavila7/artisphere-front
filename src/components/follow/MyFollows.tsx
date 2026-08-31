@@ -67,7 +67,7 @@ function MyFollows() {
 
     return (
         <aside className={`contacts-panel ${isOpen ? "open" : "closed"}`}>
-            
+
             {isLoading && (
                 <p>Carregando conversas...</p>
             )}
@@ -75,23 +75,28 @@ function MyFollows() {
                 {isOpen ? ">>" : "<<"}
             </button>
 
-            {isOpen && (    
+            {isOpen && (
                 <div className="contacts-content">
                     {followings.map((following) => (
                         <div className="following" key={following.userId} >
-                           <div className="following-data">
-                            <img className="following-pfp" src={following.imageUrlProfile} alt="" />
-                            <p className="following-name">{following.userName}</p>
-                           </div>
-                           <div className="message-status-box">
-                                <p className="message-status">
-                                    {following.messageStatus}
-                                </p>
-                           </div>
+                            <div className="following-data">
+                                <img className="following-pfp" src={following.imageUrlProfile
+                                    ? following.imageUrlProfile : "null-pfp-l.png"
+                                } alt="" />
+                                <p className="following-name">{following.userName}</p>
+                            </div>
+                            {following.messageStatus && (
+                                <div className="message-status-box">
+                                    <p className="message-status">
+                                        {following.messageStatus}
+                                    </p>
+                                </div>
+                            )}
+
                         </div>
-                        
+
                     ))}
-                    
+
 
                 </div>
             )}
