@@ -1,0 +1,34 @@
+.not-logged-box {
+    width: 100%;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--color-primary);
+    text-align: center;
+}
+
+.not-logged-box img {
+    width: min(270px, 70vw);
+    height: auto;
+}
+
+.not-logged-box h2,
+.not-logged-box p {
+    margin: 0;
+}
+
+.not-logged-box p {
+    color: #282727;
+}
+
+.not-logged-box a {
+    margin-top: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: var(--color-primary);
+    color: white;
+    text-decoration: none;
+}

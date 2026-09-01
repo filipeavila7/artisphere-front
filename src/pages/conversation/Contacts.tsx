@@ -3,13 +3,21 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getConversations } from "../../service/conversation/ConversationService";
 import { formatTime } from "../../utils/formateData";
 
-import "../../styles/contacts.css"
+import "../../styles/contacts.css";
 import MyFollows from "../../components/follow/MyFollows";
+import NotLogged from "../../components/auth/NotLogged";
+import { useMe } from "../../hooks/useMe";
 
 const PAGE_SIZE = 20;
 
 function Contacts() {
   const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const {
+    data: user,
+    isLoading: isLoadingUser,
+    isError: isAuthError,
+  } = useMe();
 
   const {
     data,
@@ -27,6 +35,9 @@ function Contacts() {
 
     getNextPageParam: (lastPage) =>
       lastPage.last ? undefined : lastPage.number + 1,
+
+    // Só busca conversas se o usuário estiver autenticado
+    enabled: !!user,
   });
 
   const conversations = useMemo(
@@ -60,6 +71,17 @@ function Contacts() {
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  // Ainda estamos verificando o token
+  if (isLoadingUser) {
+    return <p>Verificando sessão...</p>;
+  }
+
+  // Token inexistente, expirado ou inválido
+  if (isAuthError || !user) {
+    return <NotLogged />;
+  }
+
+  // Usuário autenticado, mas houve erro ao buscar conversas
   if (isError) {
     return <p>Erro ao carregar as conversas.</p>;
   }
@@ -72,25 +94,39 @@ function Contacts() {
 
       <div className="contact-list">
         {conversations.map((conversation) => (
-          <div className="contact-box" key={conversation.conversationId}>
+          <div
+            className="contact-box"
+            key={conversation.conversationId}
+          >
             <div className="data-lay">
               <div className="contact-pfp-box">
-                <img src={
-                  conversation.otherUserPhoto ? conversation.otherUserPhoto : "null-pfp-l.png"} alt="" className="contact-pfp" />
+                <img
+                  src={
+                    conversation.otherUserPhoto
+                      ? conversation.otherUserPhoto
+                      : "null-pfp-l.png"
+                  }
+                  alt=""
+                  className="contact-pfp"
+                />
               </div>
-              <div className="contact-data-box">
-                <p className="contact-name">{conversation.otherUserName}</p>
-                <p className="last-message">{
-                  conversation.lastMessage ? conversation.lastMessage : "Nehuma mensagem"}</p>
 
+              <div className="contact-data-box">
+                <p className="contact-name">
+                  {conversation.otherUserName}
+                </p>
+
+                <p className="last-message">
+                  {conversation.lastMessage
+                    ? conversation.lastMessage
+                    : "Nenhuma mensagem"}
+                </p>
               </div>
             </div>
-
 
             <div className="message-at-box">
               <p>{formatTime(conversation.lastMessageAt)}</p>
             </div>
-
           </div>
         ))}
       </div>
@@ -105,8 +141,6 @@ function Contacts() {
         ref={sentinelRef}
         style={{ height: "10px" }}
       />
-
-
     </main>
   );
 }
