@@ -1,0 +1,46 @@
+
+
+.notification-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification-box{
+    background-color: var(--color-primary);
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+}
+
+.notification-data{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-pfp{
+    width: 70px;
+    height: 70px;
+    border-radius: 100px;
+    object-fit: cover;
+}
+
+.notification-data-lay-l{
+    display: flex   ;
+    gap: 10px;
+}
+
+.notification-content-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.notification-post{
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 15px;
+}

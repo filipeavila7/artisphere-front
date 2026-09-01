@@ -99,22 +99,32 @@ function Notifications() {
           >
             <div className="notification-data">
 
-              {notification.senderPhoto && (
+              <div className="notification-data-lay-l">
                 <img
                   src={notification.senderPhoto}
                   alt={notification.senderName}
                   className="notification-pfp"
                 />
-              )}
+                <div className="notification-content-box">
+                  <p className="notification-content"> {notification.content}</p>
+                  <p className="notification-date">
+                    {formatTime(notification.createdAt)}
+                  </p>
+                </div>
 
-              <div>
-                <p className="notification-content">
-                  {notification.content}
-                </p>
+              </div>
 
-                <p className="notification-date">
-                  {formatTime(notification.createdAt)}
-                </p>
+              <div className="notification-data-lay-r">
+
+
+
+                {notification.post && (
+                  <img
+                    className="notification-post"
+                    src={notification.post.imageUrl}
+                    alt=""
+                  />
+                )}
               </div>
 
             </div>

@@ -1,3 +1,5 @@
+import type { PostSummaryResponse } from "../post/PostSummaryResponse";
+
 export type NotificationType =
   | "COMMENT"
   | "LIKE"
@@ -16,5 +18,5 @@ export interface NotificationGetResponse {
   senderName: string;
   senderUserName: string;
   senderPhoto: string;
-  postId: number;
+  post: PostSummaryResponse;
 }
