@@ -31,10 +31,12 @@ function Profile() {
   }
 
   return (
-    <div>
+    <div className="profile-lay">
+      <div></div>
       <h1>{profile.name}</h1>
       <p>@{profile.userName}</p>
       <p>{profile.bio}</p>
+      <p>{profile.postCount}</p>
     </div>
   );
 }

@@ -5,4 +5,7 @@ export interface ProfileResponse {
   imageUrlProfile: string;
   messageStatus: string;
   userName: string;
+  followCount : number;
+  followerCount: number;
+  postCount : number;
 }
