@@ -1,4 +1,9 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import {
+    createBrowserRouter,
+    Navigate,
+    Outlet,
+    ScrollRestoration,
+} from "react-router-dom";
 
 import AppLayout from "./components/layout/AppLayout";
 import Feed from "./pages/feed/Feed";
@@ -6,29 +11,34 @@ import Login from "./pages/auth/Login";
 import Contacts from "./pages/conversation/Contacts";
 import Notifications from "./pages/notifications/Notifications";
 
-function AppRoutes() {
+function RootLayout() {
     return (
-        <Routes>
-            {/* Sem Sidebar */}
-            <Route path="/login" element={<Login />} />
-
-            {/* Com Sidebar */}
-            <Route path="/" element={<AppLayout />}>
-                <Route index element={<Navigate to="/feed" replace />} />
-
-                <Route path="feed" element={<Feed />} />
-                <Route path="contatos" element={<Contacts />}/>
-                <Route path="notifications" element={<Notifications />} />
-                
-                {/* Vamos adicionar as outras depois */}
-                {/* 
-                <Route path="perfil" element={<Perfil />} />
-                <Route path="contatos" element={<Contatos />} />
-                
-                */}
-            </Route>
-        </Routes>
+        <>
+            <Outlet />
+            <ScrollRestoration
+                // Reopening a route from the sidebar creates a new history key.
+                // The pathname keeps one independent position for each route.
+                getKey={(location) => location.pathname}
+            />
+        </>
     );
 }
 
-export default AppRoutes;
+export const router = createBrowserRouter([
+    {
+        element: <RootLayout />,
+        children: [
+            { path: "/login", element: <Login /> },
+            {
+                path: "/",
+                element: <AppLayout />,
+                children: [
+                    { index: true, element: <Navigate to="/feed" replace /> },
+                    { path: "feed", element: <Feed /> },
+                    { path: "contatos", element: <Contacts /> },
+                    { path: "notifications", element: <Notifications /> },
+                ],
+            },
+        ],
+    },
+]);

@@ -24,11 +24,56 @@
     height: 70px;
     border-radius: 100px;
     object-fit: cover;
+    cursor: pointer;
 }
 
 .notification-data-lay-l{
     display: flex   ;
     gap: 10px;
+}
+
+.img-noti-box{
+    position: relative;
+}
+
+.notification-type{
+    position: absolute;
+    font-size: 20px;
+    right: 0;
+    bottom: 0;
+}
+
+.notification-icon.like{
+    position: absolute;
+    font-size: 20px;
+    right: 0;
+    bottom: 0;
+    color: rgb(210, 22, 22);
+}
+
+.notification-icon.comment{
+    position: absolute;
+    font-size: 20px;
+    right: 0;
+    bottom: 0;
+    color: rgb(135, 23, 240);
+}
+
+.notification-icon.follow{
+    position: absolute;
+    font-size: 20px;
+    right: 0;
+    bottom: 0;
+    color: rgb(135, 23, 240);
+}
+
+
+.notification-icon.reply{
+    position: absolute;
+    font-size: 20px;
+    right: 0;
+    bottom: 0;
+    color: rgb(135, 23, 240);
 }
 
 .notification-content-box{
@@ -43,4 +88,9 @@
     height: 120px;
     object-fit: cover;
     border-radius: 15px;
+    cursor: pointer;
+}
+
+.notification-post:hover{
+    filter: brightness(80%);
 }

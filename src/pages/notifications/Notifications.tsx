@@ -5,12 +5,41 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { formatTime } from "../../utils/formateData";
 import { useMe } from "../../hooks/useMe";
 
+import {
+  FaHeart,
+  FaUserPlus,
+  FaEnvelope,
+  FaCheck,
+  FaReply,
+  FaComment,
+} from "react-icons/fa";
 
+import type { NotificationType } from "../../types/notifications/NotificationGetResponse";
 
 import "../../styles/notifications.css";
 import { getNotification } from "../../service/notifications/NotificationService";
+import NotLogged from "../../components/auth/NotLogged";
+import { formatePfpL } from "../../utils/formateImgProfile";
 
 const PAGE_SIZE = 20;
+
+const notificationIconClasses: Record<NotificationType, string> = {
+  COMMENT: "notification-icon comment",
+  LIKE: "notification-icon like",
+  FOLLOW: "notification-icon follow",
+  MESSAGE: "notification-icon message",
+  READ: "notification-icon read",
+  REPLY: "notification-icon reply",
+};
+
+const notificationIcons: Record<NotificationType, React.ReactNode> = {
+  COMMENT: <FaComment />,
+  LIKE: <FaHeart />,
+  FOLLOW: <FaUserPlus />,
+  MESSAGE: <FaEnvelope />,
+  READ: <FaCheck />,
+  REPLY: <FaReply />,
+};
 
 function Notifications() {
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -77,7 +106,7 @@ function Notifications() {
   }
 
   if (isAuthError || !user) {
-    return <p>You need to be logged in to view your notifications.</p>;
+    return <NotLogged />
   }
 
   if (isError) {
@@ -100,11 +129,18 @@ function Notifications() {
             <div className="notification-data">
 
               <div className="notification-data-lay-l">
-                <img
-                  src={notification.senderPhoto}
-                  alt={notification.senderName}
-                  className="notification-pfp"
-                />
+                <div className="img-noti-box">
+                  <div className={notificationIconClasses[notification.type]}>
+                    {notificationIcons[notification.type]}
+                  </div>
+                  <img
+                    src={formatePfpL(notification.senderPhoto)}
+                    alt={notification.senderName}
+                    className="notification-pfp"
+                  />
+
+                </div>
+
                 <div className="notification-content-box">
                   <p className="notification-content"> {notification.content}</p>
                   <p className="notification-date">
