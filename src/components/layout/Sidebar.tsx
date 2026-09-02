@@ -36,7 +36,7 @@ function Sidebar() {
 
                         <div className="side-lay">
                             <NavLink
-                                to="/contatos"
+                                to="/contacts"
                                 className={({ isActive }) =>
                                     isActive ? "side-link active" : "side-link"
                                 }
@@ -60,7 +60,7 @@ function Sidebar() {
 
                         <div className="side-lay">
                             <NavLink
-                                to="/perfil"
+                                to="/profile"
                                 className={({ isActive }) =>
                                     isActive ? "side-link active" : "side-link"
                                 }

@@ -10,6 +10,7 @@ import Feed from "./pages/feed/Feed";
 import Login from "./pages/auth/Login";
 import Contacts from "./pages/conversation/Contacts";
 import Notifications from "./pages/notifications/Notifications";
+import Profile from "./pages/profile/Profile";
 
 function RootLayout() {
     return (
@@ -35,8 +36,9 @@ export const router = createBrowserRouter([
                 children: [
                     { index: true, element: <Navigate to="/feed" replace /> },
                     { path: "feed", element: <Feed /> },
-                    { path: "contatos", element: <Contacts /> },
+                    { path: "contacts", element: <Contacts /> },
                     { path: "notifications", element: <Notifications /> },
+                    { path: "profile", element: <Profile /> },
                 ],
             },
         ],
