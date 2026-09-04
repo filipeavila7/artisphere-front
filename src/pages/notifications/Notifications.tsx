@@ -142,7 +142,7 @@ function Notifications() {
                 </div>
 
                 <div className="notification-content-box">
-                  <p className="notification-content"> {notification.content}</p>
+                  <p className="notification-content"> {notification.senderName + notification.content}</p>
                   <p className="notification-date">
                     {formatTime(notification.createdAt)}
                   </p>

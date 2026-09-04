@@ -1,0 +1,41 @@
+.profile-box{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    align-items: center;
+}
+
+
+.profile-pfp{
+    width: 160px;
+    border-radius: 100px;
+}
+
+
+.profile-content{
+    display: flex;
+    gap: 30px;
+}
+
+
+.profile-data-box h1{
+    font-size: 28px;
+}
+
+.profile-data-box{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 10px;
+    
+}
+
+.follow-content{
+    display: flex;
+    align-items: center;
+}
+
+.follow-data-box{
+    display: flex;
+    gap: 20px;
+}
