@@ -2,10 +2,11 @@ import NotLogged from "../../components/auth/NotLogged";
 import { useMe } from "../../hooks/useMe";
 import { useProfile } from "../../hooks/useProfile";
 import { FaCog, FaCogs, FaEdit, FaUserFriends } from "react-icons/fa";
-import { FaUserCheck } from "react-icons/fa6";
+import { FaPlus, FaUserCheck } from "react-icons/fa6";
 
 import "../../styles/profile.css"
 import { IoDocumentTextOutline } from "react-icons/io5";
+import { IoIosDocument } from "react-icons/io";
 
 function Profile() {
   const {
@@ -43,6 +44,9 @@ function Profile() {
         <div className="profile-content">
           <div className="profile-pfp-box">
             <img className="profile-pfp" src={profile.imageUrlProfile} alt="" />
+            <div className="pfp-new">
+              <FaPlus/>
+            </div>
           </div>
 
           <div className="profile-data-box">
@@ -54,7 +58,7 @@ function Profile() {
             <div className="follow-data-box">
               <div>
                 <div className="follow-content">
-                  <IoDocumentTextOutline className="profile-icon" /> <p>{profile.postCount}</p>
+                   <IoIosDocument className="profile-icon" /> <p>{profile.postCount}</p>
                 </div>
                 <p className="follow-p">Posts</p>
               </div>
