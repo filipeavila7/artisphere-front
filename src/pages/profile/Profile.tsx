@@ -1,7 +1,7 @@
 import NotLogged from "../../components/auth/NotLogged";
 import { useMe } from "../../hooks/useMe";
 import { useProfile } from "../../hooks/useProfile";
-import { FaUserFriends } from "react-icons/fa";
+import { FaCog, FaCogs, FaEdit, FaUserFriends } from "react-icons/fa";
 import { FaUserCheck } from "react-icons/fa6";
 
 import "../../styles/profile.css"
@@ -48,41 +48,53 @@ function Profile() {
           <div className="profile-data-box">
             <div className="profile-data">
               <h1 >{profile.name}</h1>
-             
+
             </div>
 
             <div className="follow-data-box">
               <div>
                 <div className="follow-content">
-                    <IoDocumentTextOutline /> <p>{profile.postCount}</p>
+                  <IoDocumentTextOutline className="profile-icon" /> <p>{profile.postCount}</p>
                 </div>
-                  Posts
+                <p className="follow-p">Posts</p>
               </div>
 
               <div>
                 <div className="follow-content">
-                    <FaUserFriends /> <p>{profile.followerCount}</p>
+                  <FaUserFriends className="profile-icon" /> <p>{profile.followerCount}</p>
                 </div>
-                  Followers
+                <p className="follow-p">Followers</p>
               </div>
 
 
               <div>
                 <div className="follow-content">
-                    <IoDocumentTextOutline /> <p>{profile.followCount}</p>
+                  <FaUserCheck className="profile-icon" /> <p>{profile.followCount}</p>
                 </div>
-                  Follows
+                <p className="follow-p">Follows</p>
+              </div>
+
+            </div>
+
+            <div className="username-lay">
+              <div className="username-box">
+                <p>@{profile.userName}</p>
               </div>
               
             </div>
 
 
+
           </div>
 
-          
-        </div>
 
-          oi
+        </div>
+        
+        <div className="profile-actions">
+          <button className="btn-profile"><FaEdit /> Edit profile</button>
+          <div className="profile-config"><FaCog className="pfp-cog"/></div>
+        </div>
+        
 
       </div>
       <p>{profile.bio}</p>
