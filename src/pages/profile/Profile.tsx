@@ -1,12 +1,12 @@
 import NotLogged from "../../components/auth/NotLogged";
 import { useMe } from "../../hooks/useMe";
 import { useProfile } from "../../hooks/useProfile";
-import { FaCog, FaCogs, FaEdit, FaUserFriends } from "react-icons/fa";
-import { FaPlus, FaShare, FaUserCheck } from "react-icons/fa6";
+import { FaCog, FaEdit, FaUserFriends } from "react-icons/fa";
+import { FaPlus, FaUserCheck } from "react-icons/fa6";
 
 import "../../styles/profile.css"
-import { IoDocumentTextOutline } from "react-icons/io5";
 import { IoIosDocument, IoIosShareAlt } from "react-icons/io";
+import MyPosts from "../../components/post/MyPosts";
 
 function Profile() {
   const {
@@ -105,6 +105,8 @@ function Profile() {
 
       </div>
       <p>{profile.bio}</p>
+
+      <MyPosts/>
     </div>
   );
 }

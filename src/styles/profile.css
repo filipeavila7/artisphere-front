@@ -13,7 +13,7 @@
     align-items: center;
     padding: 20px;
     border-radius: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.12);
+        
 }
 
 
@@ -51,6 +51,8 @@
 .follow-content{
     display: flex;
     align-items: center;
+    color: white;
+    gap: 4px;
 }
 
 .follow-data-box{
