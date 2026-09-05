@@ -1,5 +1,5 @@
 .profile-lay{
-    padding: 20px;
+    padding: 0px 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -9,8 +9,11 @@
 .profile-box{
     display: flex;
     justify-content: space-between;
-    
+    background-color: var(--color-primary);
     align-items: center;
+    padding: 20px;
+    border-radius: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 
@@ -34,7 +37,7 @@
 
 .profile-data-box h1{
     font-size: 28px;
-    color: var(--color-primary);
+    color: var(--color-secundary);
 }
 
 .profile-data-box{
@@ -56,27 +59,33 @@
 }
 
 .profile-icon{
-    color: var(--color-primary);
+    color: var(--color-secundary);
     font-size: 20px;
 }
 
 .follow-p{
-    color: var(--color-primary);
+    color: var(--color-secundary);
     font-size: 18px;
 }
 
 .username-box{
-    background-color: var(--color-primary);
-    color: white;
+    background-color: var(--color-secundary);
+    color: var(--color-primary);
     display: flex;  
     padding: 8px 12px;
-   
+    align-items: center;
     justify-content: center;
     border-radius: 15px;
 }
 
+.share-icon{
+    font-size: 16px;
+    padding-top: 2px;
+}
+
 .username-lay{
     display: flex;
+    gap: 10px;
 }
 
 
@@ -88,9 +97,9 @@
 
 .btn-profile{
     border: none;
-    border: 2px var(--color-primary) solid;
+    border: 2px var(--color-secundary) solid;
     cursor: pointer;
-    color: var(--color-primary);
+    color: var(--color-secundary);
     padding: 10px 20px;
     font-size: 18px;
     border-radius: 15px;
@@ -99,21 +108,22 @@
 
 
 .profile-config{
-    background-color: var(--color-primary);
+    background-color: var(--color-secundary);
     padding: 12px;
     display: flex;
-    color: white;
+    color: var(--color-primary);
     border-radius: 15px;
     cursor: pointer;
 }
 
 .pfp-new{
+    cursor: pointer;
     display: flex;
     padding: 10px;
-    color: white;
+    color: var(--color-primary);
     border-radius: 40px;
     position: absolute;
     right: 5px;
     bottom: 10px;
-    background-color: var(--color-primary);
+    background-color: var(--color-secundary);
 }

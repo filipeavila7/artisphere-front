@@ -2,11 +2,11 @@ import NotLogged from "../../components/auth/NotLogged";
 import { useMe } from "../../hooks/useMe";
 import { useProfile } from "../../hooks/useProfile";
 import { FaCog, FaCogs, FaEdit, FaUserFriends } from "react-icons/fa";
-import { FaPlus, FaUserCheck } from "react-icons/fa6";
+import { FaPlus, FaShare, FaUserCheck } from "react-icons/fa6";
 
 import "../../styles/profile.css"
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { IoIosDocument } from "react-icons/io";
+import { IoIosDocument, IoIosShareAlt } from "react-icons/io";
 
 function Profile() {
   const {
@@ -83,6 +83,9 @@ function Profile() {
             <div className="username-lay">
               <div className="username-box">
                 <p>@{profile.userName}</p>
+              </div>
+              <div className="username-box">
+                <p>Share profile <IoIosShareAlt className="share-icon" /></p>
               </div>
               
             </div>
