@@ -5,4 +5,30 @@
         
 }
 
+.empty-post-box{
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    border-radius: 20px;
+    height: 280px;
+    align-items: center;
+    justify-content: center;
+    border: 2px dotted var(--color-primary );
+}
 
+
+.empty-avatar{
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+}
+
+
+.empty-btn{
+    margin-top: 10px;
+    color: white;
+    padding: 15px 80px;
+    border-radius: 15px;
+    cursor: pointer;
+    background-color: var(--color-primary);
+}
