@@ -3,7 +3,7 @@ import NotLogged from "../../components/auth/NotLogged";
 import { useMe } from "../../hooks/useMe";
 import { useProfile } from "../../hooks/useProfile";
 import { FaCog, FaEdit, FaUserFriends } from "react-icons/fa";
-import { FaBookmark, FaHeart, FaPlus, FaRegHeart, FaUserCheck } from "react-icons/fa6";
+import { FaBookmark, FaHeart, FaPlus, FaUserCheck } from "react-icons/fa6";
 
 import "../../styles/profile.css";
 import { IoIosDocument, IoIosShareAlt } from "react-icons/io";
@@ -125,7 +125,7 @@ function Profile() {
           className={activeTab === "posts" ? "active" : ""}
           onClick={() => setActiveTab("posts")}
         >
-          <IoIosDocument />
+          <IoIosDocument className="tab-icon" />
           Posts
         </button>
 
@@ -133,7 +133,7 @@ function Profile() {
           className={activeTab === "liked" ? "active" : ""}
           onClick={() => setActiveTab("liked")}
         >
-          <FaHeart />
+          <FaHeart className="tab-icon" />
           Liked
         </button>
 
@@ -141,7 +141,7 @@ function Profile() {
           className={activeTab === "saved" ? "active" : ""}
           onClick={() => setActiveTab("saved")}
         >
-          <FaBookmark />
+          <FaBookmark className="tab-icon" />
           Saved
         </button>
       </div>
