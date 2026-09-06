@@ -55,6 +55,51 @@
     gap: 4px;
 }
 
+.bio{
+    padding-bottom: 25px;
+}
+
+
+.profile-tabs{
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    padding-bottom: 30px;
+    border-bottom: 1px var(--color-primary) solid;
+}
+
+.profile-tabs button{
+    background-color: transparent;
+    color: var(--color-primary);
+    padding: 10px 40px;
+    width: 100%;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    border: 2px var(--color-primary) solid;;
+}
+
+
+
+
+.profile-tabs button.active{
+    background-color: var(--color-primary);;
+    color: white;
+    padding: 10px 40px;
+    width: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+   
+}
+
+
+.posts{
+    background-color: aquamarine;
+}
+
+
 .follow-data-box{
     display: flex;
     gap: 20px;
