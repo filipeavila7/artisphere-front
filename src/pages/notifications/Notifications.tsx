@@ -20,6 +20,7 @@ import "../../styles/notifications.css";
 import { getNotification } from "../../service/notifications/NotificationService";
 import NotLogged from "../../components/auth/NotLogged";
 import { formatePfpL } from "../../utils/formateImgProfile";
+import Empty from "../../components/layout/Empty";
 
 const PAGE_SIZE = 20;
 
@@ -121,6 +122,10 @@ function Notifications() {
       )}
 
       <div className="notification-list">
+
+        {!isLoading && notifications.length === 0 && (
+                <Empty />
+            )}
         {notifications.map((notification) => (
           <div
             className="notification-box"
