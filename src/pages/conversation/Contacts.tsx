@@ -7,6 +7,7 @@ import "../../styles/contacts.css";
 import MyFollows from "../../components/follow/MyFollows";
 import NotLogged from "../../components/auth/NotLogged";
 import { useMe } from "../../hooks/useMe";
+import Empty from "../../components/layout/Empty";
 
 const PAGE_SIZE = 20;
 
@@ -93,6 +94,9 @@ function Contacts() {
       )}
 
       <div className="contact-list">
+        {!isLoading && conversations.length === 0 && (
+                <Empty />
+            )}
         {conversations.map((conversation) => (
           <div
             className="contact-box"

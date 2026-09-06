@@ -18,3 +18,20 @@
 .avatar-empty{
     width: 225px;
 }
+
+
+.follow-avatar{
+    width: 150px;
+}
+
+.empty-follow-box{
+    display: flex;
+    align-items: center;
+    padding: 20px;  
+    
+    
+}
+
+.follow-empty-title{
+    width: 125px;
+}

@@ -4,6 +4,7 @@ import "../../styles/contacts.css"
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMyFollowing } from "../../service/follow/FollowService";
 import { formatePfpL } from "../../utils/formateImgProfile";
+import EmptyFollow from "./EmptyFollow";
 
 function MyFollows() {
     const [isOpen, setIsOpen] = useState(false);
@@ -76,7 +77,14 @@ function MyFollows() {
                 {isOpen ? ">>" : "<<"}
             </button>
 
+            {!isLoading && followings.length === 0 && (
+                <EmptyFollow />
+            )}
+
             {isOpen && (
+
+                
+
                 <div className="contacts-content">
                     {followings.map((following) => (
                         <div className="following" key={following.userId} >

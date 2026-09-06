@@ -7,6 +7,7 @@ import { FaPlus, FaUserCheck } from "react-icons/fa6";
 import "../../styles/profile.css"
 import { IoIosDocument, IoIosShareAlt } from "react-icons/io";
 import MyPosts from "../../components/post/MyPosts";
+import { formatePfpL } from "../../utils/formateImgProfile";
 
 function Profile() {
   const {
@@ -43,7 +44,7 @@ function Profile() {
 
         <div className="profile-content">
           <div className="profile-pfp-box">
-            <img className="profile-pfp" src={profile.imageUrlProfile} alt="" />
+            <img className="profile-pfp" src={formatePfpL(profile.imageUrlProfile)} alt="" />
             <div className="pfp-new">
               <FaPlus/>
             </div>
