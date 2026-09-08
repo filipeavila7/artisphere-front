@@ -9,6 +9,7 @@ import "../../styles/profile.css";
 import { IoIosDocument, IoIosShareAlt } from "react-icons/io";
 import MyPosts from "../../components/post/MyPosts";
 import { formatePfpL } from "../../utils/formateImgProfile";
+import LikedPosts from "../../components/likes/LikedPosts";
 
 type ProfileTab = "posts" | "liked" | "saved";
 
@@ -148,6 +149,7 @@ function Profile() {
 
       <div className="profile-tab-content">
         {activeTab === "posts" && <MyPosts />}
+        {activeTab === "liked" && <LikedPosts />}
 
         {/* Adicionar os outros componentes aqui */}
         {/* {activeTab === "liked" && <LikedPosts />} */}
