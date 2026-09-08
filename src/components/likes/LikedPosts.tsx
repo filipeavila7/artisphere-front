@@ -6,9 +6,9 @@ import Masonry from "react-masonry-css";
 import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
 
 import "../../styles/post.css";
-import EmptyPosts from "../post/EmptyPosts";
 import { getMyLikedPosts } from "../../service/like/likeService";
 import PostCardNew from "../feed/PostCardNew";
+import EmptyPostsB from "../post/EmptyPostsB";
 
 const PAGE_SIZE = 12;
 
@@ -76,7 +76,7 @@ function LikedPosts() {
     return (
         <main className="feed-lay">
             {!isLoading && posts.length === 0 && (
-                <EmptyPosts />
+                <EmptyPostsB />
             )}
             <Masonry
                 breakpointCols={{
