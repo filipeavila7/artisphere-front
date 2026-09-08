@@ -7,12 +7,12 @@ import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
 
 import "../../styles/post.css";
 import EmptyPosts from "../post/EmptyPosts";
-import { getMyLikedPosts } from "../../service/like/likeService";
 import PostCardNew from "../feed/PostCardNew";
+import { getMySavedPosts } from "../../service/save/SaveService";
 
 const PAGE_SIZE = 12;
 
-function LikedPosts() {
+function SavedPosts() {
     const sentinelRef = useRef<HTMLDivElement>(null);
 
     const {
@@ -23,11 +23,11 @@ function LikedPosts() {
         hasNextPage,
         isFetchingNextPage,
     } = useInfiniteQuery({
-        queryKey: ["my-posts-liked"],
+        queryKey: ["my-posts-saved"],
         initialPageParam: 0,
 
         queryFn: ({ pageParam }) =>
-            getMyLikedPosts(pageParam, PAGE_SIZE),
+            getMySavedPosts(pageParam, PAGE_SIZE),
 
         getNextPageParam: (lastPage) => {
             if (lastPage.last) return undefined;
@@ -99,8 +99,8 @@ function LikedPosts() {
                 {/* Posts */}
                 {posts.map((post) => (
                     <PostCardNew
-                        key={post.post.id}
-                        post={post.post}
+                        key={post.postResponse.id}
+                        post={post.postResponse}
                     />
                 ))}
 
@@ -122,4 +122,4 @@ function LikedPosts() {
     );
 }
 
-export default LikedPosts;
+export default SavedPosts

@@ -1,5 +1,6 @@
 // PostCard.tsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface PostCardProps {
     post: {
@@ -15,8 +16,14 @@ interface PostCardProps {
 function PostCard({ post }: PostCardProps) {
     const [loaded, setLoaded] = useState(false);
 
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/post/${post.id}`);
+    };
+
     return (
-        <div className="post-card">
+        <div onClick={handleClick} className="post-card">
             <div className={`image-wrapper ${!loaded ? "is-loading" : ""}`}>
                 {!loaded && <div className="skeleton" />}
                 <img
