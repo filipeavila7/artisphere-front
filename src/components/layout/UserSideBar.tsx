@@ -1,6 +1,7 @@
 import { IoSettingsOutline } from "react-icons/io5";
 import { useMe } from "../../hooks/useMe";
 import "../../styles/side-bar.css"
+import { formatePfpL } from "../../utils/formateImgProfile";
 
 function UserSideBar() {
     const { data: user, isLoading, error } = useMe();
@@ -24,7 +25,7 @@ function UserSideBar() {
     return (
         <div className="user-side-box">
             <div className="user-side-lay">
-                <img className="user-side-img" src={user?.profileImageUrl} />
+                <img className="user-side-img" src={formatePfpL(user?.profileImageUrl)} />
                 <div className="user-data-box">
                     <p className="side-name">{user?.name}</p>
                     <span>@{user?.userName}</span>

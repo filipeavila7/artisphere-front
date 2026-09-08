@@ -1,4 +1,4 @@
-export function formatePfpL(urlImg : string){
+export function formatePfpL(urlImg? : string){
     if(urlImg){
         return urlImg
     }
@@ -6,7 +6,7 @@ export function formatePfpL(urlImg : string){
     return "null-pfp-l.png";
 }
 
-export function formatePfpD(urlImg : string){
+export function formatePfpD(urlImg? : string){
     if(urlImg){
         return urlImg
     }
