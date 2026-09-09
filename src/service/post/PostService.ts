@@ -1,6 +1,7 @@
 import api from "../../api/api";
 import type { PostDetailsResponse } from "../../types/post/PostDetailsResponse";
 import type { PageResponse } from "../../types/page/PageResponse";
+import type { PostWithRelatedResponse } from "../../types/post/PostWithRelatedResponse";
 
 // buscar feed
 export async function getFeed( // getFeed(numero da pagina, tamanho da pagina)
@@ -32,5 +33,13 @@ export async function getMyPosts(
         }
     );
 
+    return response.data;
+}
+
+
+export async function getPostById(
+    postId: number
+): Promise<PostWithRelatedResponse> {
+    const response = await api.get<PostWithRelatedResponse>(`/posts/${postId}`);
     return response.data;
 }
