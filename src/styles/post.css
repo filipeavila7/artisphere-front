@@ -32,3 +32,26 @@
     cursor: pointer;
     background-color: var(--color-primary);
 }
+
+
+.post-details-img{
+    width: 360px;
+    border-radius: 15px;
+}
+
+
+.post-details-box{
+    margin-bottom: 50px;
+    display: flex;
+    gap: 20px;
+}
+
+
+.post-details-data-box{
+    color: white;
+    padding: 20px;
+    background-color: var(--color-primary);
+    height: 625px;
+    width: 100%;
+    border-radius: 15px;
+}

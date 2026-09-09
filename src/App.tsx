@@ -40,7 +40,7 @@ export const router = createBrowserRouter([
                     { path: "contacts", element: <Contacts /> },
                     { path: "notifications", element: <Notifications /> },
                     { path: "profile", element: <Profile /> },
-                     { path: "post/:postId", element: <PostDetails /> },
+                    { path: "post/:postId", element: <PostDetails /> },
                 ],
             },
         ],
