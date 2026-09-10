@@ -55,3 +55,74 @@
     width: 100%;
     border-radius: 15px;
 }
+
+.post-data-lay{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-user-data-box{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.post-user-data{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.post-user-data span{
+    margin-left: 3px;
+    font-size: 14px;
+    color: rgb(183, 185, 187);
+}
+
+.user-post-pfp{
+    width: 75px;
+    border-radius: 100px;
+}
+
+
+.post-title{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+.post-tags{
+    padding-top: 10px;
+    display: flex;
+    gap: 15px;
+}
+
+.post-details-actions{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.action-icon{
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.post-user-follow{
+    padding: 12px 20px;
+    background-color: transparent;
+    outline: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 10px;
+    border: 1px solid white;
+}
+
+.post-tags span{
+    background-color: white;
+    padding: 5px 15px;
+    border-radius: 12px;
+    color: var(--color-primary);
+}

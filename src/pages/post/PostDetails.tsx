@@ -6,6 +6,8 @@ import { getPostById } from "../../service/post/PostService";
 import PostCard from "../../components/feed/PostCard";
 
 import "../../styles/post.css"
+import PostDate from "../../components/post/PostDate";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 
 const breakpointColumns = {
   default: 4,
@@ -42,7 +44,7 @@ function PostDetails() {
       {/* POST PRINCIPAL */}
       <div className="post-details-box">
         <div className="post-details-content">
-          
+
 
           <img className="post-details-img"
             src={data.post.imageUrl}
@@ -53,7 +55,40 @@ function PostDetails() {
 
 
         <div className="post-details-data-box">
-          oi
+          <div className="post-data-lay">
+            <div className="post-user-data-box">
+              <img className="user-post-pfp" src={data.post.user.profileImageUrl} alt="" />
+              <div className="post-user-data">
+                <p>{data.post.user.name}</p>
+                <span>@{data.post.user.userName}</span>
+                <PostDate date={data.post.createdAt} />
+              </div>
+
+            </div>
+            <div className="post-details-actions">
+              <button className="post-user-follow">Follow</button>
+              <HiOutlineDotsVertical className="action-icon" />
+            </div>
+            
+          </div>
+
+          <div className="post-data-content">
+            <div className="post-title">
+              <h3>{data.post.title}</h3>
+            </div>
+
+            <div className="post-tags">
+              {data.post.tags.map((tag) => (
+                <span key={tag.id}>
+                  #{tag.name}
+                </span>
+              ))}
+            </div>
+          </div>
+
+
+
+
         </div>
 
       </div>
