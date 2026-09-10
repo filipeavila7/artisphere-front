@@ -8,6 +8,8 @@ import PostCard from "../../components/feed/PostCard";
 import "../../styles/post.css"
 import PostDate from "../../components/post/PostDate";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import { FaRegBookmark, FaRegComment, FaRegHeart } from "react-icons/fa6";
+import { CiShare2 } from "react-icons/ci";
 
 const breakpointColumns = {
   default: 4,
@@ -83,6 +85,30 @@ function PostDetails() {
                   #{tag.name}
                 </span>
               ))}
+            </div>
+
+
+            <div className="post-description-box">
+              <p>{data.post.description}</p>
+            </div>
+
+
+            <div className="post-action-box">
+              <div className="action">
+                <FaRegHeart />
+                <p>{data.post.likesCount}</p>
+              </div>
+              <div className="action">
+                <FaRegComment />
+                <p>{data.post.commentsCount}</p>
+              </div>
+              <div className="action">
+                <CiShare2 className="icon-share" />
+                0
+              </div>
+              <div className="action-l">
+                <FaRegBookmark />
+              </div>
             </div>
           </div>
 
