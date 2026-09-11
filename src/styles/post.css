@@ -128,15 +128,16 @@
 }
 
 .post-description-box{
-    padding-top: 20px;
-    
-    height: 125px;
+    padding-top: 30px;
+    padding-bottom: 30px;    
+ 
 }
 
 
 .post-action-box{
     display: flex;
     gap: 20px;
+    padding-bottom: 20px;
 }
 
 .action{
@@ -165,4 +166,13 @@
     padding: 12px 15px;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+}
+
+
+.comments-container{
+    
+    height: 250px;
+    overflow-y: auto;
+
 }
