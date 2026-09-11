@@ -99,8 +99,13 @@ function CommentsModal({ postId, isOpen, onClose }: CommentsModalProps) {
       >
 
         <div className="comments-modal-header">
-          <h3>Comentários</h3>
-          <IoClose className="comments-modal-close" onClick={onClose} />
+          <div>
+            <p className="comments-modal-eyebrow">CONVERSA SOBRE A OBRA</p>
+            <h3>Comentários</h3>
+          </div>
+          <button className="comments-modal-close" type="button" aria-label="Fechar comentários" onClick={onClose}>
+            <IoClose />
+          </button>
         </div>
 
         <div className="new-comment-box">
@@ -119,10 +124,12 @@ function CommentsModal({ postId, isOpen, onClose }: CommentsModalProps) {
 
         <div ref={containerRef} className="comments-container">
 
-          {isLoading && <p>Carregando comentários...</p>}
-          {isError && <p>Erro ao carregar comentários.</p>}
+          {isLoading && <p className="comments-state">Carregando comentários...</p>}
+          {isError && <p className="comments-state comments-state--error">Erro ao carregar comentários.</p>}
           {!isLoading && !isError && comments.length === 0 && (
-            <p>Nenhum comentário ainda.</p>
+            <div className="comments-empty">
+              <span>✦</span><p>Ainda não há comentários.</p><small>Seja a primeira pessoa a iniciar a conversa.</small>
+            </div>
           )}
 
           {comments.map((comment) => (
@@ -130,13 +137,12 @@ function CommentsModal({ postId, isOpen, onClose }: CommentsModalProps) {
               key={comment.id}
               comment={comment}
               postId={postId}
-              parentQueryKey={["post-comments", postId]}
             />
           ))}
 
           <div ref={sentinelRef} className="comments-sentinel" />
 
-          {isFetchingNextPage && <p>Carregando mais comentários...</p>}
+          {isFetchingNextPage && <p className="comments-state comments-state--inline">Carregando mais comentários...</p>}
 
         </div>
 
