@@ -176,3 +176,147 @@
     overflow-y: auto;
 
 }
+
+
+.comments-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.comments-modal {
+    background-color: var(--color-primary);
+    color: white;
+    width: 480px;
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comments-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.comments-modal-close {
+    cursor: pointer;
+    font-size: 22px;
+}
+
+.new-comment-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.new-comment-box textarea {
+    resize: none;
+    min-height: 60px;
+    border-radius: 10px;
+    border: 1px solid white;
+    background-color: transparent;
+    color: white;
+    padding: 8px;
+}
+
+.new-comment-box button {
+    align-self: flex-end;
+    background-color: white;
+    color: var(--color-primary);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.comments-container {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comment {
+    display: flex;
+    gap: 10px;
+}
+
+.comment img {
+    width: 40px;
+    height: 40px;
+    border-radius: 100px;
+    object-fit: cover;
+}
+
+.comment-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+}
+
+.comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: rgb(220, 220, 220);
+}
+
+.comment-action-btn {
+    background: none;
+    border: none;
+    color: rgb(220, 220, 220);
+    cursor: pointer;
+    padding: 0;
+    font-size: 13px;
+}
+
+.comment-delete-btn {
+    color: #ff8080;
+}
+
+.comment-reply-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.comment-reply-box textarea {
+    resize: none;
+    min-height: 40px;
+    border-radius: 8px;
+    border: 1px solid white;
+    background-color: transparent;
+    color: white;
+    padding: 6px;
+}
+
+.comment-reply-box button {
+    align-self: flex-end;
+    background-color: white;
+    color: var(--color-primary);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.comment-replies-list {
+    margin-top: 10px;
+    padding-left: 20px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
