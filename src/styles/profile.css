@@ -1,4 +1,4 @@
-.profile-lay{
+.profile-lay {
     padding: 0px 20px;
     display: flex;
     flex-direction: column;
@@ -6,61 +6,66 @@
 }
 
 
-.profile-box{
+.profile-box {
     display: flex;
     justify-content: space-between;
-    background-color: var(--color-primary);
+    background: linear-gradient(145deg,
+            color-mix(in srgb, var(--color-primary) 94%, #150513),
+            color-mix(in srgb, var(--color-primary) 78%, #08030a));
+    border: 1px solid rgba(255, 255, 255, .15);
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
     align-items: center;
     padding: 30px 20px;
     border-radius: 15px;
-        
+
 }
 
 
-.profile-pfp{
+.profile-pfp {
     width: 160px;
     border-radius: 100px;
     height: 160px;
     object-fit: cover;
 }
 
-.profile-pfp-box{
+.profile-pfp-box {
     position: relative;
 }
 
 
-.profile-content{
+.profile-content {
     display: flex;
     gap: 30px;
 }
 
 
-.profile-data-box h1{
+.profile-data-box h1 {
     font-size: 28px;
     color: var(--color-secundary);
 }
 
-.profile-data-box{
+.profile-data-box {
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding-top: 10px;
-    
+
 }
 
-.follow-content{
+.follow-content {
     display: flex;
     align-items: center;
     color: white;
     gap: 4px;
 }
 
-.bio{
+.bio {
     padding-bottom: 25px;
 }
 
 
-.profile-tabs{
+.profile-tabs {
     display: flex;
     justify-content: space-around;
     gap: 20px;
@@ -68,7 +73,7 @@
     border-bottom: 1px var(--color-primary) solid;
 }
 
-.profile-tabs button{
+.profile-tabs button {
     background-color: transparent;
     color: var(--color-primary);
     padding: 10px 40px;
@@ -78,51 +83,53 @@
     justify-content: center;
     gap: 10px;
     cursor: pointer;
-    border: 2px var(--color-primary) solid;;
+    border: 2px var(--color-primary) solid;
+    ;
 }
 
 
 
 
-.profile-tabs button.active{
-    background-color: var(--color-primary);;
+.profile-tabs button.active {
+    background-color: var(--color-primary);
+    ;
     color: white;
     padding: 10px 40px;
     width: 100%;
     border-radius: 10px;
     cursor: pointer;
-   
+
 }
 
 
-.tab-icon{
+.tab-icon {
     font-size: 18px;
 }
 
-.posts{
+.posts {
     background-color: aquamarine;
 }
 
 
-.follow-data-box{
+.follow-data-box {
     display: flex;
     gap: 20px;
 }
 
-.profile-icon{
+.profile-icon {
     color: var(--color-secundary);
     font-size: 20px;
 }
 
-.follow-p{
+.follow-p {
     color: var(--color-secundary);
     font-size: 18px;
 }
 
-.username-box{
+.username-box {
     background-color: var(--color-secundary);
     color: var(--color-primary);
-    display: flex;  
+    display: flex;
     padding: 8px 12px;
     align-items: center;
     justify-content: center;
@@ -130,24 +137,24 @@
     cursor: pointer;
 }
 
-.share-icon{
+.share-icon {
     font-size: 16px;
     padding-top: 2px;
 }
 
-.username-lay{
+.username-lay {
     display: flex;
     gap: 10px;
 }
 
 
-.profile-actions{
+.profile-actions {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
-.btn-profile{
+.btn-profile {
     border: none;
     border: 2px var(--color-secundary) solid;
     cursor: pointer;
@@ -159,7 +166,7 @@
 }
 
 
-.profile-config{
+.profile-config {
     background-color: var(--color-secundary);
     padding: 12px;
     display: flex;
@@ -168,7 +175,7 @@
     cursor: pointer;
 }
 
-.pfp-new{
+.pfp-new {
     cursor: pointer;
     display: flex;
     padding: 10px;

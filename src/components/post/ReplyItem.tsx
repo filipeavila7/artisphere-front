@@ -5,6 +5,7 @@ import type { CommentResponse } from "../../types/comment/CommentResponse";
 import type { PageResponse } from "../../types/page/PageResponse";
 import { useMe } from "../../hooks/useMe";
 import PostDate from "./PostDate";
+import CommentLikeButton from "./CommentLikeButton";
 
 interface ReplyItemProps { reply: CommentResponse; postId: number; rootCommentId: number; }
 
@@ -74,7 +75,7 @@ function ReplyItem({ reply, postId, rootCommentId }: ReplyItemProps) {
   const submitReply = () => { const content = replyText.trim(); if (content) replyMutation.mutate(content); };
   return <article className="comment comment--reply"><img className="comment-avatar" src={reply.user.profileImageUrl} alt="" /><div className="comment-body">
     <div className="comment-card"><div className="comment-author-row"><strong>{reply.user.name}</strong><span>@{reply.user.userName}</span></div><p className="comment-content">{reply.replyToUsername && <span className="comment-mention">@{reply.replyToUsername}</span>}{reply.content}</p></div>
-    <div className="comment-meta"><PostDate date={reply.createdAt} /><button className="comment-action-btn" onClick={() => setShowReplyInput((value) => !value)}>Responder</button>{currentUser?.id === reply.user.id && <button className="comment-action-btn comment-delete-btn" disabled={deleteMutation.isPending} onClick={() => deleteMutation.mutate()}>{deleteMutation.isPending ? "Excluindo..." : "Excluir"}</button>}</div>
+    <div className="comment-meta"><PostDate date={reply.createdAt} /><CommentLikeButton comment={reply} queryKey={replyQueryKey} /><button className="comment-action-btn" onClick={() => setShowReplyInput((value) => !value)}>Responder</button>{currentUser?.id === reply.user.id && <button className="comment-action-btn comment-delete-btn" disabled={deleteMutation.isPending} onClick={() => deleteMutation.mutate()}>{deleteMutation.isPending ? "Excluindo..." : "Excluir"}</button>}</div>
     {showReplyInput && <div className="comment-reply-box"><textarea value={replyText} onChange={(event) => setReplyText(event.target.value)} placeholder={`Respondendo @${reply.user.userName}...`} /><button disabled={replyMutation.isPending || !replyText.trim()} onClick={submitReply}>{replyMutation.isPending ? "Enviando..." : "Enviar resposta"}</button></div>}
   </div></article>;
 }
