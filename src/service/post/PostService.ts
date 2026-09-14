@@ -43,3 +43,11 @@ export async function getPostById(
     const response = await api.get<PostWithRelatedResponse>(`/posts/${postId}`);
     return response.data;
 }
+
+
+export async function getMyPostById(
+    postId: number
+): Promise<PostDetailsResponse> {
+    const response = await api.get<PostDetailsResponse>(`/posts/my/${postId}`);
+    return response.data;
+}

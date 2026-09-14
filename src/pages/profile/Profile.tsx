@@ -10,7 +10,7 @@ import { IoIosDocument, IoIosShareAlt } from "react-icons/io";
 import MyPosts from "../../components/post/MyPosts";
 import { formatePfpL } from "../../utils/formateImgProfile";
 import LikedPosts from "../../components/likes/LikedPosts";
-import SavedPosts from "../../components/likes/SavedPosts";
+import SavedPosts from "../../components/save/SavedPosts";
 
 type ProfileTab = "posts" | "liked" | "saved";
 

@@ -3,18 +3,21 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import Masonry from "react-masonry-css";
 
 
-import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
+import { PostCardSkeleton } from "../feed/PostCardSkeleton";
 
 import "../../styles/post.css";
 
 import PostCardNew from "../feed/PostCardNew";
 import { getMySavedPosts } from "../../service/save/SaveService";
 import EmptyPostsA from "../post/EmptyPostsA";
+import { useNavigate } from "react-router-dom";
 
 const PAGE_SIZE = 12;
 
 function SavedPosts() {
     const sentinelRef = useRef<HTMLDivElement>(null);
+
+    const navigate = useNavigate()
 
     const {
         data,
@@ -100,6 +103,7 @@ function SavedPosts() {
                 {/* Posts */}
                 {posts.map((post) => (
                     <PostCardNew
+                         onClick={(post) => navigate(`/my/post/${post.id}`)}
                         key={post.postResponse.id}
                         post={post.postResponse}
                     />
