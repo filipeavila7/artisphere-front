@@ -5,7 +5,7 @@ import Masonry from "react-masonry-css";
 import { getMyPosts } from "../../service/post/PostService";
 import PostCard from "../../components/feed/PostCard";
 import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
-
+import { useNavigate } from "react-router-dom";
 import "../../styles/post.css";
 import EmptyPosts from "./EmptyPosts";
 
@@ -13,6 +13,7 @@ const PAGE_SIZE = 12;
 
 function MyPosts() {
     const sentinelRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate()
 
     const {
         data,
@@ -100,6 +101,7 @@ function MyPosts() {
                     <PostCard
                         key={post.id}
                         post={post}
+                        onClick={(post) => navigate(`/my/post/${post.id}`)}
                     />
                 ))}
 

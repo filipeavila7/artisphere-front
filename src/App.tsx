@@ -12,6 +12,7 @@ import Contacts from "./pages/conversation/Contacts";
 import Notifications from "./pages/notifications/Notifications";
 import Profile from "./pages/profile/Profile";
 import PostDetails from "./pages/post/PostDetails";
+import MyPostDetails from "./pages/post/MyPostDetails";
 
 function RootLayout() {
     return (
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
                     { path: "notifications", element: <Notifications /> },
                     { path: "profile", element: <Profile /> },
                     { path: "post/:postId", element: <PostDetails /> },
+                    { path: "my/post/:postId", element: <MyPostDetails /> },
                 ],
             },
         ],

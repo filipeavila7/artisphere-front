@@ -9,11 +9,14 @@ import "../../styles/post.css";
 import { getMyLikedPosts } from "../../service/like/likeService";
 import PostCardNew from "../feed/PostCardNew";
 import EmptyPostsB from "../post/EmptyPostsB";
+import { useNavigate } from "react-router-dom";
 
 const PAGE_SIZE = 12;
 
 function LikedPosts() {
     const sentinelRef = useRef<HTMLDivElement>(null);
+
+    const navigate = useNavigate()
 
     const {
         data,
@@ -101,6 +104,7 @@ function LikedPosts() {
                     <PostCardNew
                         key={post.post.id}
                         post={post.post}
+                        onClick={(post) => navigate(`/my/post/${post.id}`)}
                     />
                 ))}
 

@@ -1,21 +1,18 @@
-// PostCard.tsx
+
 import { useState } from "react";
 import type { PostResponse } from "../../types/post/PostResponse";
-import { useNavigate } from "react-router-dom";
 
 interface PostCardProps {
     post: PostResponse;
+    onClick?: (post: PostResponse) => void;
 }
 
-function PostCardNew({ post }: PostCardProps) {
+function PostCardNew({ post, onClick }: PostCardProps) {
     const [loaded, setLoaded] = useState(false);
 
-    const navigate = useNavigate();
-
     const handleClick = () => {
-        navigate(`/post/${post.id}`);
+        onClick?.(post);
     };
-
 
     return (
         <div onClick={handleClick} className="post-card">
@@ -34,3 +31,4 @@ function PostCardNew({ post }: PostCardProps) {
 }
 
 export default PostCardNew;
+
