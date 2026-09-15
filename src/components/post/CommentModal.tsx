@@ -128,7 +128,8 @@ function CommentsModal({ postId, isOpen, onClose }: CommentsModalProps) {
           {isError && <p className="comments-state comments-state--error">Erro ao carregar comentários.</p>}
           {!isLoading && !isError && comments.length === 0 && (
             <div className="comments-empty">
-              <span>✦</span><p>Ainda não há comentários.</p><small>Seja a primeira pessoa a iniciar a conversa.</small>
+              <img  src="/avatar-5.png" alt="" />
+              <p>No comments yet.</p><small>Be the first to start the conversation.</small>
             </div>
           )}
 

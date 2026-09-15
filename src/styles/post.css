@@ -510,6 +510,18 @@ button:disabled {
     padding: 22px 12px;
     color: rgba(255, 255, 255, .72);
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+
+.comments-empty img{
+    width: 200px;
+    margin-left: 20px;
+    margin-bottom: 10px;
 }
 
 .comments-empty span {

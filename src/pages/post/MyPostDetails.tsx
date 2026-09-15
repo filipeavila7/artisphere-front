@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 
-import { getMyPostById, getPostById } from "../../service/post/PostService";
+import { getMyPostById } from "../../service/post/PostService";
 
 import PostDate from "../../components/post/PostDate";
 import CommentsModal from "../../components/post/CommentModal";

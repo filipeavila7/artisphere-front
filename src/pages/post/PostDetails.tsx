@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Masonry from "react-masonry-css";
 
@@ -18,6 +18,7 @@ import {
 import { CiShare2 } from "react-icons/ci";
 
 import "../../styles/post.css";
+import { useMe } from "../../hooks/useMe";
 
 const breakpointColumns = {
   default: 4,
@@ -27,6 +28,10 @@ const breakpointColumns = {
 };
 
 function PostDetails() {
+  const { data: me } = useMe();
+
+
+  const navigate = useNavigate()
 
   const { postId } = useParams();
 
@@ -53,6 +58,10 @@ function PostDetails() {
   if (isError || !data) {
     return <p>Erro ao carregar o post.</p>;
   }
+
+  
+
+  const isOwner = me?.id === data.post.user.id;
 
 
   return (
@@ -89,7 +98,16 @@ function PostDetails() {
             </div>
 
             <div className="post-details-actions">
-              <button className="post-user-follow">Follow</button>
+              {isOwner ? (
+                <button className="post-user-follow">
+                  You
+                </button>
+              ) : (
+                <button className="post-user-follow">
+                  Follow
+                </button>
+              )}
+
               <HiOutlineDotsVertical className="action-icon" />
             </div>
 
@@ -156,7 +174,8 @@ function PostDetails() {
           columnClassName="masonry-grid_column"
         >
           {data.relatedPosts.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post.id} post={post}
+              onClick={(post) => navigate(`/post/${post.id}`)} />
           ))}
         </Masonry>
       </section>
