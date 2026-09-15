@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient, type InfiniteData } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { getConversations } from "../../service/conversation/ConversationService";
+import { getUnreadConversationCounts } from "../../service/message/MessageService";
+import { useStompTopic } from "../../hooks/useStompTopic";
+import type { ConversationUpdateResponse } from "../../types/message/MessageResponse";
+import type { ConversationResponse } from "../../types/conversation/ConversationResponse";
+import type { PageResponse } from "../../types/page/PageResponse";
 import { formatTime } from "../../utils/formateData";
 
 import "../../styles/contacts.css";
@@ -13,6 +19,8 @@ const PAGE_SIZE = 20;
 
 function Contacts() {
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     data: user,
@@ -45,6 +53,31 @@ function Contacts() {
     () => data?.pages.flatMap((page) => page.content) ?? [],
     [data]
   );
+
+  const { data: unreadCounts = [] } = useQuery({
+    queryKey: ["conversation-unread-counts"],
+    queryFn: getUnreadConversationCounts,
+    enabled: !!user,
+  });
+  const unreadByConversation = useMemo(() => new Map(unreadCounts.map((item) => [item.conversationId, item.unreadCount])), [unreadCounts]);
+
+  useStompTopic<ConversationUpdateResponse>(user ? `/topic/conversations/${user.id}` : undefined, (update) => {
+    queryClient.setQueryData<InfiniteData<PageResponse<ConversationResponse>>>(["conversations"], (current) => {
+      if (!current) return current;
+      let wasFound = false;
+      const pages = current.pages.map((page) => ({
+        ...page,
+        content: page.content.map((conversation) => {
+          if (conversation.conversationId !== update.conversationId) return conversation;
+          wasFound = true;
+          return { ...conversation, lastMessage: update.lastMessage, lastMessageAt: update.lastMessageAt };
+        }),
+      }));
+      if (!wasFound) void queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      return { ...current, pages };
+    });
+    void queryClient.invalidateQueries({ queryKey: ["conversation-unread-counts"] });
+  }, !!user);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -101,6 +134,10 @@ function Contacts() {
           <div
             className="contact-box"
             key={conversation.conversationId}
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(`/messages/${conversation.conversationId}`, { state: { conversation } })}
+            onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") navigate(`/messages/${conversation.conversationId}`, { state: { conversation } }); }}
           >
             <div className="data-lay">
               <div className="contact-pfp-box">
@@ -130,6 +167,7 @@ function Contacts() {
 
             <div className="message-at-box">
               <p>{formatTime(conversation.lastMessageAt)}</p>
+              {(unreadByConversation.get(conversation.conversationId) ?? 0) > 0 && <span className="contact-unread-badge">{unreadByConversation.get(conversation.conversationId)}</span>}
             </div>
           </div>
         ))}

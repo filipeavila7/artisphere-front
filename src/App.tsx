@@ -13,6 +13,7 @@ import Notifications from "./pages/notifications/Notifications";
 import Profile from "./pages/profile/Profile";
 import PostDetails from "./pages/post/PostDetails";
 import MyPostDetails from "./pages/post/MyPostDetails";
+import Messages from "./pages/conversation/Messages";
 
 function RootLayout() {
     return (
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
                     { index: true, element: <Navigate to="/feed" replace /> },
                     { path: "feed", element: <Feed /> },
                     { path: "contacts", element: <Contacts /> },
+                    { path: "messages/:conversationId", element: <Messages /> },
                     { path: "notifications", element: <Notifications /> },
                     { path: "profile", element: <Profile /> },
                     { path: "post/:postId", element: <PostDetails /> },
