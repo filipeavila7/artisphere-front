@@ -14,3 +14,13 @@ export async function getMyLikedPosts(
 
     return response.data
 }
+
+
+export async function likePost(postId: number) {
+  const response = await api.post(`/likes/${postId}/new`);
+  return response.data;
+}
+
+export async function unlikePost(postId: number) {
+  await api.delete(`/likes/${postId}/delete`);
+}

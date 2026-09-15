@@ -98,6 +98,10 @@
     gap: 10px;
 }
 
+.liked{
+    color: rgb(223, 16, 223);
+}
+
 .action-icon {
     font-size: 21px;
     cursor: pointer;

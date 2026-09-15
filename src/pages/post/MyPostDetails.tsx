@@ -10,6 +10,7 @@ import ConfirmationModal from "../../components/modal/ConfirmationModal";
 
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import {
+  FaHeart,
   FaRegBookmark,
   FaRegComment,
   FaRegHeart
@@ -18,6 +19,7 @@ import { CiShare2 } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
 
 import "../../styles/post.css";
+import { likePost, unlikePost } from "../../service/like/likeService";
 
 function MyPostDetails() {
 
@@ -29,6 +31,43 @@ function MyPostDetails() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+
+  const likeMutation = useMutation({
+    mutationFn: async () => {
+      if (data?.likedByMe) {
+        await unlikePost(Number(postId));
+      } else {
+        await likePost(Number(postId));
+      }
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["mypost", postId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["feed"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-posts-liked"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-posts"],
+      });
+    },
+  });
+
+  const handleLike = () => {
+    if (likeMutation.isPending) {
+      return;
+    }
+
+    likeMutation.mutate();
+  };
 
 
   /*
@@ -235,14 +274,17 @@ function MyPostDetails() {
 
             <div className="post-action-box">
 
-              <div className="action">
+              <div
+                className="action"
+                onClick={handleLike}
+              >
+                {data.likedByMe ? (
+                  <FaHeart className="liked" />
+                ) : (
+                  <FaRegHeart className="unliked" />
+                )}
 
-                <FaRegHeart />
-
-                <p>
-                  {data.likesCount}
-                </p>
-
+                <p>{data.likesCount}</p>
               </div>
 
 
