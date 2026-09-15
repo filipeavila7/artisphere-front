@@ -51,3 +51,8 @@ export async function getMyPostById(
     const response = await api.get<PostDetailsResponse>(`/posts/my/${postId}`);
     return response.data;
 }
+
+
+export async function deletePost(id: number): Promise<void> {
+  await api.delete(`/posts/${id}`);
+}

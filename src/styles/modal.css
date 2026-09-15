@@ -1,0 +1,64 @@
+.confirmation-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 100;
+}
+
+.confirmation-modal {
+  width: 400px;
+  max-width: calc(100% - 40px);
+
+  background: white;
+
+  border-radius: 12px;
+
+  padding: 24px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.confirmation-modal h3 {
+  margin: 0 0 10px;
+}
+
+.confirmation-modal p {
+  margin: 0 0 24px;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirmation-cancel,
+.confirmation-confirm {
+  border: none;
+  border-radius: 7px;
+
+  padding: 9px 16px;
+
+  cursor: pointer;
+}
+
+.confirmation-cancel {
+  background: #eee;
+}
+
+.confirmation-confirm {
+  background: #d33;
+  color: white;
+}
+
+.confirmation-cancel:disabled,
+.confirmation-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

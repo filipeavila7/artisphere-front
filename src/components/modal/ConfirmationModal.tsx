@@ -1,3 +1,6 @@
+import "../../styles/modal.css"
+
+
 interface ConfirmationModalProps {
   isOpen: boolean;
   title: string;
