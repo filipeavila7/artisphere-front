@@ -275,7 +275,7 @@ function MyPostDetails() {
             <div className="post-action-box">
 
               <div
-                className="action"
+                className={`action ${data.likedByMe ? "action-liked" : ""}`}
                 onClick={handleLike}
               >
                 {data.likedByMe ? (
@@ -284,7 +284,9 @@ function MyPostDetails() {
                   <FaRegHeart className="unliked" />
                 )}
 
-                <p>{data.likesCount}</p>
+                <p>
+                  {data.likesCount}
+                </p>
               </div>
 
 

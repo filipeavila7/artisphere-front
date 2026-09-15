@@ -15,7 +15,8 @@
   width: 400px;
   max-width: calc(100% - 40px);
 
-  background: white;
+  background: var(--color-primary);
+  color: white;
 
   border-radius: 12px;
 

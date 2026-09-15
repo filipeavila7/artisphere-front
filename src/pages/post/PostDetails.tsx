@@ -208,10 +208,9 @@ function PostDetails() {
             <div className="post-action-box">
 
               <div
-                className="action"
+                className={`action ${data.post.likedByMe ? "action-liked" : ""}`}
                 onClick={handleLike}
               >
-
                 {data.post.likedByMe ? (
                   <FaHeart className="liked" />
                 ) : (
@@ -221,7 +220,6 @@ function PostDetails() {
                 <p>
                   {data.post.likesCount}
                 </p>
-
               </div>
 
 

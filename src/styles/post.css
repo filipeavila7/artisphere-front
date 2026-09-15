@@ -145,6 +145,7 @@
     gap: 10px;
     justify-content: center;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .icon-share {
@@ -597,6 +598,11 @@ button:disabled {
 
 .post-delete-option:hover {
   background: #f5f5f5;
+}
+
+
+.action-liked {
+  background-color: #320238;
 }
 
 @media (max-width: 640px) {
