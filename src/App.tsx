@@ -14,6 +14,7 @@ import Profile from "./pages/profile/Profile";
 import PostDetails from "./pages/post/PostDetails";
 import MyPostDetails from "./pages/post/MyPostDetails";
 import Messages from "./pages/conversation/Messages";
+import OtherProfile from "./pages/profile/OtherProfile";
 
 function RootLayout() {
     return (
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
                     { path: "notifications", element: <Notifications /> },
                     { path: "profile", element: <Profile /> },
                     { path: "post/:postId", element: <PostDetails /> },
+                    { path: "user/:userName", element: <OtherProfile /> },
                     { path: "my/post/:postId", element: <MyPostDetails /> },
                 ],
             },

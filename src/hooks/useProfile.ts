@@ -1,9 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { myProfile } from "../service/profile/ProfileService";
+import { myProfile, GetUserProfile } from "../service/profile/ProfileService";
 
 export function useProfile() {
-  return useQuery({
-    queryKey: ["my-profile"],
-    queryFn: myProfile,
-  });
+    return useQuery({
+        queryKey: ["my-profile"],
+        queryFn: myProfile,
+    });
+}
+
+export function useOtherProfile(userName?: string) {
+    return useQuery({
+        queryKey: ["profile", userName],
+        queryFn: () => GetUserProfile(userName!),
+        enabled: !!userName,
+    });
 }
