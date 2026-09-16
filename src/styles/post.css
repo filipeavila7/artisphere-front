@@ -99,7 +99,7 @@
 }
 
 .liked{
-    color: rgb(223, 16, 223);
+    color: #efd8f3;
 }
 
 .action-icon {
@@ -602,7 +602,7 @@ button:disabled {
 
 
 .action-liked {
-  background-color: #320238;
+  background-color: #3c0f44;
 }
 
 @media (max-width: 640px) {

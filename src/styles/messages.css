@@ -1,9 +1,9 @@
 .messages-page {
     width: 100%;
-    min-height: calc(100dvh - 120px);
+    height: 100px;
     display: grid;
     place-items: center;
-    padding: 12px 0;
+    
 }
 
 .chat-shell {
@@ -98,6 +98,31 @@
     border-radius: 10px;
 }
 
+.chat-date-separator {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    margin: 6px 0 2px;
+    pointer-events: none;
+}
+
+.chat-date-separator span {
+    color: rgba(255, 255, 255, .78);
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    background: rgba(20, 6, 24, .55);
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
+}
+
 .chat-message-row {
     display: flex;
     align-items: flex-end;
@@ -119,13 +144,15 @@
 }
 
 .chat-bubble {
-    min-width: 0;
     padding: 9px 12px 7px;
     color: rgba(255, 255, 255, .94);
     background: rgba(255, 255, 255, .1);
     border: 1px solid rgba(255, 255, 255, .11);
     border-radius: 4px 15px 15px;
     box-shadow: 0 5px 14px rgba(0, 0, 0, .08);
+    min-width: 100px;
+    max-width: 300px;
+    overflow-wrap: break-word;
 }
 
 .chat-bubble--mine {
