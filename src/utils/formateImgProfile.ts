@@ -3,7 +3,7 @@ export function formatePfpL(urlImg? : string){
         return urlImg
     }
 
-    return "null-pfp-l.png";
+    return "/null-pfp-l.png";
 }
 
 export function formatePfpD(urlImg? : string){
@@ -11,5 +11,5 @@ export function formatePfpD(urlImg? : string){
         return urlImg
     }
 
-    return "null-pfp.png";
+    return "/null-pfp.png";
 }

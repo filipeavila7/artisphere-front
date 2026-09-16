@@ -12,21 +12,22 @@
 }
 
 .confirmation-modal {
-  width: 400px;
+  width: 600px;
   max-width: calc(100% - 40px);
-
+  position: relative;
   background: var(--color-primary);
   color: white;
 
   border-radius: 12px;
 
-  padding: 24px;
+  padding: 30px;
 
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .confirmation-modal h3 {
   margin: 0 0 10px;
+  text-align: center;
 }
 
 .confirmation-modal p {
@@ -58,8 +59,42 @@
   color: white;
 }
 
+.confirmation-confirm:hover{
+  background: rgb(162, 30, 30);
+}
+
+.confirmation-cancel:hover{
+  background: #c2c1c1;
+}
+
 .confirmation-cancel:disabled,
 .confirmation-confirm:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.confirmation-content{
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.confirmation-avatar{
+  width: 200px;
+}
+
+.confirmation-close{
+  display: flex;
+  
+  cursor: pointer;
+  position: absolute;
+  right: 25px;
+  padding: 5px;
+  border-radius: 30px;
+  font-size: 20px;
+}
+
+.confirmation-close:hover{
+  background-color: #252424c9;
+  color: rgb(218, 217, 217);
 }

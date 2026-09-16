@@ -1,3 +1,4 @@
+import { IoMdClose } from "react-icons/io";
 import "../../styles/modal.css"
 
 
@@ -34,9 +35,18 @@ function ConfirmationModal({
         onClick={(e) => e.stopPropagation()}
       >
 
+        <div onClick={onCancel} className="confirmation-close">
+            <IoMdClose />
+        </div>
+
         <h3>{title}</h3>
 
-        <p>{message}</p>
+        <div className="confirmation-content">
+            <img className="confirmation-avatar" src="/avatar-6.png" alt="" />
+            <p>{message}</p>
+        </div>
+
+        
 
         <div className="confirmation-actions">
           <button
