@@ -9,6 +9,7 @@ import Masonry from "react-masonry-css";
 
 import { getPostById } from "../../service/post/PostService";
 import { likePost, unlikePost } from "../../service/like/likeService";
+import { createSave, deleteSave } from "../../service/save/SaveService";
 
 import PostCard from "../../components/feed/PostCard";
 import PostDate from "../../components/post/PostDate";
@@ -17,6 +18,7 @@ import CommentsModal from "../../components/post/CommentModal";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import {
   FaRegBookmark,
+  FaBookmark,
   FaRegComment,
   FaHeart,
   FaRegHeart
@@ -97,6 +99,40 @@ function PostDetails() {
   });
 
 
+  /*
+   * SAVE / UNSAVE
+   */
+  const saveMutation = useMutation({
+
+    mutationFn: async () => {
+
+      if (data?.post.saveByMe) {
+        await deleteSave(Number(postId));
+      } else {
+        await createSave(Number(postId));
+      }
+
+    },
+
+    onSuccess: () => {
+
+      queryClient.invalidateQueries({
+        queryKey: ["post", postId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["feed"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-posts-saved"],
+      });
+
+    },
+
+  });
+
+
   if (isLoading) {
     return <p>Carregando...</p>;
   }
@@ -116,6 +152,17 @@ function PostDetails() {
     }
 
     likeMutation.mutate();
+
+  };
+
+
+  const handleSave = () => {
+
+    if (saveMutation.isPending) {
+      return;
+    }
+
+    saveMutation.mutate();
 
   };
 
@@ -207,10 +254,14 @@ function PostDetails() {
 
             <div className="post-action-box">
 
+              {/* LIKE */}
               <div
-                className={`action ${data.post.likedByMe ? "action-liked" : ""}`}
+                className={`action ${
+                  data.post.likedByMe ? "action-liked" : ""
+                }`}
                 onClick={handleLike}
               >
+
                 {data.post.likedByMe ? (
                   <FaHeart className="liked" />
                 ) : (
@@ -220,9 +271,11 @@ function PostDetails() {
                 <p>
                   {data.post.likesCount}
                 </p>
+
               </div>
 
 
+              {/* COMMENTS */}
               <div
                 className="action"
                 onClick={() => setIsCommentsOpen(true)}
@@ -237,6 +290,7 @@ function PostDetails() {
               </div>
 
 
+              {/* SHARE */}
               <div className="action">
 
                 <CiShare2 className="icon-share" />
@@ -246,9 +300,19 @@ function PostDetails() {
               </div>
 
 
-              <div className="action-l">
+              {/* SAVE */}
+              <div
+                className={`action-l ${
+                  data.post.saveByMe ? "action-saved" : ""
+                }`}
+                onClick={handleSave}
+              >
 
-                <FaRegBookmark />
+                {data.post.saveByMe ? (
+                  <FaBookmark />
+                ) : (
+                  <FaRegBookmark />
+                )}
 
               </div>
 

@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { getMyPostById, deletePost } from "../../service/post/PostService";
+import { likePost, unlikePost } from "../../service/like/likeService";
+import { createSave, deleteSave } from "../../service/save/SaveService";
 
 import PostDate from "../../components/post/PostDate";
 import CommentsModal from "../../components/post/CommentModal";
@@ -11,6 +13,7 @@ import ConfirmationModal from "../../components/modal/ConfirmationModal";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import {
   FaHeart,
+  FaBookmark,
   FaRegBookmark,
   FaRegComment,
   FaRegHeart
@@ -19,12 +22,13 @@ import { CiShare2 } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
 
 import "../../styles/post.css";
-import { likePost, unlikePost } from "../../service/like/likeService";
 
 function MyPostDetails() {
 
   const { postId } = useParams();
   const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -33,16 +37,37 @@ function MyPostDetails() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
 
+  /*
+   * POST
+   */
+  const {
+    data,
+    isLoading,
+    isError
+  } = useQuery({
+    queryKey: ["mypost", postId],
+    queryFn: () => getMyPostById(Number(postId)),
+    enabled: !!postId,
+  });
+
+
+  /*
+   * LIKE / UNLIKE
+   */
   const likeMutation = useMutation({
+
     mutationFn: async () => {
+
       if (data?.likedByMe) {
         await unlikePost(Number(postId));
       } else {
         await likePost(Number(postId));
       }
+
     },
 
     onSuccess: () => {
+
       queryClient.invalidateQueries({
         queryKey: ["mypost", postId],
       });
@@ -58,15 +83,65 @@ function MyPostDetails() {
       queryClient.invalidateQueries({
         queryKey: ["my-posts"],
       });
+
     },
+
   });
 
+
   const handleLike = () => {
+
     if (likeMutation.isPending) {
       return;
     }
 
     likeMutation.mutate();
+
+  };
+
+
+  /*
+   * SAVE / UNSAVE
+   */
+  const saveMutation = useMutation({
+
+    mutationFn: async () => {
+
+      if (data?.saveByMe) {
+        await deleteSave(Number(postId));
+      } else {
+        await createSave(Number(postId));
+      }
+
+    },
+
+    onSuccess: () => {
+
+      queryClient.invalidateQueries({
+        queryKey: ["mypost", postId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["feed"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-posts-saved"],
+      });
+
+    },
+
+  });
+
+
+  const handleSave = () => {
+
+    if (saveMutation.isPending) {
+      return;
+    }
+
+    saveMutation.mutate();
+
   };
 
 
@@ -93,26 +168,6 @@ function MyPostDetails() {
     };
 
   }, []);
-
-
-  /*
-   * POST
-   */
-  const {
-    data,
-    isLoading,
-    isError
-  } = useQuery({
-    queryKey: ["mypost", postId],
-    queryFn: () => getMyPostById(Number(postId)),
-    enabled: !!postId,
-  });
-
-
-  /*
-   * QUERY CLIENT
-   */
-  const queryClient = useQueryClient();
 
 
   /*
@@ -274,10 +329,14 @@ function MyPostDetails() {
 
             <div className="post-action-box">
 
+              {/* LIKE */}
               <div
-                className={`action ${data.likedByMe ? "action-liked" : ""}`}
+                className={`action ${
+                  data.likedByMe ? "action-liked" : ""
+                }`}
                 onClick={handleLike}
               >
+
                 {data.likedByMe ? (
                   <FaHeart className="liked" />
                 ) : (
@@ -287,9 +346,11 @@ function MyPostDetails() {
                 <p>
                   {data.likesCount}
                 </p>
+
               </div>
 
 
+              {/* COMMENTS */}
               <div
                 className="action"
                 onClick={() => setIsCommentsOpen(true)}
@@ -304,6 +365,7 @@ function MyPostDetails() {
               </div>
 
 
+              {/* SHARE */}
               <div className="action">
 
                 <CiShare2 className="icon-share" />
@@ -313,9 +375,19 @@ function MyPostDetails() {
               </div>
 
 
-              <div className="action-l">
+              {/* SAVE */}
+              <div
+                className={`action-l ${
+                  data.saveByMe ? "action-saved" : ""
+                }`}
+                onClick={handleSave}
+              >
 
-                <FaRegBookmark />
+                {data.saveByMe ? (
+                  <FaBookmark />
+                ) : (
+                  <FaRegBookmark />
+                )}
 
               </div>
 

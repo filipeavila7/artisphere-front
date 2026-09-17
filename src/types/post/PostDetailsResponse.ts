@@ -11,6 +11,7 @@ export interface PostDetailsResponse {
     likesCount: number;
     commentsCount: number;
     likedByMe: boolean;
+    saveByMe : boolean;
 }
 
 export interface Tag {

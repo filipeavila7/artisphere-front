@@ -16,3 +16,12 @@ export async function getMySavedPosts(
 
     return response.data
 }
+
+
+export async function createSave(postId: number): Promise<void> {
+    await api.post(`/save/${postId}`);
+}
+
+export async function deleteSave(postId: number): Promise<void> {
+    await api.delete(`/save/${postId}`);
+}
