@@ -56,3 +56,19 @@ export async function getMyPostById(
 export async function deletePost(id: number): Promise<void> {
   await api.delete(`/posts/${id}`);
 }
+
+
+export async function getPostsByUserName(
+    userName: string,
+    page: number,
+    size: number = 12
+) {
+    const response = await api.get(`/posts/user/${userName}`, {
+        params: {
+            page,
+            size,
+        },
+    });
+
+    return response.data;
+}

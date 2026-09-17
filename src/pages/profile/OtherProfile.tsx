@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaCog, FaUserFriends } from "react-icons/fa";
-import { FaUserCheck, FaUserPlus, FaMessage } from "react-icons/fa6";
+import { FaUserCheck } from "react-icons/fa6";
 import { IoIosDocument, IoIosShareAlt } from "react-icons/io";
 
 import NotLogged from "../../components/auth/NotLogged";
@@ -9,16 +9,16 @@ import { useMe } from "../../hooks/useMe";
 import { useOtherProfile } from "../../hooks/useProfile";
 import { formatePfpL } from "../../utils/formateImgProfile";
 
-import MyPosts from "../../components/post/MyPosts";
 
 import "../../styles/profile.css";
+import UserPosts from "../../components/post/UserPosts";
 
 type ProfileTab = "posts";
 
 function Profile() {
   const { userName } = useParams();
 
-  const [activeTab, setActiveTab] = useState<ProfileTab>("posts");
+  const [activeTab] = useState<ProfileTab>("posts");
 
   const {
     data: user,
@@ -119,15 +119,16 @@ function Profile() {
 
         <div className="profile-actions">
 
+          
           <button className="btn-profile">
-            <FaUserPlus />
-            Follow
+            Message
           </button>
 
           <button className="btn-profile">
-            <FaMessage />
-            Message
+            
+            Follow
           </button>
+
 
           <div className="profile-config">
             <FaCog className="pfp-cog" />
@@ -139,20 +140,10 @@ function Profile() {
 
       <p className="bio">{profile.bio}</p>
 
-      <div className="profile-tabs">
-
-        <button
-          className={activeTab === "posts" ? "active" : ""}
-          onClick={() => setActiveTab("posts")}
-        >
-          <IoIosDocument className="tab-icon" />
-          Posts
-        </button>
-
-      </div>
+      
 
       <div className="profile-tab-content">
-        {activeTab === "posts" && <MyPosts />}
+        {activeTab === "posts" && <UserPosts userName={profile.userName} />}
       </div>
 
     </div>

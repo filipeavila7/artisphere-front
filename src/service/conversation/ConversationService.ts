@@ -4,11 +4,11 @@ import type { PageResponse } from "../../types/page/PageResponse";
 
 // pegar as conversar do usuario logado
 export async function getConversations(
-    page : number,
-    size : number
-):Promise<PageResponse<ConversationResponse>> {
+    page: number,
+    size: number
+): Promise<PageResponse<ConversationResponse>> {
     const response = await api.get<PageResponse<ConversationResponse>>(
-        "/conversation/my", 
+        "/conversation/my",
         {
             params: { page, size }, // passa pagina e tamanho da pagina nos parametros
         }

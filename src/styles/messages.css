@@ -99,12 +99,9 @@
 }
 
 .chat-date-separator {
-    position: sticky;
-    top: 0;
-    z-index: 1;
     display: flex;
     justify-content: center;
-    margin: 6px 0 2px;
+    margin: 10px 0 2px;
     pointer-events: none;
 }
 
