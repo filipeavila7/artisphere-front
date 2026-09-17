@@ -8,4 +8,5 @@ export interface ProfileResponse {
   followCount : number;
   followerCount: number;
   postCount : number;
+  amIfollowing : boolean;
 }

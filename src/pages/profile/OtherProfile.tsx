@@ -1,14 +1,25 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { FaCog, FaUserFriends } from "react-icons/fa";
 import { FaUserCheck } from "react-icons/fa6";
 import { IoIosDocument, IoIosShareAlt } from "react-icons/io";
 
 import NotLogged from "../../components/auth/NotLogged";
+import ConfirmationModal from "../../components/modal/ConfirmationModal";
+
 import { useMe } from "../../hooks/useMe";
 import { useOtherProfile } from "../../hooks/useProfile";
-import { formatePfpL } from "../../utils/formateImgProfile";
 
+import {
+  followUser,
+  unfollowUser,
+} from "../../service/follow/FollowService";
+
+import { openConversation } from "../../service/conversation/ConversationService";
+
+import { formatePfpL } from "../../utils/formateImgProfile";
 
 import "../../styles/profile.css";
 import UserPosts from "../../components/post/UserPosts";
@@ -17,8 +28,11 @@ type ProfileTab = "posts";
 
 function Profile() {
   const { userName } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [activeTab] = useState<ProfileTab>("posts");
+  const [isUnfollowModalOpen, setIsUnfollowModalOpen] = useState(false);
 
   const {
     data: user,
@@ -31,6 +45,68 @@ function Profile() {
     isLoading: isLoadingProfile,
     isError: isErrorProfile,
   } = useOtherProfile(userName);
+
+  const followMutation = useMutation({
+    mutationFn: () => followUser(profile!.userId),
+
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: ["profile", profile?.userName],
+      });
+
+      void queryClient.invalidateQueries({
+        queryKey: ["my-profile"],
+      });
+    },
+  });
+
+  const unfollowMutation = useMutation({
+    mutationFn: () => unfollowUser(profile!.userId),
+
+    onSuccess: () => {
+      setIsUnfollowModalOpen(false);
+
+      void queryClient.invalidateQueries({
+        queryKey: ["profile", profile?.userName],
+      });
+
+      void queryClient.invalidateQueries({
+        queryKey: ["my-profile"],
+      });
+    },
+  });
+
+  const messageMutation = useMutation({
+    mutationFn: () => openConversation(profile!.userId),
+
+    onSuccess: (conversation) => {
+      navigate(`/messages/${conversation.conversationId}`);
+    },
+  });
+
+  const handleFollow = () => {
+    if (!profile) return;
+
+    followMutation.mutate();
+  };
+
+  const handleUnfollow = () => {
+    if (!profile) return;
+
+    setIsUnfollowModalOpen(true);
+  };
+
+  const handleConfirmUnfollow = () => {
+    if (!profile) return;
+
+    unfollowMutation.mutate();
+  };
+
+  const handleMessage = () => {
+    if (!profile) return;
+
+    messageMutation.mutate();
+  };
 
   if (isLoadingUser) {
     return <p>Carregando usuário...</p>;
@@ -47,6 +123,8 @@ function Profile() {
   if (isErrorProfile || !profile) {
     return <p>Erro ao carregar perfil.</p>;
   }
+
+  const isMyProfile = profile.userName === user.userName;
 
   return (
     <div className="profile-lay">
@@ -119,16 +197,37 @@ function Profile() {
 
         <div className="profile-actions">
 
-          
-          <button className="btn-profile">
-            Message
-          </button>
+          {!isMyProfile && (
+            <button
+              className="btn-profile"
+              onClick={handleMessage}
+              disabled={messageMutation.isPending}
+            >
+              {messageMutation.isPending ? "Opening..." : "Message"}
+            </button>
+          )}
 
-          <button className="btn-profile">
-            
-            Follow
-          </button>
-
+          {isMyProfile ? (
+            <button className="btn-profile">
+              You
+            </button>
+          ) : profile.amIfollowing ? (
+            <button
+              className="btn-profile-following"
+              onClick={handleUnfollow}
+              disabled={unfollowMutation.isPending}
+            >
+              Following
+            </button>
+          ) : (
+            <button
+              className="btn-profile"
+              onClick={handleFollow}
+              disabled={followMutation.isPending}
+            >
+              Follow
+            </button>
+          )}
 
           <div className="profile-config">
             <FaCog className="pfp-cog" />
@@ -140,11 +239,22 @@ function Profile() {
 
       <p className="bio">{profile.bio}</p>
 
-      
-
       <div className="profile-tab-content">
-        {activeTab === "posts" && <UserPosts userName={profile.userName} />}
+        {activeTab === "posts" && (
+          <UserPosts userName={profile.userName} />
+        )}
       </div>
+
+      <ConfirmationModal
+        isOpen={isUnfollowModalOpen}
+        title="Unfollow user?"
+        message={`Are you sure you want to unfollow @${profile.userName}?`}
+        confirmText="Unfollow"
+        cancelText="Cancel"
+        isLoading={unfollowMutation.isPending}
+        onConfirm={handleConfirmUnfollow}
+        onCancel={() => setIsUnfollowModalOpen(false)}
+      />
 
     </div>
   );
