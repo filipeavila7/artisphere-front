@@ -175,7 +175,6 @@
 .btn-profile-following{
     transition: all 0.4s ease;
     background-color: #efd8f3;
-    border: none;
     border: 2px rgb(17, 1, 17) solid;
     cursor: pointer;
     
@@ -193,12 +192,18 @@
 
 
 .profile-config {
-    background-color: var(--color-secundary);
+    transition: all 0.4s ease;
+    border: 2px var(--color-secundary) solid;
     padding: 12px;
     display: flex;
-    color: var(--color-primary);
+    color: var(--color-secundary);
     border-radius: 15px;
     cursor: pointer;
+}
+
+.profile-config:hover{
+    color: var(--color-primary);
+    background-color: white;
 }
 
 .pfp-new {
