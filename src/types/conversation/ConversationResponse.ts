@@ -5,4 +5,5 @@ export interface ConversationResponse {
     otherUserPhoto: string;
     lastMessage: string;
     lastMessageAt: string;
+    otherUserUsername : string;
 }

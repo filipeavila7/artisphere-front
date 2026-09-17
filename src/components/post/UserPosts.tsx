@@ -7,7 +7,8 @@ import PostCard from "../../components/feed/PostCard";
 import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
 import { useNavigate } from "react-router-dom";
 import "../../styles/post.css";
-import EmptyPosts from "./EmptyPosts";
+
+import EmptyPostsC from "./EmptyPostsC";
 
 const PAGE_SIZE = 12;
 
@@ -80,7 +81,7 @@ function UserPosts({ userName }: UserPostsProps) {
     return (
         <main className="feed-lay">
             {!isLoading && posts.length === 0 && (
-                <EmptyPosts />
+                <EmptyPostsC userName={userName} />
             )}
 
             <Masonry

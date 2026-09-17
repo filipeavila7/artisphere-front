@@ -39,6 +39,7 @@ import type { MessageResponse } from "../../types/message/MessageResponse";
 import type { ConversationResponse } from "../../types/conversation/ConversationResponse";
 import "../../styles/messages.css";
 
+
 interface ConversationState {
   conversation?: ConversationResponse;
 }
@@ -676,6 +677,7 @@ function Messages() {
               conversation?.otherUserPhoto
             )}
             alt=""
+            onClick={()=> navigate(`/user/${conversation?.otherUserUsername}`)}
           />
 
           <div className="chat-header-user">
