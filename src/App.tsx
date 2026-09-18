@@ -15,6 +15,7 @@ import PostDetails from "./pages/post/PostDetails";
 import MyPostDetails from "./pages/post/MyPostDetails";
 import Messages from "./pages/conversation/Messages";
 import OtherProfile from "./pages/profile/OtherProfile";
+import Search from "./pages/search/Search";
 
 function RootLayout() {
     return (
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
                     { path: "contacts", element: <Contacts /> },
                     { path: "messages/:conversationId", element: <Messages /> },
                     { path: "notifications", element: <Notifications /> },
+                    { path: "search", element: <Search /> },
                     { path: "profile", element: <Profile /> },
                     { path: "post/:postId", element: <PostDetails /> },
                     { path: "user/:userName", element: <OtherProfile /> },
