@@ -1,24 +1,45 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+    useInfiniteQuery,
+    useMutation,
+    useQuery,
+    useQueryClient
+} from "@tanstack/react-query";
 import Masonry from "react-masonry-css";
 
 import { search } from "../../service/search/SearchService";
 
 import PostCard from "../../components/feed/PostCard";
 import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
-import { formatePfpD} from "../../utils/formateImgProfile";
+import ConfirmationModal from "../../components/modal/ConfirmationModal";
 
-import "../../styles/search.css"
+import { followUser, unfollowUser } from "../../service/follow/FollowService";
+import { openConversation } from "../../service/conversation/ConversationService";
+
+import { formatePfpD } from "../../utils/formateImgProfile";
+
+import "../../styles/search.css";
+import { useMe } from "../../hooks/useMe";
 
 function Search() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
+    const { data: user } = useMe();
 
     const query = searchParams.get("q") || "";
 
     const [profilePage, setProfilePage] = useState(0);
+
+    const [selectedProfile, setSelectedProfile] = useState<
+        typeof profiles[0] | null
+    >(null);
+
+    const [isUnfollowModalOpen, setIsUnfollowModalOpen] =
+        useState(false);
 
     const postsSentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -63,9 +84,6 @@ function Search() {
         enabled: !!query.trim()
     });
 
-    /*
-     * Junta todos os posts de todas as páginas.
-     */
     const posts =
         postsData?.pages.flatMap(
             (page) => page.posts.content
@@ -95,8 +113,128 @@ function Search() {
     const hasMoreProfiles =
         profilesData
             ? profilesData.profiles.number + 1 <
-              profilesData.profiles.totalPages
+            profilesData.profiles.totalPages
             : false;
+
+    /*
+     * ============================
+     * FOLLOW
+     * ============================
+     */
+
+    const followMutation = useMutation({
+        mutationFn: (userId: number) =>
+            followUser(userId),
+
+        onSuccess: () => {
+            void queryClient.invalidateQueries({
+                queryKey: ["search-profiles", query]
+            });
+
+            void queryClient.invalidateQueries({
+                queryKey: ["profile"]
+            });
+
+            void queryClient.invalidateQueries({
+                queryKey: ["my-profile"]
+            });
+        }
+    });
+
+    /*
+     * ============================
+     * UNFOLLOW
+     * ============================
+     */
+
+    const unfollowMutation = useMutation({
+        mutationFn: (userId: number) =>
+            unfollowUser(userId),
+
+        onSuccess: () => {
+            setIsUnfollowModalOpen(false);
+            setSelectedProfile(null);
+
+            void queryClient.invalidateQueries({
+                queryKey: ["search-profiles", query]
+            });
+
+            void queryClient.invalidateQueries({
+                queryKey: ["profile"]
+            });
+
+            void queryClient.invalidateQueries({
+                queryKey: ["my-profile"]
+            });
+        }
+    });
+
+    /*
+     * ============================
+     * MESSAGE
+     * ============================
+     */
+
+    const messageMutation = useMutation({
+        mutationFn: (userId: number) =>
+            openConversation(userId),
+
+        onSuccess: (conversation) => {
+            navigate(
+                `/messages/${conversation.conversationId}`
+            );
+        }
+    });
+
+    /*
+     * ============================
+     * FOLLOW HANDLERS
+     * ============================
+     */
+
+    const handleFollow = (
+        event: React.MouseEvent,
+        userId: number
+    ) => {
+        event.stopPropagation();
+
+        followMutation.mutate(userId);
+    };
+
+    const handleUnfollow = (
+        event: React.MouseEvent,
+        profile: typeof profiles[0]
+    ) => {
+        event.stopPropagation();
+
+        setSelectedProfile(profile);
+        setIsUnfollowModalOpen(true);
+    };
+
+    const handleConfirmUnfollow = () => {
+        if (!selectedProfile) {
+            return;
+        }
+
+        unfollowMutation.mutate(
+            selectedProfile.userId
+        );
+    };
+
+    /*
+     * ============================
+     * MESSAGE HANDLER
+     * ============================
+     */
+
+    const handleMessage = (
+        event: React.MouseEvent,
+        userId: number
+    ) => {
+        event.stopPropagation();
+
+        messageMutation.mutate(userId);
+    };
 
     /*
      * ============================
@@ -151,7 +289,9 @@ function Search() {
     if (isInitialLoading) {
         return (
             <main className="search-page">
-                <h1>Search results for "{query}"</h1>
+                <h1>
+                    Search results for "{query}"
+                </h1>
 
                 <section>
                     <h2>Artists</h2>
@@ -197,6 +337,7 @@ function Search() {
                     <h2>Artists</h2>
 
                     <div className="search-artists-list">
+
                         {profiles.map((profile) => (
                             <div
                                 className="search-artist"
@@ -206,22 +347,89 @@ function Search() {
                                         `/user/${profile.userName}`
                                     )
                                 }
-                            >   
-                            <div className="search-artist-lay">
-                                <div className="search-artist-avatar">
-                                    <img src={formatePfpD(profile.imageUrlProfile) } alt="" />
+                            >
+
+                                <div className="search-artist-lay">
+
+                                    <div className="search-artist-avatar">
+                                        <img
+                                            src={formatePfpD(
+                                                profile.imageUrlProfile
+                                            )}
+                                            alt=""
+                                        />
+                                    </div>
+
+                                    <div className="search-artist-data-box">
+                                        <p>{profile.name}</p>
+
+                                        <span>
+                                            @{profile.userName}
+                                        </span>
+                                    </div>
+
                                 </div>
 
-                                <div className="search-artist-data-box">
-                                    <p>{profile.name}</p>
-                                    <span>
-                                        @{profile.userName}
-                                    </span>
+                                <div className="search-artist-actions">
+
+                                    {user?.id === profile.userId ? (
+                                        <button className="btn-profile-s">
+                                            You
+                                        </button>
+                                    ) : (
+                                        <>
+                                            <button
+                                                className="btn-profile-s"
+                                                onClick={(event) =>
+                                                    handleMessage(
+                                                        event,
+                                                        profile.userId
+                                                    )
+                                                }
+                                                disabled={messageMutation.isPending}
+                                            >
+                                                {messageMutation.isPending
+                                                    ? "Opening..."
+                                                    : "Message"}
+                                            </button>
+
+                                            {profile.amIfollowing ? (
+                                                <button
+                                                    className="btn-profile-following-s"
+                                                    onClick={(event) =>
+                                                        handleUnfollow(
+                                                            event,
+                                                            profile
+                                                        )
+                                                    }
+                                                    disabled={unfollowMutation.isPending}
+                                                >
+                                                    Following
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="btn-profile-s"
+                                                    onClick={(event) =>
+                                                        handleFollow(
+                                                            event,
+                                                            profile.userId
+                                                        )
+                                                    }
+                                                    disabled={followMutation.isPending}
+                                                >
+                                                    {followMutation.isPending
+                                                        ? "Following..."
+                                                        : "Follow"}
+                                                </button>
+                                            )}
+                                        </>
+                                    )}
+
                                 </div>
-                            </div>
-                                
+
                             </div>
                         ))}
+
                     </div>
 
                     {hasMoreProfiles && (
@@ -265,7 +473,6 @@ function Search() {
                                     )
                                 }
                             />
-
                         ))}
 
                         {isFetchingNextPage &&
@@ -279,11 +486,6 @@ function Search() {
                         }
                     </Masonry>
 
-                    {/*
-                     * Sentinel do infinite scroll.
-                     * Quando entrar na viewport,
-                     * fetchNextPage() é chamado.
-                     */}
                     <div
                         ref={postsSentinelRef}
                         style={{
@@ -295,6 +497,30 @@ function Search() {
 
             {!hasResults && (
                 <p>No results found.</p>
+            )}
+
+            {/* =========================
+                UNFOLLOW MODAL
+            ========================= */}
+
+            {selectedProfile && (
+                <ConfirmationModal
+                    isOpen={isUnfollowModalOpen}
+                    title="Unfollow user?"
+                    message={`Are you sure you want to unfollow @${selectedProfile.userName}?`}
+                    confirmText="Unfollow"
+                    cancelText="Cancel"
+                    isLoading={
+                        unfollowMutation.isPending
+                    }
+                    onConfirm={
+                        handleConfirmUnfollow
+                    }
+                    onCancel={() => {
+                        setIsUnfollowModalOpen(false);
+                        setSelectedProfile(null);
+                    }}
+                />
             )}
 
         </main>
