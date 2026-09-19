@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -14,12 +15,24 @@ function NavBar() {
   const navigate = useNavigate();
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const { data: suggestions, isLoading } = useQuery({
+  const {
+    data: suggestions,
+    isLoading,
+  } = useQuery({
     queryKey: ["search-suggestions", query],
     queryFn: () => getSearchSuggestions(query),
     enabled: query.trim().length > 0,
     staleTime: 30 * 1000,
   });
+
+  const profiles = suggestions?.profiles ?? [];
+  const posts = suggestions?.posts ?? [];
+  const tags = suggestions?.tags ?? [];
+
+  const hasSuggestions =
+    profiles.length > 0 ||
+    posts.length > 0 ||
+    tags.length > 0;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -34,7 +47,10 @@ function NavBar() {
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
     };
   }, []);
 
@@ -64,6 +80,7 @@ function NavBar() {
 
   const handleProfileClick = (userName: string) => {
     setShowSuggestions(false);
+
     navigate(`/user/${encodeURIComponent(userName)}`);
   };
 
@@ -80,14 +97,6 @@ function NavBar() {
 
     navigate(`/search?q=${encodeURIComponent(name)}`);
   };
-
-  const hasSuggestions =
-    suggestions &&
-    (
-      suggestions.profiles.length > 0 ||
-      suggestions.posts.length > 0 ||
-      suggestions.tags.length > 0
-    );
 
   return (
     <nav className="nav-bar">
@@ -120,6 +129,7 @@ function NavBar() {
 
         {showSuggestions && query.trim() && (
           <div className="search-suggestions">
+
             {isLoading && (
               <div className="search-suggestion-loading">
                 Searching...
@@ -132,18 +142,24 @@ function NavBar() {
               </div>
             )}
 
-            {!isLoading && suggestions?.profiles.length! > 0 && (
+            {/* =========================
+                ARTISTS
+            ========================= */}
+
+            {!isLoading && profiles.length > 0 && (
               <div className="suggestion-section">
                 <span className="suggestion-section-title">
                   Artists
                 </span>
 
-                {suggestions?.profiles.map((profile) => (
+                {profiles.map((profile) => (
                   <button
                     key={profile.id}
                     className="search-suggestion"
                     onClick={() =>
-                       handleProfileClick(profile.userName)
+                      handleProfileClick(
+                        profile.userName
+                      )
                     }
                   >
                     <img
@@ -169,32 +185,27 @@ function NavBar() {
               </div>
             )}
 
-            {!isLoading && suggestions?.posts.length! > 0 && (
+            {/* =========================
+                ARTWORKS
+            ========================= */}
+
+            {!isLoading && posts.length > 0 && (
               <div className="suggestion-section">
                 <span className="suggestion-section-title">
                   Artworks
                 </span>
 
-                {suggestions?.posts.map((post) => (
+                {posts.map((title) => (
                   <button
-                    key={post.id}
+                    key={title}
                     className="search-suggestion"
                     onClick={() =>
-                      handlePostClick(post.title)
+                      handlePostClick(title)
                     }
                   >
-                    <img
-                      src={
-                        post.imageUrl ||
-                        "/default-post.png"
-                      }
-                      alt={post.title}
-                      className="suggestion-image"
-                    />
-
                     <div className="suggestion-info">
                       <span className="suggestion-name">
-                        {post.title}
+                        {title}
                       </span>
                     </div>
                   </button>
@@ -202,13 +213,17 @@ function NavBar() {
               </div>
             )}
 
-            {!isLoading && suggestions?.tags.length! > 0 && (
+            {/* =========================
+                TAGS
+            ========================= */}
+
+            {!isLoading && tags.length > 0 && (
               <div className="suggestion-section">
                 <span className="suggestion-section-title">
                   Tags
                 </span>
 
-                {suggestions?.tags.map((tag) => (
+                {tags.map((tag) => (
                   <button
                     key={tag.id}
                     className="search-suggestion"
@@ -225,6 +240,7 @@ function NavBar() {
                 ))}
               </div>
             )}
+
           </div>
         )}
       </div>
@@ -234,4 +250,4 @@ function NavBar() {
   );
 }
 
-export default NavBar;  
+export default NavBar;
