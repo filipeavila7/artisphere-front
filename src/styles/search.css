@@ -1,0 +1,39 @@
+.search-artists{
+    padding: 10px 0;
+}
+
+.search-artist-avatar img{
+    width: 60px;
+    border-radius: 100px;
+}
+
+.search-artists-list{
+    display: flex;
+    padding: 10px 0;
+    flex-direction: column;
+    justify-content: center;
+    
+}
+
+.search-artist{
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-primary);
+    cursor: pointer;
+    padding: 20px 0;
+    border-bottom: 1px solid rgb(195, 195, 195);
+}
+
+.search-artist span{
+    margin-left: 5px;
+    color: rgb(49, 46, 46);
+}
+
+.search-artworks h2{
+    margin-bottom: 40px;
+}
+
+.search-artist-lay{
+    display: flex;
+    gap: 15px;
+}

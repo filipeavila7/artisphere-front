@@ -165,7 +165,7 @@ function NavBar() {
                     <img
                       src={
                         profile.imageUrlProfile ||
-                        "/default-profile.png"
+                        "/null-pfp-l.png"
                       }
                       alt={profile.userName}
                       className="suggestion-image"

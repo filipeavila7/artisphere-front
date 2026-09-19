@@ -8,6 +8,9 @@ import { search } from "../../service/search/SearchService";
 
 import PostCard from "../../components/feed/PostCard";
 import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
+import { formatePfpD} from "../../utils/formateImgProfile";
+
+import "../../styles/search.css"
 
 function Search() {
     const [searchParams] = useSearchParams();
@@ -203,17 +206,20 @@ function Search() {
                                         `/user/${profile.userName}`
                                     )
                                 }
-                            >
+                            >   
+                            <div className="search-artist-lay">
                                 <div className="search-artist-avatar">
-                                    {/* Avatar */}
+                                    <img src={formatePfpD(profile.imageUrlProfile) } alt="" />
                                 </div>
 
-                                <div>
+                                <div className="search-artist-data-box">
                                     <p>{profile.name}</p>
                                     <span>
                                         @{profile.userName}
                                     </span>
                                 </div>
+                            </div>
+                                
                             </div>
                         ))}
                     </div>
