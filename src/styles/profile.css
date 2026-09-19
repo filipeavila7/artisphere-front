@@ -164,7 +164,13 @@
     border-radius: 15px;
     background-color: transparent;
     transition: all 0.4s ease;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
 
+
+}
+
+.btn-profile:active{
+    transform: scale(0.96);
 }
 
 .btn-profile:hover{
@@ -177,11 +183,15 @@
     background-color: #efd8f3;
     border: 2px rgb(17, 1, 17) solid;
     cursor: pointer;
-    
     padding: 10px 20px;
     font-size: 18px;
     border-radius: 15px;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
    
+}
+
+.btn-profile-following:active{
+    transform: scale(0.96);
 }
 
 .btn-profile-following:hover{
@@ -199,6 +209,11 @@
     color: var(--color-secundary);
     border-radius: 15px;
     cursor: pointer;
+     transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.profile-config:active{
+    transform: scale(0.96);
 }
 
 .profile-config:hover{

@@ -54,6 +54,11 @@
     border-radius: 15px;
     background-color: transparent;
     transition: all 0.4s ease;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-profile-s:active{
+    transform: scale(0.96);
 }
 
 .btn-profile-s:hover{
@@ -72,6 +77,11 @@
     border-radius: 15px;
     background-color: var(--color-primary);
     transition: all 0.4s ease;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-profile-following-s:active{
+    transform: scale(0.96);
 }
 
 .btn-profile-following-s:hover{
