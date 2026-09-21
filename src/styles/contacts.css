@@ -1,14 +1,13 @@
-
-.contact-lay{
+.contact-lay {
     display: flex;
     justify-content: space-between;
     width: 100%;
     gap: 10px;
-    
-    
+
+
 }
 
-.contact-list{
+.contact-list {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -17,12 +16,12 @@
     overflow-y: auto;
 }
 
-.data-lay{
+.data-lay {
     display: flex;
 }
 
 
-.contact-box{
+.contact-box {
     display: flex;
     color: white;
     padding: 20px;
@@ -33,50 +32,50 @@
     cursor: pointer;
 }
 
-.contact-box:hover{
-        filter: brightness(80%);
+.contact-box:hover {
+    filter: brightness(80%);
 }
 
 
 
-.contact-pfp{
+.contact-pfp {
     width: 60px;
     border-radius: 100px;
 }
 
-.contact-data-box{
+.contact-data-box {
     display: flex;
     flex-direction: column;
     padding-left: 10px;
-      
+
 }
 
-.contact-name{
+.contact-name {
     font-size: 18px;
 }
 
-.last-message{
+.last-message {
     padding-top: 5px;
     margin-left: 8px;
     font-size: 14px;
     color: rgb(212, 208, 208);
 }
 
-.message-at-box{
+.message-at-box {
     font-size: 14px;
 }
 
 
-.contacts-panel{
+.contacts-panel {
     display: flex;
     height: 500px;
     overflow: hidden;
     transition: width 0.3s ease;
     color: white;
-    
+
 }
 
-.btn-my-follows{
+.btn-my-follows {
     border: none;
     background-color: #56336a;
     color: white;
@@ -95,25 +94,25 @@
 }
 
 
-.contacts-content{
+.contacts-content {
     padding: 30px 20px;
     width: 100%;
     display: flex;
     flex-direction: column;
-    
+
     gap: 50px;
     overflow-y: auto;
 }
 
-.following{
+.following {
     display: flex;
     gap: 20px;
     justify-content: space-between;
-    
-    
+
+
 }
 
-.following-data{
+.following-data {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -122,26 +121,38 @@
 
 }
 
-.following-pfp{
-  width: 70px;  
-  border-radius: 100px;
+.following-pfp {
+    width: 70px;
+    border-radius: 100px;
 }
 
-.message-status-box{
+.message-status-box {
     color: var(--color-primary);
     background-color: white;
     border-radius: 20px;
     padding: 10px;
     width: 60%;
-  
+    cursor: pointer;
     text-align: center;
-    
+
 }
 
-.following-name{
-   text-align: center;
+.following-name {
+    text-align: center;
 }
 
-.message-status{
+.message-status-input {
+    color: var(--color-primary);
+    background-color: white;
+    border-radius: 20px;
+    padding: 10px;
+    width: 60%;
+    display: flex;
+    resize: none;
+    font-size: 17px;
+    text-align: center;
+}
+
+.message-status {
     overflow-wrap: break-word;
 }

@@ -5,6 +5,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMyFollowing } from "../../service/follow/FollowService";
 import { formatePfpL } from "../../utils/formateImgProfile";
 import EmptyFollow from "./EmptyFollow";
+import Me from "../user/Me";
 
 function MyFollows() {
     const [isOpen, setIsOpen] = useState(false);
@@ -86,6 +87,7 @@ function MyFollows() {
                 
 
                 <div className="contacts-content">
+                    <Me/>
                     {followings.map((following) => (
                         <div className="following" key={following.userId} >
                             <div className="following-data">

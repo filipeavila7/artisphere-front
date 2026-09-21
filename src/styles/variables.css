@@ -19,6 +19,10 @@ h3 {
   font-family: var(--font-secundary);
 }
 
+input textarea{
+  font-family: var(--font-primary);
+}
+
 .app-layout{
   display: flex;
 }
