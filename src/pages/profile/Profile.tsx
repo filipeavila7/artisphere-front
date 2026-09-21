@@ -11,11 +11,14 @@ import MyPosts from "../../components/post/MyPosts";
 import { formatePfpL } from "../../utils/formateImgProfile";
 import LikedPosts from "../../components/likes/LikedPosts";
 import SavedPosts from "../../components/save/SavedPosts";
+import { useNavigate } from "react-router-dom";
 
 type ProfileTab = "posts" | "liked" | "saved";
 
 function Profile() {
   const [activeTab, setActiveTab] = useState<ProfileTab>("posts");
+
+  const navigate = useNavigate();
 
   const {
     data: user,
@@ -109,7 +112,7 @@ function Profile() {
         </div>
 
         <div className="profile-actions">
-          <button className="btn-profile">
+          <button onClick={() => navigate("/profile/update")} className="btn-profile">
             <FaEdit /> Edit profile
           </button>
 
