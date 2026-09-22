@@ -1,0 +1,133 @@
+.new-page {
+    width: 100%;
+    min-height: 100%;
+    padding: 60px 80px;
+    box-sizing: border-box;
+}
+
+
+/* HEADER */
+
+.new-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.new-header h1 {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: 32px;
+}
+
+.new-header p {
+    margin-top: 10px;
+    color: #777;
+    font-size: 15px;
+}
+
+
+/* OPTIONS */
+
+.new-options {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+}
+
+
+/* CARD */
+
+.new-option {
+    width: 350px;
+    background-color: var(--color-primary);
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.new-option:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.new-option:active {
+    transform: translateY(-2px) scale(0.98);
+}
+
+
+/* IMAGE */
+
+.new-option-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+.new-option-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    transition: transform 0.3s ease;
+}
+
+.new-option:hover .new-option-image img {
+    transform: scale(1.04);
+}
+
+
+/* CONTENT */
+
+.new-option-content {
+    position: relative;
+    padding: 24px 26px 28px;
+    color: white;
+}
+
+.new-option-content h2 {
+    margin: 0 0 8px;
+    font-size: 23px;
+}
+
+.new-option-content p {
+    margin: 0;
+    max-width: 250px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* ARROW */
+
+.new-option-arrow {
+    position: absolute;
+    right: 25px;
+    bottom: 25px;
+
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+
+    font-size: 18px;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.new-option:hover .new-option-arrow {
+    background-color: white;
+    color: var(--color-primary);
+    transform: translateX(3px);
+}

@@ -229,11 +229,11 @@ function Search() {
 
     const handleMessage = (
         event: React.MouseEvent,
-        userId: number
+        userName: string
     ) => {
         event.stopPropagation();
 
-        messageMutation.mutate(userId);
+        navigate(`/messages/new/${userName}`);
     };
 
     /*
@@ -383,7 +383,7 @@ function Search() {
                                                 onClick={(event) =>
                                                     handleMessage(
                                                         event,
-                                                        profile.userId
+                                                        profile.userName
                                                     )
                                                 }
                                                 disabled={messageMutation.isPending}

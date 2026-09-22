@@ -142,6 +142,47 @@ function Messages() {
       staleTime: 1000 * 60 * 5,
     });
 
+  const { data: existingConversation } = useQuery({
+    queryKey: [
+      "existing-conversation",
+      newProfile?.userId,
+    ],
+
+    queryFn: async () => {
+      const page = await getConversations(0, 100);
+
+      return (
+        page.content.find(
+          (item) =>
+            item.otherUserId === newProfile?.userId
+        ) ?? null
+      );
+    },
+
+    enabled:
+      isNewConversation &&
+      !!newProfile?.userId,
+  });
+
+
+  useEffect(() => {
+    if (
+      !isNewConversation ||
+      !existingConversation
+    ) {
+      return;
+    }
+
+    navigate(
+      `/messages/${existingConversation.conversationId}`,
+      { replace: true }
+    );
+  }, [
+    isNewConversation,
+    existingConversation,
+    navigate,
+  ]);
+
   /*
    * ============================
    * CONVERSA EXISTENTE
@@ -359,15 +400,15 @@ function Messages() {
 
                 ...(index === 0
                   ? {
-                      content: [
-                        message,
-                        ...page.content,
-                      ],
+                    content: [
+                      message,
+                      ...page.content,
+                    ],
 
-                      numberOfElements:
-                        page.numberOfElements +
-                        1,
-                    }
+                    numberOfElements:
+                      page.numberOfElements +
+                      1,
+                  }
                   : {}),
               })
             ),
@@ -427,7 +468,7 @@ function Messages() {
       isNewConversation ||
       !data ||
       initiallyMarkedRead.current ===
-        conversationId
+      conversationId
     ) {
       return;
     }
@@ -458,9 +499,9 @@ function Messages() {
         const closeToBottom =
           !container ||
           container.scrollHeight -
-            container.scrollTop -
-            container.clientHeight <
-            120;
+          container.scrollTop -
+          container.clientHeight <
+          120;
 
         shouldScrollToBottom.current =
           closeToBottom;
@@ -496,7 +537,7 @@ function Messages() {
     (event: ReadEvent) => {
       if (
         event.conversationId !==
-          conversationId ||
+        conversationId ||
         !event.messageId
       ) {
         return;
@@ -519,15 +560,15 @@ function Messages() {
                 content: page.content.map(
                   (message) =>
                     message.id ===
-                    event.messageId
+                      event.messageId
                       ? {
-                          ...message,
+                        ...message,
 
-                          readAt:
-                            event.readAt ??
-                            event.createdAt ??
-                            new Date().toISOString(),
-                        }
+                        readAt:
+                          event.readAt ??
+                          event.createdAt ??
+                          new Date().toISOString(),
+                      }
                       : message
                 ),
               })
@@ -653,13 +694,13 @@ function Messages() {
           }
 
           const updatedConversation: ConversationResponse =
-            {
-              ...conversationToMove,
-              lastMessage:
-                message.content,
-              lastMessageAt:
-                message.createdAt,
-            };
+          {
+            ...conversationToMove,
+            lastMessage:
+              message.content,
+            lastMessageAt:
+              message.createdAt,
+          };
 
           pages[0].content.unshift(
             updatedConversation
@@ -939,29 +980,27 @@ function Messages() {
             return (
               <div
                 key={message.id}
-                className={`chat-message-row${
-                  isMine
-                    ? " chat-message-row--mine"
-                    : ""
-                }`}
+                className={`chat-message-row${isMine
+                  ? " chat-message-row--mine"
+                  : ""
+                  }`}
               >
                 {!isMine && (
                   <img
                     className="chat-message-avatar"
                     src={formatePfpL(
                       message.senderPhoto ??
-                        undefined
+                      undefined
                     )}
                     alt=""
                   />
                 )}
 
                 <div
-                  className={`chat-bubble${
-                    isMine
-                      ? " chat-bubble--mine"
-                      : ""
-                  }`}
+                  className={`chat-bubble${isMine
+                    ? " chat-bubble--mine"
+                    : ""
+                    }`}
                 >
                   {!isMine && (
                     <span className="chat-sender-name">

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../../styles/side-bar.css";
 import { AiOutlineHome } from "react-icons/ai";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -9,6 +9,7 @@ import Button from "../button/Button";
 import UserSideBar from "./UserSideBar";
 
 function Sidebar() {
+    const navigate = useNavigate();
     return (
         <>
             <aside className="sidebar">
@@ -18,7 +19,7 @@ function Sidebar() {
                 <div className="side-box">
                     <nav className="side-nav">
                         <div className="side-btn-box">
-                            <Button icon={<FaPlus />}>New post</Button>
+                            <Button onClick={()=> navigate("/new")} icon={<FaPlus />}>New post</Button>
                         </div>
                         <div className="side-lay">
                             <NavLink
