@@ -4,7 +4,7 @@ import "../../styles/contacts.css"
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMyFollowing } from "../../service/follow/FollowService";
 import { formatePfpL } from "../../utils/formateImgProfile";
-import EmptyFollow from "./EmptyFollow";
+
 import Me from "../user/Me";
 
 function MyFollows() {
@@ -78,9 +78,7 @@ function MyFollows() {
                 {isOpen ? ">>" : "<<"}
             </button>
 
-            {!isLoading && followings.length === 0 && (
-                <EmptyFollow />
-            )}
+            
 
             {isOpen && (
 

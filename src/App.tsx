@@ -52,6 +52,8 @@ export const router = createBrowserRouter([
                     { path: "user/:userName", element: <OtherProfile /> },
                     { path: "my/post/:postId", element: <MyPostDetails /> },
                     { path: "user/post/:postId", element: <MyPostDetails /> },
+                    { path: "/messages/new/:userName", element: <Messages /> },
+                    
                 ],
             },
         ],

@@ -30,6 +30,7 @@ import {
   sendMessage,
 } from "../../service/message/MessageService";
 import { getConversations } from "../../service/conversation/ConversationService";
+import { GetUserProfile } from "../../service/profile/ProfileService";
 import { useMe } from "../../hooks/useMe";
 import { useStompTopic } from "../../hooks/useStompTopic";
 import { formatePfpL } from "../../utils/formateImgProfile";
@@ -38,7 +39,6 @@ import type { PageResponse } from "../../types/page/PageResponse";
 import type { MessageResponse } from "../../types/message/MessageResponse";
 import type { ConversationResponse } from "../../types/conversation/ConversationResponse";
 import "../../styles/messages.css";
-
 
 interface ConversationState {
   conversation?: ConversationResponse;
@@ -60,7 +60,7 @@ const PAGE_SIZE = 50;
 
 /*
  * ============================
- * SEPARADOR DE DATA (estilo WhatsApp)
+ * SEPARADOR DE DATA
  * ============================
  */
 
@@ -75,6 +75,7 @@ function isSameDay(a: Date, b: Date) {
 function getDateLabel(date: Date): string {
   const today = new Date();
   const yesterday = new Date();
+
   yesterday.setDate(today.getDate() - 1);
 
   if (isSameDay(date, today)) {
@@ -93,7 +94,12 @@ function getDateLabel(date: Date): string {
 }
 
 function Messages() {
-  const { conversationId: conversationIdParam } = useParams();
+  const {
+    conversationId: conversationIdParam,
+    userName,
+  } = useParams();
+
+  const isNewConversation = Boolean(userName);
   const conversationId = Number(conversationIdParam);
 
   const navigate = useNavigate();
@@ -113,33 +119,62 @@ function Messages() {
   const [newMessage, setNewMessage] = useState("");
   const [unseenMessages, setUnseenMessages] = useState(0);
 
-  const messagesQueryKey = [
-    "conversation-messages",
-    conversationId,
-  ] as const;
+  /*
+   * ============================
+   * PERFIL DA NOVA CONVERSA
+   * ============================
+   */
 
-  // State from Contacts makes the header instant.
-  // This fallback also supports a direct URL.
-  const { data: conversationFallback } = useQuery({
-    queryKey: ["conversation-meta", conversationId],
+  const { data: newProfile, isLoading: isLoadingProfile } =
+    useQuery({
+      queryKey: [
+        "new-conversation-profile",
+        userName,
+      ],
 
-    queryFn: async () => {
-      const page = await getConversations(0, 100);
+      queryFn: () =>
+        GetUserProfile(userName!),
 
-      return (
-        page.content.find(
-          (item) =>
-            item.conversationId === conversationId
-        ) ?? null
-      );
-    },
+      enabled:
+        isNewConversation &&
+        !!userName,
 
-    enabled:
-      Number.isFinite(conversationId) &&
-      !stateConversation,
+      staleTime: 1000 * 60 * 5,
+    });
 
-    staleTime: 1000 * 60 * 5,
-  });
+  /*
+   * ============================
+   * CONVERSA EXISTENTE
+   * ============================
+   */
+
+  const { data: conversationFallback } =
+    useQuery({
+      queryKey: [
+        "conversation-meta",
+        conversationId,
+      ],
+
+      queryFn: async () => {
+        const page =
+          await getConversations(0, 100);
+
+        return (
+          page.content.find(
+            (item) =>
+              item.conversationId ===
+              conversationId
+          ) ?? null
+        );
+      },
+
+      enabled:
+        !isNewConversation &&
+        Number.isFinite(conversationId) &&
+        !stateConversation,
+
+      staleTime: 1000 * 60 * 5,
+    });
 
   const conversation =
     stateConversation ??
@@ -147,10 +182,41 @@ function Messages() {
     null;
 
   /*
+   * Usuário que receberá a mensagem.
+   *
+   * Em conversa existente:
+   *   conversation.otherUserId
+   *
+   * Em conversa nova:
+   *   newProfile.userId
+   */
+
+  const otherUserId = isNewConversation
+    ? newProfile?.userId
+    : conversation?.otherUserId;
+
+  const otherUserName = isNewConversation
+    ? newProfile?.name
+    : conversation?.otherUserName;
+
+  const otherUserUsername = isNewConversation
+    ? newProfile?.userName
+    : conversation?.otherUserUsername;
+
+  const otherUserPhoto = isNewConversation
+    ? newProfile?.imageUrlProfile
+    : conversation?.otherUserPhoto;
+
+  /*
    * ============================
    * MENSAGENS
    * ============================
    */
+
+  const messagesQueryKey = [
+    "conversation-messages",
+    conversationId,
+  ] as const;
 
   const {
     data,
@@ -176,10 +242,10 @@ function Messages() {
         ? undefined
         : lastPage.number + 1,
 
-    enabled: Number.isFinite(conversationId),
+    enabled:
+      !isNewConversation &&
+      Number.isFinite(conversationId),
 
-    // Quando entrar novamente na conversa,
-    // busca as mensagens atualizadas do backend.
     refetchOnMount: "always",
   });
 
@@ -207,7 +273,7 @@ function Messages() {
 
   /*
    * ============================
-   * MENSAGENS + SEPARADORES DE DATA
+   * MENSAGENS + SEPARADORES
    * ============================
    */
 
@@ -216,8 +282,12 @@ function Messages() {
     let lastDateKey: string | null = null;
 
     messages.forEach((message) => {
-      const messageDate = new Date(message.createdAt);
-      const dateKey = messageDate.toDateString();
+      const messageDate = new Date(
+        message.createdAt
+      );
+
+      const dateKey =
+        messageDate.toDateString();
 
       if (dateKey !== lastDateKey) {
         items.push({
@@ -289,15 +359,15 @@ function Messages() {
 
                 ...(index === 0
                   ? {
-                    content: [
-                      message,
-                      ...page.content,
-                    ],
+                      content: [
+                        message,
+                        ...page.content,
+                      ],
 
-                    numberOfElements:
-                      page.numberOfElements +
-                      1,
-                  }
+                      numberOfElements:
+                        page.numberOfElements +
+                        1,
+                    }
                   : {}),
               })
             ),
@@ -325,7 +395,6 @@ function Messages() {
       ),
 
     onSuccess: () => {
-      // Atualiza a badge da tela de contatos
       void queryClient.invalidateQueries({
         queryKey: [
           "conversation-unread-counts",
@@ -350,83 +419,84 @@ function Messages() {
   ]);
 
   /*
-   * Ao carregar a conversa, marca as mensagens
-   * recebidas como lidas.
+   * Marca a conversa existente como lida.
    */
 
   useEffect(() => {
     if (
-      data &&
-      initiallyMarkedRead.current !==
-      conversationId
+      isNewConversation ||
+      !data ||
+      initiallyMarkedRead.current ===
+        conversationId
     ) {
-      initiallyMarkedRead.current =
-        conversationId;
-
-      markReadMutation.mutate();
+      return;
     }
+
+    initiallyMarkedRead.current =
+      conversationId;
+
+    markReadMutation.mutate();
   }, [
     conversationId,
     data,
+    isNewConversation,
     markReadMutation.mutate,
   ]);
 
   /*
    * ============================
-   * NOVA MENSAGEM
+   * NOVA MENSAGEM RECEBIDA
    * ============================
    */
 
-  const handleIncomingMessage = useCallback(
-    (message: MessageResponse) => {
-      const container =
-        scrollRef.current;
+  const handleIncomingMessage =
+    useCallback(
+      (message: MessageResponse) => {
+        const container =
+          scrollRef.current;
 
-      const closeToBottom =
-        !container ||
-        container.scrollHeight -
-        container.scrollTop -
-        container.clientHeight <
-        120;
+        const closeToBottom =
+          !container ||
+          container.scrollHeight -
+            container.scrollTop -
+            container.clientHeight <
+            120;
 
-      shouldScrollToBottom.current =
-        closeToBottom;
+        shouldScrollToBottom.current =
+          closeToBottom;
 
-      addMessageToCache(message);
+        addMessageToCache(message);
 
-      // Mensagem recebida do outro usuário
-      if (message.senderId !== me?.id) {
-        markAsRead();
-      }
+        if (
+          message.senderId !== me?.id
+        ) {
+          markAsRead();
+        }
 
-      if (!closeToBottom) {
-        setUnseenMessages(
-          (count) => count + 1
-        );
-      }
-    },
-    [
-      addMessageToCache,
-      markAsRead,
-      me?.id,
-    ]
-  );
+        if (!closeToBottom) {
+          setUnseenMessages(
+            (count) => count + 1
+          );
+        }
+      },
+      [
+        addMessageToCache,
+        markAsRead,
+        me?.id,
+      ]
+    );
 
   /*
    * ============================
    * MENSAGEM LIDA
    * ============================
-   *
-   * O outro usuário abriu a conversa.
-   * Atualizamos o readAt da mensagem
-   * diretamente no cache.
    */
 
   const handleReadEvent = useCallback(
     (event: ReadEvent) => {
       if (
         event.conversationId !==
-        conversationId ||
+          conversationId ||
         !event.messageId
       ) {
         return;
@@ -449,15 +519,15 @@ function Messages() {
                 content: page.content.map(
                   (message) =>
                     message.id ===
-                      event.messageId
+                    event.messageId
                       ? {
-                        ...message,
+                          ...message,
 
-                        readAt:
-                          event.readAt ??
-                          event.createdAt ??
-                          new Date().toISOString(),
-                      }
+                          readAt:
+                            event.readAt ??
+                            event.createdAt ??
+                            new Date().toISOString(),
+                        }
                       : message
                 ),
               })
@@ -479,7 +549,8 @@ function Messages() {
    */
 
   useStompTopic<MessageResponse>(
-    Number.isFinite(conversationId)
+    !isNewConversation &&
+      Number.isFinite(conversationId)
       ? `/topic/messages/conversation/${conversationId}`
       : undefined,
 
@@ -489,7 +560,7 @@ function Messages() {
   );
 
   useStompTopic<ReadEvent>(
-    me
+    !isNewConversation && me
       ? `/topic/notifications/${me.id}`
       : undefined,
 
@@ -507,48 +578,92 @@ function Messages() {
   const sendMutation = useMutation({
     mutationFn: (content: string) =>
       sendMessage(
-        conversation?.otherUserId ?? 0,
+        otherUserId ?? 0,
         content
       ),
 
     onSuccess: (message) => {
-      shouldScrollToBottom.current = true;
-      addMessageToCache(message);
       setNewMessage("");
+      shouldScrollToBottom.current = true;
+
+      /*
+       * Se estamos criando uma nova conversa,
+       * o backend acabou de criar a conversa.
+       *
+       * Agora vamos para a rota normal,
+       * usando o ID retornado pelo backend.
+       */
+
+      if (isNewConversation) {
+        void queryClient.invalidateQueries({
+          queryKey: ["conversations"],
+        });
+
+        navigate(
+          `/messages/${message.conversationId}`,
+          { replace: true }
+        );
+
+        return;
+      }
+
+      /*
+       * Conversa que já existia:
+       * mantém o comportamento atual.
+       */
+
+      addMessageToCache(message);
 
       queryClient.setQueryData<
-        InfiniteData<PageResponse<ConversationResponse>>
+        InfiniteData<
+          PageResponse<ConversationResponse>
+        >
       >(
         ["conversations"],
         (current) => {
-          if (!current) return current;
+          if (!current) {
+            return current;
+          }
 
-          const pages = current.pages.map((page) => ({
-            ...page,
-            content: page.content.filter(
-              (conversation) =>
-                conversation.conversationId !== conversationId
-            ),
-          }));
+          const pages =
+            current.pages.map((page) => ({
+              ...page,
 
-          const conversationToMove = current.pages
-            .flatMap((page) => page.content)
-            .find(
-              (conversation) =>
-                conversation.conversationId === conversationId
-            );
+              content:
+                page.content.filter(
+                  (conversation) =>
+                    conversation.conversationId !==
+                    conversationId
+                ),
+            }));
+
+          const conversationToMove =
+            current.pages
+              .flatMap(
+                (page) => page.content
+              )
+              .find(
+                (conversation) =>
+                  conversation.conversationId ===
+                  conversationId
+              );
 
           if (!conversationToMove) {
             return current;
           }
 
-          const updatedConversation: ConversationResponse = {
-            ...conversationToMove,
-            lastMessage: message.content,
-            lastMessageAt: message.createdAt,
-          };
+          const updatedConversation: ConversationResponse =
+            {
+              ...conversationToMove,
+              lastMessage:
+                message.content,
+              lastMessageAt:
+                message.createdAt,
+            };
 
-          pages[0].content.unshift(updatedConversation);
+          pages[0].content.unshift(
+            updatedConversation
+          );
 
           return {
             ...current,
@@ -564,7 +679,7 @@ function Messages() {
 
     if (
       content &&
-      conversation?.otherUserId
+      otherUserId
     ) {
       sendMutation.mutate(content);
     }
@@ -581,7 +696,8 @@ function Messages() {
       shouldScrollToBottom.current
     ) {
       scrollRef.current?.scrollTo({
-        top: scrollRef.current.scrollHeight,
+        top: scrollRef.current
+          .scrollHeight,
         behavior: "smooth",
       });
     }
@@ -641,15 +757,56 @@ function Messages() {
 
   /*
    * ============================
-   * CONVERSA INVÁLIDA
+   * ROTA INVÁLIDA
    * ============================
    */
 
-  if (!Number.isFinite(conversationId)) {
+  if (
+    !isNewConversation &&
+    !Number.isFinite(conversationId)
+  ) {
     return (
       <main className="messages-page">
         <p className="messages-feedback">
           Conversa inválida.
+        </p>
+      </main>
+    );
+  }
+
+  /*
+   * ============================
+   * CARREGANDO NOVA CONVERSA
+   * ============================
+   */
+
+  if (
+    isNewConversation &&
+    isLoadingProfile
+  ) {
+    return (
+      <main className="messages-page">
+        <p className="messages-feedback">
+          Carregando contato...
+        </p>
+      </main>
+    );
+  }
+
+  /*
+   * ============================
+   * PERFIL NÃO ENCONTRADO
+   * ============================
+   */
+
+  if (
+    isNewConversation &&
+    !newProfile
+  ) {
+    return (
+      <main className="messages-page">
+        <p className="messages-feedback">
+          Usuário não encontrado.
         </p>
       </main>
     );
@@ -674,19 +831,25 @@ function Messages() {
           <img
             className="chat-header-avatar"
             src={formatePfpL(
-              conversation?.otherUserPhoto
+              otherUserPhoto
             )}
             alt=""
-            onClick={()=> navigate(`/user/${conversation?.otherUserUsername}`)}
+            onClick={() => {
+              if (otherUserUsername) {
+                navigate(
+                  `/user/${otherUserUsername}`
+                );
+              }
+            }}
           />
 
           <div className="chat-header-user">
             <strong>
-              {conversation?.otherUserName ??
+              {otherUserName ??
                 "Conversa"}
             </strong>
 
-            {conversation?.otherUserName && (
+            {otherUserName && (
               <span>
                 Conversa privada
               </span>
@@ -701,7 +864,8 @@ function Messages() {
         >
           {isFetchingNextPage && (
             <p className="chat-history-status">
-              Carregando mensagens anteriores...
+              Carregando mensagens
+              anteriores...
             </p>
           )}
 
@@ -718,7 +882,8 @@ function Messages() {
             </p>
           )}
 
-          {!isLoading &&
+          {!isNewConversation &&
+            !isLoading &&
             !isError &&
             messages.length === 0 && (
               <div className="chat-empty">
@@ -734,46 +899,69 @@ function Messages() {
               </div>
             )}
 
+          {isNewConversation && (
+            <div className="chat-empty">
+              <span>✦</span>
+
+              <p>
+                Sem mensagens por aqui.
+              </p>
+
+              <small>
+                Comece a conversa sobre arte.
+              </small>
+            </div>
+          )}
+
           {chatItems.map((item) => {
-            if (item.kind === "separator") {
+            if (
+              item.kind === "separator"
+            ) {
               return (
                 <div
                   key={item.id}
                   className="chat-date-separator"
                 >
-                  <span>{item.label}</span>
+                  <span>
+                    {item.label}
+                  </span>
                 </div>
               );
             }
 
-            const message = item.message;
+            const message =
+              item.message;
+
             const isMine =
-              message.senderId === me?.id;
+              message.senderId ===
+              me?.id;
 
             return (
               <div
                 key={message.id}
-                className={`chat-message-row${isMine
-                  ? " chat-message-row--mine"
-                  : ""
-                  }`}
+                className={`chat-message-row${
+                  isMine
+                    ? " chat-message-row--mine"
+                    : ""
+                }`}
               >
                 {!isMine && (
                   <img
                     className="chat-message-avatar"
                     src={formatePfpL(
                       message.senderPhoto ??
-                      undefined
+                        undefined
                     )}
                     alt=""
                   />
                 )}
 
                 <div
-                  className={`chat-bubble${isMine
-                    ? " chat-bubble--mine"
-                    : ""
-                    }`}
+                  className={`chat-bubble${
+                    isMine
+                      ? " chat-bubble--mine"
+                      : ""
+                  }`}
                 >
                   {!isMine && (
                     <span className="chat-sender-name">
@@ -850,12 +1038,12 @@ function Messages() {
               }
             }}
             placeholder={
-              conversation
+              otherUserId
                 ? "Escreva uma mensagem..."
                 : "Carregando contato..."
             }
             disabled={
-              !conversation ||
+              !otherUserId ||
               sendMutation.isPending
             }
             rows={1}
@@ -865,7 +1053,7 @@ function Messages() {
             type="submit"
             disabled={
               !newMessage.trim() ||
-              !conversation?.otherUserId ||
+              !otherUserId ||
               sendMutation.isPending
             }
             aria-label="Enviar mensagem"

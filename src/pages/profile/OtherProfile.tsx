@@ -105,7 +105,7 @@ function Profile() {
   const handleMessage = () => {
     if (!profile) return;
 
-    messageMutation.mutate();
+    navigate(`/messages/new/${profile.userName}`);
   };
 
   if (isLoadingUser) {
