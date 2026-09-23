@@ -17,14 +17,14 @@ function PostDate({ date }: PostDateProps) {
   const sixMonths = 6 * month;
 
   if (diffInSeconds < minute) {
-    return <span>Publicado agora</span>;
+    return <span>Posted now</span>;
   }
 
   if (diffInSeconds < hour) {
     const minutes = Math.floor(diffInSeconds / minute);
     return (
       <span>
-        Publicado há {minutes} {minutes === 1 ? "minuto" : "minutos"}
+        Posted {minutes} {minutes === 1 ? "minute ago" : "minutes ago"}
       </span>
     );
   }
@@ -33,7 +33,7 @@ function PostDate({ date }: PostDateProps) {
     const hours = Math.floor(diffInSeconds / hour);
     return (
       <span>
-        Publicado há {hours} {hours === 1 ? "hora" : "horas"}
+        Posted {hours} {hours === 1 ? "hour ago" : "hours ago"}
       </span>
     );
   }
@@ -43,7 +43,7 @@ function PostDate({ date }: PostDateProps) {
 
     return (
       <span>
-        Publicado há {days} {days === 1 ? "dia" : "dias"}
+        Posted {days} {days === 1 ? "day ago" : "days ago"}
       </span>
     );
   }
@@ -53,7 +53,7 @@ function PostDate({ date }: PostDateProps) {
 
     return (
       <span>
-        Publicado há {months} {months === 1 ? "mês" : "meses"}
+        Posted {months} {months === 1 ? "month ago" : "months ago"}
       </span>
     );
   }

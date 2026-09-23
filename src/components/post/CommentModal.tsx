@@ -100,8 +100,8 @@ function CommentsModal({ postId, isOpen, onClose }: CommentsModalProps) {
 
         <div className="comments-modal-header">
           <div>
-            <p className="comments-modal-eyebrow">CONVERSA SOBRE A OBRA</p>
-            <h3>Comentários</h3>
+
+            <h3>Comments</h3>
           </div>
           <button className="comments-modal-close" type="button" aria-label="Fechar comentários" onClick={onClose}>
             <IoClose />
@@ -112,13 +112,14 @@ function CommentsModal({ postId, isOpen, onClose }: CommentsModalProps) {
           <textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Escreva um comentário..."
+            placeholder="Write a comment...
+"
           />
           <button
             disabled={createMutation.isPending || !newComment.trim()}
             onClick={handleSubmit}
           >
-            {createMutation.isPending ? "Enviando..." : "Comentar"}
+            {createMutation.isPending ? "Sending..." : "Comment"}
           </button>
         </div>
 
@@ -128,7 +129,7 @@ function CommentsModal({ postId, isOpen, onClose }: CommentsModalProps) {
           {isError && <p className="comments-state comments-state--error">Erro ao carregar comentários.</p>}
           {!isLoading && !isError && comments.length === 0 && (
             <div className="comments-empty">
-              <img  src="/avatar-5.png" alt="" />
+              <img src="/avatar-5.png" alt="" />
               <p>No comments yet.</p><small>Be the first to start the conversation.</small>
             </div>
           )}
