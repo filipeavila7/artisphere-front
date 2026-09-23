@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import "../../styles/new.css";
 
 function New() {
+
+  const navigate = useNavigate();
+
   return (
     <div className="new-page">
 
@@ -11,7 +15,7 @@ function New() {
 
       <div className="new-options">
 
-        <div className="new-option">
+        <div onClick={()=> navigate("/new/story")} className="new-option">
           <div className="new-option-image">
             <img src="/avatar-7.png" alt="" />
           </div>
@@ -26,7 +30,7 @@ function New() {
           </div>
         </div>
 
-        <div className="new-option">
+        <div onClick={()=> navigate("/new/post")} className="new-option">
           <div className="new-option-image">
             <img src="/avatar-8.png" alt="" />
           </div>

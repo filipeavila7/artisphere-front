@@ -247,7 +247,7 @@ function PostDetails() {
             </div>
 
 
-            <div className="post-description-box">
+            <div className="post-description-box-a">
               <p>{data.post.description}</p>
             </div>
 

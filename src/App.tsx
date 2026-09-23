@@ -19,6 +19,8 @@ import Search from "./pages/search/Search";
 import ProfileUpdate from "./pages/profile/ProfileUpdate";
 import New from "./pages/post/New";
 import NotFound from "./pages/layout/NotFound";
+import NewStory from "./pages/post/NewStory";
+import NewPost from "./pages/post/NewPost";
 
 function RootLayout() {
     return (
@@ -50,6 +52,8 @@ export const router = createBrowserRouter([
                     { path: "search", element: <Search /> },
                     { path: "profile", element: <Profile /> },
                     { path: "new", element: <New /> },
+                    { path: "new/story", element: <NewStory /> },
+                    { path: "new/post", element: <NewPost /> },
                     { path: "profile/update", element: <ProfileUpdate /> },
                     { path: "post/:postId", element: <PostDetails /> },
                     { path: "user/:userName", element: <OtherProfile /> },

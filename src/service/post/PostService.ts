@@ -2,6 +2,8 @@ import api from "../../api/api";
 import type { PostDetailsResponse } from "../../types/post/PostDetailsResponse";
 import type { PageResponse } from "../../types/page/PageResponse";
 import type { PostWithRelatedResponse } from "../../types/post/PostWithRelatedResponse";
+import type { PostRequest } from "../../types/post/PostRequest";
+import type { PostResponse } from "../../types/post/PostResponse";
 
 // buscar feed
 export async function getFeed( // getFeed(numero da pagina, tamanho da pagina)
@@ -69,6 +71,16 @@ export async function getPostsByUserName(
             size,
         },
     });
+
+    return response.data;
+}
+
+
+
+export async function createPost(
+    request: PostRequest
+): Promise<PostResponse> {
+    const response = await api.post<PostResponse>("/posts", request);
 
     return response.data;
 }

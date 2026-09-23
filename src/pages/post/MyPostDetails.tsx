@@ -320,7 +320,7 @@ function MyPostDetails() {
             </div>
 
 
-            <div className="post-description-box">
+            <div className="post-description-box-a">
 
               <p>{data.description}</p>
 
