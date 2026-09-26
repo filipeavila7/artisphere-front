@@ -116,7 +116,7 @@ function Profile() {
             <FaEdit /> Edit profile
           </button>
 
-          <div className="profile-config">
+          <div onClick={()=> navigate("/profile/config")} className="profile-config">
             <FaCog className="pfp-cog" />
           </div>
         </div>

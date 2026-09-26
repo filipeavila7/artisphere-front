@@ -21,6 +21,7 @@ import New from "./pages/post/New";
 import NotFound from "./pages/layout/NotFound";
 import NewStory from "./pages/post/NewStory";
 import NewPost from "./pages/post/NewPost";
+import ProfileConfig from "./pages/config/ProfileConfig";
 
 function RootLayout() {
     return (
@@ -51,6 +52,7 @@ export const router = createBrowserRouter([
                     { path: "notifications", element: <Notifications /> },
                     { path: "search", element: <Search /> },
                     { path: "profile", element: <Profile /> },
+                    { path: "profile/config", element: <ProfileConfig /> },
                     { path: "new", element: <New /> },
                     { path: "new/story", element: <NewStory /> },
                     { path: "new/post", element: <NewPost /> },

@@ -1,0 +1,251 @@
+.profile-config-page {
+
+    width: 100%;
+
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    padding: 40px;
+
+}
+
+
+
+.profile-config-header {
+
+    margin-bottom: 35px;
+
+}
+
+
+
+.profile-config-header h1 {
+
+    margin: 0;
+
+    font-size: 28px;
+
+}
+
+
+
+.profile-config-header p {
+
+    margin-top: 8px;
+
+    color: #777;
+
+}
+
+
+
+.profile-config-section {
+
+    border-radius: 14px;
+
+}
+
+
+
+.profile-config-section-header {
+
+    margin-bottom: 20px;
+
+}
+
+
+
+.profile-config-section-header h2 {
+
+    margin: 0;
+
+    font-size: 20px;
+
+}
+
+
+
+.profile-config-section-header p {
+
+    margin-top: 7px;
+
+    color: #777;
+
+    font-size: 14px;
+
+}
+
+
+
+.visibility-options {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+}
+
+
+
+.visibility-option {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+
+
+    padding: 18px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 12px;
+
+
+
+    background: transparent;
+
+    text-align: left;
+
+    cursor: pointer;
+
+
+
+    transition: 0.2s ease;
+
+}
+
+
+
+.visibility-option:hover {
+
+    border-color: #320c35;
+
+}
+
+
+
+.visibility-option.selected {
+
+    border-color: #320c35;
+
+}
+
+
+
+.visibility-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+
+
+    border-radius: 50%;
+
+    background: #f2eefb;
+
+    color: #320c35;
+
+
+
+    flex-shrink: 0;
+
+}
+
+
+
+.visibility-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+
+
+    flex: 1;
+
+}
+
+
+
+.visibility-info strong {
+
+    font-size: 16px;
+
+}
+
+
+
+.visibility-info span {
+
+    color: #777;
+
+    font-size: 14px;
+
+}
+
+
+
+.visibility-radio {
+
+    width: 20px;
+
+    height: 20px;
+
+
+
+    border: 2px solid #aaa;
+
+    border-radius: 50%;
+
+
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+
+.visibility-option.selected .visibility-radio {
+
+    border-color: #320c35;
+
+}
+
+
+
+.visibility-option.selected .visibility-radio span {
+
+    width: 10px;
+
+    height: 10px;
+
+
+
+    border-radius: 50%;
+
+    background: #320c35;
+
+}

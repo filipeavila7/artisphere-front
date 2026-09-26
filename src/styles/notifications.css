@@ -34,6 +34,7 @@
 
 .img-noti-box{
     position: relative;
+    height: 70px;
 }
 
 .notification-type{
@@ -67,6 +68,14 @@
     color: rgb(135, 23, 240);
 }
 
+.notification-icon.follow-request{
+    position: absolute;
+    font-size: 20px;
+    right: 0;
+    bottom: 0px;
+    color: rgb(135, 23, 240);
+}
+
 
 .notification-icon.reply{
     position: absolute;
@@ -93,4 +102,56 @@
 
 .notification-post:hover{
     filter: brightness(80%);
+}
+
+
+.follow-request-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+}
+
+.follow-request-actions button {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.follow-request-actions button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.follow-request-actions button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.follow-request-confirm {
+    background-color: #f3f1f3;
+    color: var(--color-primary);
+}
+
+.follow-request-reject {
+    background-color: transparent;
+    color: #fffbff;
+    border: 1px solid #f7f3f7 !important;
+}
+
+.follow-request-result {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.follow-request-result.accepted {
+    color: #fafafa;
+}
+
+.follow-request-result.rejected {
+    color: #777;
 }

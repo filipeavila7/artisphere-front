@@ -219,13 +219,20 @@ function Profile() {
             >
               Following
             </button>
+          ) : profile.followRequestStatus === "PENDING" ? (
+            <button
+              className="btn-profile"
+              disabled
+            >
+              Requested
+            </button>
           ) : (
             <button
               className="btn-profile"
               onClick={handleFollow}
               disabled={followMutation.isPending}
             >
-              Follow
+              {followMutation.isPending ? "Following..." : "Follow"}
             </button>
           )}
 

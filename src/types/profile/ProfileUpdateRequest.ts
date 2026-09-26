@@ -4,4 +4,5 @@ export interface ProfileUpdateRequest {
     messageStatus?: string;
     name? : string;
     userName? : string
+    isPrivateProfile? : boolean
 }

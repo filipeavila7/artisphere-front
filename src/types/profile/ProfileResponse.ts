@@ -9,4 +9,6 @@ export interface ProfileResponse {
   followerCount: number;
   postCount : number;
   amIfollowing : boolean;
+  isPrivateProfile : boolean; 
+  followRequestStatus: "PENDING" | "ACCEPTED" | "REJECTED" | null;
 }

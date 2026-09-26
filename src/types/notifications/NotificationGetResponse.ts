@@ -6,7 +6,14 @@ export type NotificationType =
   | "FOLLOW"
   | "MESSAGE"
   | "READ"
+  | "FOLLOW_REQUEST"
   | "REPLY";
+
+
+export type FollowRequestStatus =
+  | "PENDING"
+  | "ACCEPTED"
+  | "REJECTED";
 
 export interface NotificationGetResponse {
   id: number;
@@ -19,4 +26,6 @@ export interface NotificationGetResponse {
   senderUserName: string;
   senderPhoto: string;
   post: PostSummaryResponse;
+  followRequestId: number;
+  followRequestStatus: FollowRequestStatus;
 }
