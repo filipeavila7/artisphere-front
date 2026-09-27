@@ -21,6 +21,10 @@
     object-fit: cover;
 }
 
+.empty-avatar-a{
+    width: 300px;
+}
+
 .empty-btn {
     margin-top: 10px;
     color: white;

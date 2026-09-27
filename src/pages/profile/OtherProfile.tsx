@@ -23,6 +23,7 @@ import { formatePfpL } from "../../utils/formateImgProfile";
 
 import "../../styles/profile.css";
 import UserPosts from "../../components/post/UserPosts";
+import PrivateProfile from "../../components/post/PrivateProfile";
 
 type ProfileTab = "posts";
 
@@ -84,6 +85,8 @@ function Profile() {
     },
   });
 
+  
+
   const handleFollow = () => {
     if (!profile) return;
 
@@ -125,6 +128,11 @@ function Profile() {
   }
 
   const isMyProfile = profile.userName === user.userName;
+
+  const canSeePosts =
+    !profile.isPrivateProfile ||
+    isMyProfile ||
+    profile.amIfollowing;
 
   return (
     <div className="profile-lay">
@@ -244,13 +252,24 @@ function Profile() {
 
       </div>
 
-      <p className="bio">{profile.bio}</p>
+      <div className="bio-box">
+          <p className="bio">{profile.bio}</p>
+      </div>
+
+      
 
       <div className="profile-tab-content">
-        {activeTab === "posts" && (
-          <UserPosts userName={profile.userName} />
-        )}
-      </div>
+    {activeTab === "posts" && (
+        canSeePosts ? (
+            <UserPosts
+                userName={profile.userName}
+                canSeePosts={canSeePosts}
+            />
+        ) : (
+            <PrivateProfile />
+        )
+    )}
+</div>
 
       <ConfirmationModal
         isOpen={isUnfollowModalOpen}

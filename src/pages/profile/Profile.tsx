@@ -116,14 +116,16 @@ function Profile() {
             <FaEdit /> Edit profile
           </button>
 
-          <div onClick={()=> navigate("/profile/config")} className="profile-config">
+          <div onClick={() => navigate("/profile/config")} className="profile-config">
             <FaCog className="pfp-cog" />
           </div>
         </div>
 
       </div>
 
-      <p className="bio">{profile.bio}</p>
+      <div className="bio-box">
+        <p className="bio">{profile.bio}</p>
+      </div>
 
       <div className="profile-tabs">
         <button

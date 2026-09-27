@@ -60,8 +60,10 @@
     gap: 4px;
 }
 
-.bio {
-    padding-bottom: 25px;
+.bio-box{
+    padding: 20px 0;
+    border-bottom: 2px var(--color-primary) solid;
+    margin-bottom: 20px;
 }
 
 
@@ -69,7 +71,7 @@
     display: flex;
     justify-content: space-around;
     gap: 20px;
-    padding-bottom: 30px;
+    padding-bottom: 40px;
     border-bottom: 1px var(--color-primary) solid;
 }
 
