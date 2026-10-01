@@ -3,5 +3,6 @@ export interface UserResponse {
     name: string;
     userName : string;
     profileImageUrl : string;
+    isCloseFriend : boolean
     
 }

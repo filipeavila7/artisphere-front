@@ -22,6 +22,7 @@ import NotFound from "./pages/layout/NotFound";
 import NewStory from "./pages/post/NewStory";
 import NewPost from "./pages/post/NewPost";
 import ProfileConfig from "./pages/config/ProfileConfig";
+import CloseFriends from "./pages/close-friends/CloseFriends";
 
 function RootLayout() {
     return (
@@ -53,6 +54,7 @@ export const router = createBrowserRouter([
                     { path: "search", element: <Search /> },
                     { path: "profile", element: <Profile /> },
                     { path: "profile/config", element: <ProfileConfig /> },
+                    { path: "profile/config/close-friends", element: <CloseFriends /> },
                     { path: "new", element: <New /> },
                     { path: "new/story", element: <NewStory /> },
                     { path: "new/post", element: <NewPost /> },

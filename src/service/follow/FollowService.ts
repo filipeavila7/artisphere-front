@@ -2,6 +2,7 @@ import api from "../../api/api";
 import type { FollowingProfileResponse } from "../../types/follow/FollowingProfileResponse";
 import type { FollowResponse } from "../../types/follow/FollowResponse";
 import type { PageResponse } from "../../types/page/PageResponse";
+import type { UserResponse } from "../../types/user/UserResponse";
 
 
 export async function getMyFollowing(
@@ -35,7 +36,7 @@ export async function unfollowUser(userId: number): Promise<void> {
 export async function getMyConnections(
   page = 0,
   size = 20
-): Promise<PageResponse<FollowingProfileResponse>> {
+): Promise<PageResponse<UserResponse>> {
   const response = await api.get("/follow/my/connections", {
     params: {
       page,

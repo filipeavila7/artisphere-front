@@ -4,4 +4,5 @@ export interface FollowingProfileResponse {
     imageUrlProfile: string;
     messageStatus: string;
     userName: string;
+    isCloseFriend: boolean;
 }

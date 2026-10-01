@@ -41,6 +41,8 @@
 .contact-pfp {
     width: 60px;
     border-radius: 100px;
+    height: 60px;
+    object-fit: cover;
 }
 
 .contact-data-box {
