@@ -29,3 +29,19 @@ export async function followUser(userId: number): Promise<FollowResponse> {
 export async function unfollowUser(userId: number): Promise<void> {
     await api.delete(`/follow/unfollow/${userId}`);
 }
+
+
+// todas as conexões do usuario
+export async function getMyConnections(
+  page = 0,
+  size = 20
+): Promise<PageResponse<FollowingProfileResponse>> {
+  const response = await api.get("/follow/my/connections", {
+    params: {
+      page,
+      size,
+    },
+  });
+
+  return response.data;
+}
