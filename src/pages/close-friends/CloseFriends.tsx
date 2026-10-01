@@ -244,14 +244,10 @@ function CloseFriends() {
 
                 <div className="close-friends-title">
 
-                    <h1>
-                        Melhores amigos
-                    </h1>
+                    <h1>Close Friends</h1>
 
                     <p>
-                        Escolha as pessoas que poderão ver
-                        seus Stories exclusivos para melhores
-                        amigos.
+                        Choose who can see your exclusive Close Friends Stories.
                     </p>
 
                 </div>
@@ -262,8 +258,8 @@ function CloseFriends() {
                     disabled={isSaving}
                 >
                     {isSaving
-                        ? "Salvando..."
-                        : "Salvar"
+                        ? "Saving..."
+                        : "Save"
                     }
                 </button>
 
@@ -278,11 +274,11 @@ function CloseFriends() {
                         <div>
 
                             <h2>
-                                Melhores amigos
+                                Close Friends
                             </h2>
 
                             <p>
-                                Pessoas que já estão na sua lista.
+                                People who are already on your Close Friends list.
                             </p>
 
                         </div>
@@ -300,8 +296,7 @@ function CloseFriends() {
                             <div className="empty-close-friends">
 
                                 <p>
-                                    Você ainda não adicionou
-                                    ninguém aos melhores amigos.
+                                    You haven't added anyone to your Close Friends list yet.
                                 </p>
 
                             </div>
@@ -323,12 +318,11 @@ function CloseFriends() {
                         <div>
 
                             <h2>
-                                Conexões
+                                Connections
                             </h2>
 
                             <p>
-                                Pessoas que você segue ou que
-                                seguem você.
+                                People you follow or who follow you.
                             </p>
 
                         </div>
@@ -346,7 +340,7 @@ function CloseFriends() {
                             <div className="empty-close-friends">
 
                                 <p>
-                                    Não há outras conexões.
+                                    There are no other connections.
                                 </p>
 
                             </div>
@@ -369,8 +363,8 @@ function CloseFriends() {
                         disabled={isFetchingNextPage}
                     >
                         {isFetchingNextPage
-                            ? "Carregando..."
-                            : "Carregar mais"
+                            ? "Loading..."
+                            : "Load more"
                         }
                     </button>
 
@@ -380,10 +374,10 @@ function CloseFriends() {
 
             <ConfirmationModal
                 isOpen={isModalOpen}
-                title="Salvar melhores amigos?"
-                message="As alterações na sua lista de melhores amigos serão aplicadas."
-                confirmText="Salvar"
-                cancelText="Cancelar"
+                title="Save Close Friends?"
+                message="The changes to your Close Friends list will be applied."
+                confirmText="Save"
+                cancelText="Cancel"
                 onConfirm={handleConfirmSave}
                 onCancel={() =>
                     setIsModalOpen(false)

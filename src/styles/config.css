@@ -249,3 +249,41 @@
     background: #320c35;
 
 }
+
+.close-friends-box{
+    margin-top: 35px;
+}
+
+
+.close-option{
+   display: flex; 
+   padding: 18px;
+   gap: 16px;
+       width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.close-content{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.close-content strong{
+    font-size: 16px;
+}
+
+.close-content span{
+    color: #777;
+
+    font-size: 14px;
+}

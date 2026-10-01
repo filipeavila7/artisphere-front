@@ -23,6 +23,8 @@ import {
 
 
 import "../../styles/config.css";
+import { FaStar } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -30,7 +32,7 @@ function ProfileConfig() {
 
     const queryClient = useQueryClient();
 
-
+    const navigate = useNavigate();
 
     const [isPrivateProfile, setIsPrivateProfile] = useState(false);
 
@@ -328,6 +330,42 @@ function ProfileConfig() {
 
 
 
+                </div>
+
+                <div className="close-friends-box">
+                    <div className="profile-config-section-header">
+
+                        <h2>Close Friends</h2>
+
+                        <p>
+                            Choose who can see your private Stories and content shared exclusively with your Close Friends.
+                        </p>
+
+
+
+
+                    </div>
+
+                    <div onClick={()=> navigate("/profile/config/close-friends")} className="close-option">
+                        <div className="close-icon-box">
+                            <div className="visibility-icon">
+
+                                <FaStar />
+
+                            </div>
+                        </div>
+
+                        <div className="close-content">
+                            <strong>View Close Friends list</strong>
+
+                            <span>
+                                Manage who can see your private Stories
+                            </span>
+                        </div>
+
+
+
+                    </div>
                 </div>
 
 
