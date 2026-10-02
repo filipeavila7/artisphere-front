@@ -23,6 +23,8 @@ import NewStory from "./pages/post/NewStory";
 import NewPost from "./pages/post/NewPost";
 import ProfileConfig from "./pages/config/ProfileConfig";
 import CloseFriends from "./pages/close-friends/CloseFriends";
+import NewTextStory from "./pages/story/NewTextStory";
+import NewImgStory from "./pages/story/NewImgStory";
 
 function RootLayout() {
     return (
@@ -57,6 +59,8 @@ export const router = createBrowserRouter([
                     { path: "profile/config/close-friends", element: <CloseFriends /> },
                     { path: "new", element: <New /> },
                     { path: "new/story", element: <NewStory /> },
+                    { path: "new/story/text", element: <NewTextStory /> },
+                    { path: "new/story/image", element: <NewImgStory /> },
                     { path: "new/post", element: <NewPost /> },
                     { path: "profile/update", element: <ProfileUpdate /> },
                     { path: "post/:postId", element: <PostDetails /> },
