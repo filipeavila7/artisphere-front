@@ -13,6 +13,8 @@ export interface StoryResponse {
     storyVisibility: StoryVisibility;
     totalVisibilities: number;
     isLikedByMe: boolean;
+    description?: string | null;
+    text?: string | null;
 }
 
 export interface StoryRequest {

@@ -39,6 +39,7 @@ input textarea{
 :root {
     /* Cores */
     --color-primary: #200C2C;
+    --primary-color: var(--color-primary);
     --color-secundary: #f4f0f0;
     --color-surface: #181818;
     --color-text: #ffffff;

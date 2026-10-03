@@ -25,6 +25,7 @@ import ProfileConfig from "./pages/config/ProfileConfig";
 import CloseFriends from "./pages/close-friends/CloseFriends";
 import NewTextStory from "./pages/story/NewTextStory";
 import NewImgStory from "./pages/story/NewImgStory";
+import StoryPage from "./pages/story/StoryPage";
 
 function RootLayout() {
     return (
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
         element: <RootLayout />,
         children: [
             { path: "/login", element: <Login /> },
+            { path: "/story/:userName", element: <StoryPage /> },
             {
                 path: "/",
                 element: <AppLayout />,

@@ -1,0 +1,56 @@
+.story-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: #090909;
+    color: #fff;
+    font-family: var(--font-primary);
+}
+
+.story-viewer-close,
+.story-viewer-back {
+    position: absolute;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    border: 0;
+    color: #fff;
+    background: rgba(18, 18, 18, .62);
+    cursor: pointer;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.story-viewer-close:hover,
+.story-viewer-back:hover { background: rgba(255, 255, 255, .18); transform: scale(1.04); }
+.story-viewer-close { top: 22px; right: 24px; width: 42px; height: 42px; border-radius: 50%; font-size: 22px; }
+.story-card { position: relative; width: min(100vw, 520px); height: min(100dvh, 920px); overflow: hidden; isolation: isolate; background: #111; }
+.story-progress-list { position: absolute; z-index: 3; top: 14px; left: 16px; right: 16px; display: flex; gap: 5px; }
+.story-progress-track { height: 3px; flex: 1; overflow: hidden; border-radius: 99px; background: rgba(255, 255, 255, .35); }
+.story-progress-fill { display: block; width: 0; height: 100%; border-radius: inherit; background: #fff; }
+.story-progress-fill.is-complete { width: 100%; }
+.story-progress-fill.is-active { animation: story-progress-fill linear forwards; }
+@keyframes story-progress-fill { to { width: 100%; } }
+.story-viewer-header { position: absolute; z-index: 3; top: 29px; left: 17px; right: 58px; display: flex; align-items: center; gap: 10px; min-height: 40px; text-shadow: 0 1px 8px rgba(0, 0, 0, .7); }
+.story-viewer-avatar { width: 35px; height: 35px; flex: 0 0 auto; border: 1px solid rgba(255,255,255,.8); border-radius: 50%; object-fit: cover; }
+.story-viewer-username { overflow: hidden; font-size: 14px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.story-viewer-time { color: rgba(255,255,255,.75); font-size: 12px; }
+.story-viewer-content { position: absolute; inset: 0; display: grid; place-items: center; padding: 82px 12px 28px; }
+.story-viewer-image { display: block; width: 100%; height: 100%; object-fit: contain; }
+.story-viewer-text { display: grid; width: 100%; height: 100%; place-items: center; padding: 30px; background: linear-gradient(145deg, var(--primary-color), #211a22 68%, #121212); font-family: var(--font-secundary); font-size: clamp(28px, 7vw, 48px); text-align: center; overflow-wrap: anywhere; }
+.story-hit-area { position: absolute; z-index: 2; top: 80px; bottom: 0; width: 35%; border: 0; background: transparent; cursor: pointer; }
+.story-hit-area--previous { left: 0; }
+.story-hit-area--next { right: 0; width: 65%; }
+.story-viewer-back { bottom: 16px; left: 16px; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; opacity: 0; }
+.story-card:hover .story-viewer-back, .story-viewer-back:focus-visible { opacity: 1; }
+.story-viewer-message { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px; color: rgba(255,255,255,.84); text-align: center; }
+.story-viewer-message button { padding: 9px 17px; border: 1px solid rgba(255,255,255,.35); border-radius: 99px; color: #fff; background: transparent; cursor: pointer; }
+.story-viewer-message button:hover { border-color: var(--primary-color); background: var(--primary-color); }
+@media (max-width: 600px) {
+    .story-card { width: 100vw; height: 100dvh; }
+    .story-viewer-close { top: 14px; right: 14px; }
+    .story-progress-list { top: 10px; left: 10px; right: 10px; }
+    .story-viewer-header { top: 24px; left: 12px; }
+}
