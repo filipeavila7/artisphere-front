@@ -140,6 +140,8 @@ function Profile() {
 
         <div className="profile-content">
 
+
+
           <div
             className={
               profile.hasUnviewedStory
@@ -148,6 +150,11 @@ function Profile() {
                   ? "profile-pfp-box story-viewed"
                   : "profile-pfp-box"
             }
+            onClick={() => {
+              if (profile.hasStory) {
+                navigate(`/story/${profile.userName}`);
+              }
+            }}
           >
             <img
               className="profile-pfp"
@@ -155,6 +162,7 @@ function Profile() {
               alt=""
             />
           </div>
+
 
           <div className="profile-data-box">
 

@@ -15,6 +15,7 @@ export interface StoryResponse {
     isLikedByMe: boolean;
     description?: string | null;
     text?: string | null;
+    viewed: boolean;
 }
 
 export interface StoryRequest {
