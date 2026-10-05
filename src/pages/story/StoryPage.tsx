@@ -1,6 +1,12 @@
-
 import { useCallback, useEffect, useState } from "react";
-import { FiArrowLeft, FiX } from "react-icons/fi";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+    FiArrowLeft,
+    FiEye,
+    FiHeart,
+    FiUsers,
+    FiX,
+} from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -8,12 +14,20 @@ import {
     getUserStories,
 } from "../../service/story/StoryService";
 
+
+import { useMe } from "../../hooks/useMe";
+
 import type { PageResponse } from "../../types/page/PageResponse";
 import type { StoryResponse } from "../../types/story/StoryType";
+
 
 import { formatePfpL } from "../../utils/formateImgProfile";
 
 import "../../styles/story-page.css";
+import type { StoryVisibilityResponse } from "../../types/story-visibility/StoryVisibilityResponse";
+import { createStoryVisibility, getStoryVisibilities } from "../../service/story-visibility/StoryVisibilityService";
+import { likeStory, unlikeStory } from "../../service/like-story/LikeStoryService";
+import { FaStar } from "react-icons/fa6";
 
 const STORY_DURATION = 15_000;
 
@@ -50,6 +64,33 @@ function StoryPage() {
     const { userName } = useParams<{ userName: string }>();
     const navigate = useNavigate();
 
+    const { data: me } = useMe();
+
+    const queryClient = useQueryClient();
+
+    /*
+     * Central place to invalidate every cache that depends on
+     * "story viewed" state (e.g. the ring color around the avatar).
+     * Add new query keys here as the story indicator shows up
+     * in other pages.
+     */
+    const invalidateStoryCaches = useCallback(
+        (ownerUserName?: string) => {
+            if (ownerUserName) {
+                // Profile page (useOtherProfile)
+                queryClient.invalidateQueries({
+                    queryKey: ["profile", ownerUserName],
+                });
+            }
+
+            // TODO: other places that show the story ring, e.g.:
+            // queryClient.invalidateQueries({ queryKey: ["feed"] });
+            // queryClient.invalidateQueries({ queryKey: ["stories"] });
+            // queryClient.invalidateQueries({ queryKey: ["search"] });
+        },
+        [queryClient]
+    );
+
     const [page, setPage] =
         useState<PageResponse<StoryResponse> | null>(null);
 
@@ -63,6 +104,15 @@ function StoryPage() {
 
     const [imageLoading, setImageLoading] = useState(false);
 
+    const [viewers, setViewers] = useState<
+        StoryVisibilityResponse[]
+    >([]);
+
+    const [viewersLoading, setViewersLoading] =
+        useState(false);
+
+    const [showViewers, setShowViewers] = useState(false);
+
     useEffect(() => {
         let active = true;
 
@@ -70,12 +120,27 @@ function StoryPage() {
         setError(false);
         setPage(null);
         setActiveIndex(0);
+        setShowViewers(false);
+        setViewers([]);
 
         getUserStories(userName ?? "")
             .then((data) => {
-                if (active) {
-                    setPage(data);
+                if (!active) {
+                    return;
                 }
+
+                setPage(data);
+
+                const firstUnviewedIndex =
+                    data.content.findIndex(
+                        (story) => !story.viewed
+                    );
+
+                setActiveIndex(
+                    firstUnviewedIndex === -1
+                        ? 0
+                        : firstUnviewedIndex
+                );
             })
             .catch(() => {
                 if (active) {
@@ -112,6 +177,8 @@ function StoryPage() {
                 return;
             }
 
+            setShowViewers(false);
+            setViewers([]);
             setActiveIndex(nextIndex);
         },
         [close, page]
@@ -119,14 +186,66 @@ function StoryPage() {
 
     const story = page?.content[activeIndex];
 
+    const isOwnStory =
+        !!story &&
+        !!me &&
+        story.OwerUser?.id === me.id;
+
     /*
-     * Loads the private story image through the authenticated API.
-     *
-     * The API returns a Blob, which is converted into a temporary
-     * object URL that can be used by the <img> element.
+     * Registers the story view when the current story
+     * belongs to another user and has not been viewed yet.
      */
     useEffect(() => {
-        if (!story || story.storyType !== "IMAGE" || !story.imageUrl) {
+        if (!story || !me) {
+            return;
+        }
+
+        if (isOwnStory || story.viewed) {
+            return;
+        }
+
+        createStoryVisibility(story.id)
+            .then(() => {
+                setPage((currentPage) => {
+                    if (!currentPage) {
+                        return currentPage;
+                    }
+
+                    return {
+                        ...currentPage,
+                        content: currentPage.content.map(
+                            (currentStory) =>
+                                currentStory.id === story.id
+                                    ? {
+                                          ...currentStory,
+                                          viewed: true,
+                                      }
+                                    : currentStory
+                        ),
+                    };
+                });
+
+                invalidateStoryCaches(
+                    story.OwerUser?.userName ?? userName
+                );
+            })
+            .catch((error) => {
+                console.error(
+                    "Error creating story visibility:",
+                    error
+                );
+            });
+    }, [story, me, isOwnStory, invalidateStoryCaches, userName]);
+
+    /*
+     * Loads the private story image through the authenticated API.
+     */
+    useEffect(() => {
+        if (
+            !story ||
+            story.storyType !== "IMAGE" ||
+            !story.imageUrl
+        ) {
             setStoryImageUrl(null);
             return;
         }
@@ -148,7 +267,10 @@ function StoryPage() {
                 setStoryImageUrl(url);
             })
             .catch((error) => {
-                console.error("Error loading story image:", error);
+                console.error(
+                    "Error loading story image:",
+                    error
+                );
 
                 if (active) {
                     setStoryImageUrl(null);
@@ -177,7 +299,8 @@ function StoryPage() {
             loading ||
             error ||
             !page?.content.length ||
-            !story
+            !story ||
+            showViewers
         ) {
             return;
         }
@@ -195,8 +318,80 @@ function StoryPage() {
         error,
         loading,
         page,
+        showViewers,
         story,
     ]);
+
+    const handleLike = async () => {
+        if (!story) {
+            return;
+        }
+
+        const wasLiked = story.isLikedByMe;
+
+        try {
+            if (wasLiked) {
+                await unlikeStory(story.id);
+            } else {
+                await likeStory(story.id);
+            }
+
+            setPage((currentPage) => {
+                if (!currentPage) {
+                    return currentPage;
+                }
+
+                return {
+                    ...currentPage,
+                    content: currentPage.content.map(
+                        (currentStory) =>
+                            currentStory.id === story.id
+                                ? {
+                                      ...currentStory,
+                                      isLikedByMe: !wasLiked,
+                                  }
+                                : currentStory
+                    ),
+                };
+            });
+        } catch (error) {
+            console.error(
+                "Error updating story like:",
+                error
+            );
+        }
+    };
+
+    const handleShowViewers = async () => {
+        if (!story || !isOwnStory) {
+            return;
+        }
+
+        if (showViewers) {
+            setShowViewers(false);
+            return;
+        }
+
+        setShowViewers(true);
+        setViewersLoading(true);
+
+        try {
+            const response = await getStoryVisibilities(
+                story.id,
+                0,
+                50
+            );
+
+            setViewers(response.content);
+        } catch (error) {
+            console.error(
+                "Error loading story viewers:",
+                error
+            );
+        } finally {
+            setViewersLoading(false);
+        }
+    };
 
     const totalBars = page?.totalElements ?? 0;
 
@@ -305,6 +500,16 @@ function StoryPage() {
                         >
                             {relativeTime(story.createdAt)}
                         </time>
+
+                        {story.storyVisibility ===
+                            "CLOSE_FRIENDS" && (
+                            <span
+                                className="story-close-friends"
+                                title="Close friends story"
+                            >
+                                <FaStar />
+                            </span>
+                        )}
                     </header>
 
                     <div className="story-viewer-content">
@@ -317,11 +522,13 @@ function StoryPage() {
                                     Loading…
                                 </div>
                             ) : storyImageUrl ? (
-                                <img
-                                    className="story-viewer-image"
-                                    src={storyImageUrl}
-                                    alt="Story"
-                                />
+                                <div className="story-image-wrapper">
+                                    <img
+                                        className="story-viewer-image"
+                                        src={storyImageUrl}
+                                        alt="Story"
+                                    />
+                                </div>
                             ) : (
                                 <div className="story-viewer-message">
                                     <p>
@@ -331,12 +538,124 @@ function StoryPage() {
                             )
                         ) : (
                             <div className="story-viewer-text">
-                                {story.description ||
-                                    story.text ||
-                                    ""}
+                                {story.description || ""}
                             </div>
                         )}
                     </div>
+
+                    {story.storyType === "IMAGE" &&
+                        story.description && (
+                            <p className="story-viewer-description">
+                                {story.description}
+                            </p>
+                        )}
+
+                    <div className="story-viewer-actions">
+                        {isOwnStory && (
+                            <button
+                                className="story-viewer-views"
+                                onClick={handleShowViewers}
+                                type="button"
+                                aria-label="Show viewers"
+                            >
+                                <FiEye />
+
+                                <span>
+                                    {story.totalVisibilities}
+                                </span>
+                            </button>
+                        )}
+
+                        {!isOwnStory && (
+                            <button
+                                className={`story-viewer-like ${
+                                    story.isLikedByMe
+                                        ? "is-liked"
+                                        : ""
+                                }`}
+                                onClick={handleLike}
+                                type="button"
+                                aria-label={
+                                    story.isLikedByMe
+                                        ? "Unlike story"
+                                        : "Like story"
+                                }
+                            >
+                                <FiHeart />
+                            </button>
+                        )}
+                    </div>
+
+                    {showViewers && isOwnStory && (
+                        <aside className="story-viewers-panel">
+                            <div className="story-viewers-header">
+                                <strong>
+                                    Viewed by
+                                </strong>
+
+                                <button
+                                    onClick={() =>
+                                        setShowViewers(false)
+                                    }
+                                    type="button"
+                                    aria-label="Close viewers"
+                                >
+                                    <FiX />
+                                </button>
+                            </div>
+
+                            {viewersLoading ? (
+                                <p>
+                                    Loading viewers…
+                                </p>
+                            ) : viewers.length === 0 ? (
+                                <p>
+                                    No one has viewed this
+                                    story yet.
+                                </p>
+                            ) : (
+                                <div className="story-viewers-list">
+                                    {viewers.map(
+                                        (viewer) => (
+                                            <div
+                                                className="story-viewer-user"
+                                                key={
+                                                    viewer.id
+                                                }
+                                            >
+                                                <img
+                                                    src={formatePfpL(
+                                                        viewer
+                                                            .user
+                                                            .profileImageUrl
+                                                    )}
+                                                    alt=""
+                                                />
+
+                                                <div>
+                                                    <strong>
+                                                        {
+                                                            viewer
+                                                                .user
+                                                                .userName
+                                                        }
+                                                    </strong>
+
+                                                    <span>
+                                                        {
+                                                            viewer
+                                                                .user
+                                                                .name
+                                                        }
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            )}
+                        </aside>
+                    )}
 
                     <button
                         className="story-hit-area story-hit-area--previous"
