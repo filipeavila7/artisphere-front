@@ -11,4 +11,6 @@ export interface ProfileResponse {
   amIfollowing : boolean;
   isPrivateProfile : boolean; 
   followRequestStatus: "PENDING" | "ACCEPTED" | "REJECTED" | null;
+  hasStory : boolean;
+  hasUnviewedStory: boolean;
 }

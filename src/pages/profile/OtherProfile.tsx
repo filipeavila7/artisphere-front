@@ -85,7 +85,7 @@ function Profile() {
     },
   });
 
-  
+
 
   const handleFollow = () => {
     if (!profile) return;
@@ -140,7 +140,15 @@ function Profile() {
 
         <div className="profile-content">
 
-          <div className="profile-pfp-box">
+          <div
+            className={
+              profile.hasUnviewedStory
+                ? "profile-pfp-box story-unviewed"
+                : profile.hasStory
+                  ? "profile-pfp-box story-viewed"
+                  : "profile-pfp-box"
+            }
+          >
             <img
               className="profile-pfp"
               src={formatePfpL(profile.imageUrlProfile)}
@@ -253,23 +261,23 @@ function Profile() {
       </div>
 
       <div className="bio-box">
-          <p className="bio">{profile.bio}</p>
+        <p className="bio">{profile.bio}</p>
       </div>
 
-      
+
 
       <div className="profile-tab-content">
-    {activeTab === "posts" && (
-        canSeePosts ? (
+        {activeTab === "posts" && (
+          canSeePosts ? (
             <UserPosts
-                userName={profile.userName}
-                canSeePosts={canSeePosts}
+              userName={profile.userName}
+              canSeePosts={canSeePosts}
             />
-        ) : (
+          ) : (
             <PrivateProfile />
-        )
-    )}
-</div>
+          )
+        )}
+      </div>
 
       <ConfirmationModal
         isOpen={isUnfollowModalOpen}
