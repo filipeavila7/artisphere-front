@@ -256,7 +256,7 @@ function ProfileConfig() {
 
                     >
 
-                        <div className="visibility-icon">
+                        <div className="visibility-icon-a">
 
                             <FaGlobe />
 
@@ -298,7 +298,7 @@ function ProfileConfig() {
 
                     >
 
-                        <div className="visibility-icon">
+                        <div className="visibility-icon-a">
 
                             <FaLock />
 
@@ -348,7 +348,7 @@ function ProfileConfig() {
 
                     <div onClick={()=> navigate("/profile/config/close-friends")} className="close-option">
                         <div className="close-icon-box">
-                            <div className="visibility-icon">
+                            <div className="visibility-icon-a">
 
                                 <FaStar />
 

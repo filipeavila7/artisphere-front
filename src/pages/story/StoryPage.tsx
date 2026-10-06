@@ -4,7 +4,6 @@ import {
     FiArrowLeft,
     FiEye,
     FiHeart,
-    FiUsers,
     FiX,
 } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
@@ -80,11 +79,12 @@ function StoryPage() {
                 // Profile page (useOtherProfile)
                 queryClient.invalidateQueries({
                     queryKey: ["profile", ownerUserName],
+
                 });
             }
 
             // TODO: other places that show the story ring, e.g.:
-            // queryClient.invalidateQueries({ queryKey: ["feed"] });
+            queryClient.invalidateQueries({ queryKey: ["myFollowings"] });
             // queryClient.invalidateQueries({ queryKey: ["stories"] });
             // queryClient.invalidateQueries({ queryKey: ["search"] });
         },
@@ -217,9 +217,9 @@ function StoryPage() {
                             (currentStory) =>
                                 currentStory.id === story.id
                                     ? {
-                                          ...currentStory,
-                                          viewed: true,
-                                      }
+                                        ...currentStory,
+                                        viewed: true,
+                                    }
                                     : currentStory
                         ),
                     };
@@ -347,9 +347,9 @@ function StoryPage() {
                         (currentStory) =>
                             currentStory.id === story.id
                                 ? {
-                                      ...currentStory,
-                                      isLikedByMe: !wasLiked,
-                                  }
+                                    ...currentStory,
+                                    isLikedByMe: !wasLiked,
+                                }
                                 : currentStory
                     ),
                 };
@@ -457,22 +457,20 @@ function StoryPage() {
                                     key={index}
                                 >
                                     <span
-                                        className={`story-progress-fill ${
-                                            index < activeIndex
-                                                ? "is-complete"
-                                                : ""
-                                        } ${
-                                            index === activeIndex
+                                        className={`story-progress-fill ${index < activeIndex
+                                            ? "is-complete"
+                                            : ""
+                                            } ${index === activeIndex
                                                 ? "is-active"
                                                 : ""
-                                        }`}
+                                            }`}
                                         style={
                                             index === activeIndex
                                                 ? {
-                                                      animationDuration: `${STORY_DURATION}ms`,
-                                                      animationPlayState:
-                                                          "running",
-                                                  }
+                                                    animationDuration: `${STORY_DURATION}ms`,
+                                                    animationPlayState:
+                                                        "running",
+                                                }
                                                 : undefined
                                         }
                                     />
@@ -491,7 +489,9 @@ function StoryPage() {
                         />
 
                         <span className="story-viewer-username">
-                            {story.OwerUser?.userName ?? userName}
+                            {isOwnStory
+                                ? "you"
+                                : story.OwerUser?.userName ?? userName}
                         </span>
 
                         <time
@@ -503,13 +503,13 @@ function StoryPage() {
 
                         {story.storyVisibility ===
                             "CLOSE_FRIENDS" && (
-                            <span
-                                className="story-close-friends"
-                                title="Close friends story"
-                            >
-                                <FaStar />
-                            </span>
-                        )}
+                                <span
+                                    className="story-close-friends"
+                                    title="Close friends story"
+                                >
+                                    <FaStar />
+                                </span>
+                            )}
                     </header>
 
                     <div className="story-viewer-content">
@@ -568,11 +568,10 @@ function StoryPage() {
 
                         {!isOwnStory && (
                             <button
-                                className={`story-viewer-like ${
-                                    story.isLikedByMe
-                                        ? "is-liked"
-                                        : ""
-                                }`}
+                                className={`story-viewer-like ${story.isLikedByMe
+                                    ? "is-liked"
+                                    : ""
+                                    }`}
                                 onClick={handleLike}
                                 type="button"
                                 aria-label={

@@ -1,16 +1,20 @@
+
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import "../../styles/contacts.css"
+import "../../styles/contacts.css";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMyFollowing } from "../../service/follow/FollowService";
-import { formatePfpL } from "../../utils/formateImgProfile";
+
 
 import Me from "../user/Me";
+
+import StoryAvatar from "../story/StoryAvatar";
 
 function MyFollows() {
     const [isOpen, setIsOpen] = useState(false);
     const sentinelRef = useRef<HTMLDivElement>(null);
     const PAGE_SIZE = 10;
+
 
     const {
         data,
@@ -27,15 +31,18 @@ function MyFollows() {
             getMyFollowing(pageParam, PAGE_SIZE),
 
         getNextPageParam: (lastPage) =>
-            lastPage.last ? undefined : lastPage.number + 1,
+            lastPage.last
+                ? undefined
+                : lastPage.number + 1,
     });
 
-
     const followings = useMemo(
-        () => data?.pages.flatMap((page) => page.content) ?? [],
+        () =>
+            data?.pages.flatMap(
+                (page) => page.content
+            ) ?? [],
         [data]
-    )
-
+    );
 
     useEffect(() => {
         const sentinel = sentinelRef.current;
@@ -61,56 +68,86 @@ function MyFollows() {
         observer.observe(sentinel);
 
         return () => observer.disconnect();
-    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+    }, [
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    ]);
 
     if (isError) {
         return <p>Erro ao carregar seguindo.</p>;
     }
 
-
     return (
-        <aside className={`contacts-panel ${isOpen ? "open" : "closed"}`}>
-
+        <aside
+            className={`contacts-panel ${isOpen ? "open" : "closed"
+                }`}
+        >
             {isLoading && (
                 <p>Carregando conversas...</p>
             )}
-            <button className="btn-my-follows" onClick={() => setIsOpen(prev => !prev)}>
+
+            <button
+                className="btn-my-follows"
+                onClick={() =>
+                    setIsOpen((prev) => !prev)
+                }
+                type="button"
+            >
                 {isOpen ? ">>" : "<<"}
             </button>
 
-            
-
             {isOpen && (
-
-                
-
                 <div className="contacts-content">
-                    <Me/>
-                    {followings.map((following) => (
-                        <div className="following" key={following.userId} >
-                            <div className="following-data">
-                                <img className="following-pfp" src={formatePfpL(following.imageUrlProfile)} alt="" />
-                                <p className="following-name">{following.nome}</p>
-                            </div>
-                            {following.messageStatus && (
-                                <div className="message-status-box">
-                                    <p className="message-status">
-                                        {following.messageStatus}
+                    <Me />
+
+                    {followings.map((following) => {
+                        return (
+                            <div
+
+                                className="following"
+                                key={following.userId}
+                            >
+                                <div className="following-data">
+                                    <StoryAvatar
+                                        imageUrl={following.imageUrlProfile}
+                                        userName={following.userName} hasStory={following.hasStory}
+                                        hasUnviewedStory={following.hasUnviewedStory}
+                                        hasUnviewedCloseFriendsStory={following.hasUnviewedCloseFriendsStory}
+                                        size={75} />
+
+                                    <p className="following-name">
+                                        {following.nome}
                                     </p>
                                 </div>
-                            )}
 
-                        </div>
+                                {following.messageStatus && (
+                                    <div className="message-status-box">
+                                        <p className="message-status">
+                                            {
+                                                following.messageStatus
+                                            }
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
 
-                    ))}
+                    <div
+                        ref={sentinelRef}
+                        className="contacts-sentinel"
+                    />
 
-
+                    {isFetchingNextPage && (
+                        <p className="loading-more-follows">
+                            Carregando...
+                        </p>
+                    )}
                 </div>
             )}
-
         </aside>
     );
 }
 
-
-export default MyFollows
+export default MyFollows;

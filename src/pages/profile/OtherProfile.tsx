@@ -19,11 +19,12 @@ import {
 
 import { openConversation } from "../../service/conversation/ConversationService";
 
-import { formatePfpL } from "../../utils/formateImgProfile";
+
 
 import "../../styles/profile.css";
 import UserPosts from "../../components/post/UserPosts";
 import PrivateProfile from "../../components/post/PrivateProfile";
+import StoryAvatar from "../../components/story/StoryAvatar";
 
 type ProfileTab = "posts";
 
@@ -142,26 +143,13 @@ function Profile() {
 
 
 
-          <div
-            className={
-              profile.hasUnviewedStory
-                ? "profile-pfp-box story-unviewed"
-                : profile.hasStory
-                  ? "profile-pfp-box story-viewed"
-                  : "profile-pfp-box"
-            }
-            onClick={() => {
-              if (profile.hasStory) {
-                navigate(`/story/${profile.userName}`);
-              }
-            }}
-          >
-            <img
-              className="profile-pfp"
-              src={formatePfpL(profile.imageUrlProfile)}
-              alt=""
-            />
-          </div>
+          <StoryAvatar
+            imageUrl={profile.imageUrlProfile}
+            userName={profile.userName} 
+            hasStory={profile.hasStory}
+            hasUnviewedStory={profile.hasUnviewedStory}
+            hasUnviewedCloseFriendsStory={profile.hasUnviewedCloseFriendsStory}
+            size={170} />
 
 
           <div className="profile-data-box">

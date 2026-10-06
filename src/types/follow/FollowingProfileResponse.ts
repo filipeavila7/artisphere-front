@@ -5,4 +5,7 @@ export interface FollowingProfileResponse {
     messageStatus: string;
     userName: string;
     isCloseFriend: boolean;
+    hasStory : boolean;
+    hasUnviewedStory : boolean;
+    hasUnviewedCloseFriendsStory: boolean;
 }
