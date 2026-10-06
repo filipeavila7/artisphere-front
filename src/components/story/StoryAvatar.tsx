@@ -1,6 +1,6 @@
-
 import { useNavigate } from "react-router-dom";
 import { formatePfpL } from "../../utils/formateImgProfile";
+import { useMe } from "../../hooks/useMe";
 
 import "../../styles/story-avatar.css";
 
@@ -22,12 +22,21 @@ function StoryAvatar({
     size,
 }: StoryAvatarProps) {
     const navigate = useNavigate();
+    const { data: me } = useMe();
 
     const hasViewedStory =
         hasStory && !hasUnviewedStory;
 
+    const isOwnStory =
+        me?.userName === userName;
+
     const handleClick = () => {
         if (!hasStory) return;
+
+        if (isOwnStory) {
+            navigate("/story/me");
+            return;
+        }
 
         navigate(`/story/${userName}`);
     };
@@ -47,7 +56,9 @@ function StoryAvatar({
             style={{
                 width: size,
                 height: size,
-                cursor: hasStory ? "pointer" : "default",
+                cursor: hasStory
+                    ? "pointer"
+                    : "default",
             }}
         >
             <img
