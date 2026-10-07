@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useInfiniteQuery,
   useMutation,
+  useQueryClient,
 } from "@tanstack/react-query";
 
 import { formatTime } from "../../utils/formateData";
@@ -65,6 +66,8 @@ function Notifications() {
     Record<number, FollowRequestStatus>
   >({});
 
+  const queryClient = useQueryClient();
+
   const {
     data: user,
     isLoading: isLoadingUser,
@@ -111,6 +114,12 @@ function Notifications() {
         ...current,
         [notification.id]: "ACCEPTED",
       }));
+    },
+
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
     },
 
     onError: (_, requestId) => {

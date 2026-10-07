@@ -12,6 +12,7 @@ import { formatePfpL } from "../../utils/formateImgProfile";
 import LikedPosts from "../../components/likes/LikedPosts";
 import SavedPosts from "../../components/save/SavedPosts";
 import { useNavigate } from "react-router-dom";
+import StoryAvatar from "../../components/story/StoryAvatar";
 
 type ProfileTab = "posts" | "liked" | "saved";
 
@@ -54,11 +55,13 @@ function Profile() {
 
         <div className="profile-content">
           <div className="profile-pfp-box">
-            <img
-              className="profile-pfp"
-              src={formatePfpL(profile.imageUrlProfile)}
-              alt=""
-            />
+            <StoryAvatar
+              imageUrl={profile.imageUrlProfile}
+              userName={profile.userName}
+              hasStory={profile.hasStory}
+              hasUnviewedStory={profile.hasUnviewedStory}
+              hasUnviewedCloseFriendsStory={profile.hasUnviewedCloseFriendsStory}
+              size={170} />
 
             <div className="pfp-new">
               <FaPlus />

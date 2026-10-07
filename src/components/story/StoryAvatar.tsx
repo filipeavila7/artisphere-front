@@ -24,14 +24,17 @@ function StoryAvatar({
     const navigate = useNavigate();
     const { data: me } = useMe();
 
+    const canOpenStory =
+        hasStory || hasUnviewedCloseFriendsStory;
+
     const hasViewedStory =
-        hasStory && !hasUnviewedStory;
+        canOpenStory && !hasUnviewedStory;
 
     const isOwnStory =
         me?.userName === userName;
 
     const handleClick = () => {
-        if (!hasStory) return;
+        if (!canOpenStory) return;
 
         if (isOwnStory) {
             navigate("/story/me");
@@ -56,7 +59,7 @@ function StoryAvatar({
             style={{
                 width: size,
                 height: size,
-                cursor: hasStory
+                cursor: canOpenStory
                     ? "pointer"
                     : "default",
             }}
