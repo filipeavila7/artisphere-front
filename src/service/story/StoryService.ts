@@ -1,6 +1,16 @@
 import api from "../../api/api";
 import type { StoryRequest, StoryResponse, StoryTextRequest } from "../../types/story/StoryType";
 import type { PageResponse } from "../../types/page/PageResponse";
+import type { MyStoriesResponse } from "../../types/story/StoryType";
+
+export async function getMyStories(): Promise<MyStoriesResponse> {
+    const response = await api.get<MyStoriesResponse>("/stories/me");
+    return response.data;
+}
+
+export async function deleteStory(storyId: number): Promise<void> {
+    await api.delete(`/stories/${storyId}`);
+}
 
 export async function getUserStories(
     userName: string,

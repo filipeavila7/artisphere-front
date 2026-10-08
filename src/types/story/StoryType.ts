@@ -8,7 +8,7 @@ export interface StoryResponse {
     id: number;
     imageUrl: string;
     createdAt: string;
-    OwerUser: UserResponse;
+    ownerUser: UserResponse;
     storyType: StoryType;
     storyVisibility: StoryVisibility;
     totalVisibilities: number;
@@ -16,6 +16,16 @@ export interface StoryResponse {
     description?: string | null;
     text?: string | null;
     viewed: boolean;
+}
+
+export interface MyStorySummaryResponse {
+    id: number;
+    imageUrl: string;
+    createdAt: string;
+    storyType: StoryType;
+    description: string;
+    ownerUser: UserResponse;
+    totalVisibilities: number;
 }
 
 export interface StoryRequest {

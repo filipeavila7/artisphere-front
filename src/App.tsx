@@ -26,6 +26,8 @@ import CloseFriends from "./pages/close-friends/CloseFriends";
 import NewTextStory from "./pages/story/NewTextStory";
 import NewImgStory from "./pages/story/NewImgStory";
 import StoryPage from "./pages/story/StoryPage";
+import MyStoriesPage from "./pages/story/MyStoriesPage";
+import MyStoryViewerPage from "./pages/story/MyStoryViewerPage";
 
 function RootLayout() {
     return (
@@ -46,7 +48,8 @@ export const router = createBrowserRouter([
         children: [
             { path: "/login", element: <Login /> },
             { path: "/story/:userName", element: <StoryPage /> },
-            { path: "/story/me", element: <StoryPage /> },
+            { path: "/story/me/:storyId", element: <MyStoryViewerPage /> },
+            { path: "/story/me", element: <MyStoriesPage /> },
             {
                 path: "/",
                 element: <AppLayout />,
