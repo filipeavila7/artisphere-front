@@ -1,4 +1,5 @@
 import type { PostSummaryResponse } from "../post/PostSummaryResponse";
+import type { StorySummaryResponse } from "../story/StorySummaryResponse";
 
 export type NotificationType =
   | "COMMENT"
@@ -25,7 +26,8 @@ export interface NotificationGetResponse {
   senderName: string;
   senderUserName: string;
   senderPhoto: string;
-  post: PostSummaryResponse;
+  post?: PostSummaryResponse;
   followRequestId: number;
-  followRequestStatus: FollowRequestStatus;
+  followRequestStatus?: FollowRequestStatus;
+  storySummaryResponse? : StorySummaryResponse
 }

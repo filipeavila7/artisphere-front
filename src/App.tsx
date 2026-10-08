@@ -46,6 +46,7 @@ export const router = createBrowserRouter([
         children: [
             { path: "/login", element: <Login /> },
             { path: "/story/:userName", element: <StoryPage /> },
+            { path: "/story/me", element: <StoryPage /> },
             {
                 path: "/",
                 element: <AppLayout />,

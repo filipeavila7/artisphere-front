@@ -25,6 +25,7 @@ import "../../styles/profile.css";
 import UserPosts from "../../components/post/UserPosts";
 import PrivateProfile from "../../components/post/PrivateProfile";
 import StoryAvatar from "../../components/story/StoryAvatar";
+import Loading from "../../components/layout/Loading";
 
 type ProfileTab = "posts";
 
@@ -121,7 +122,7 @@ function Profile() {
   }
 
   if (isLoadingProfile) {
-    return <p>Carregando perfil...</p>;
+    return <Loading />;
   }
 
   if (isErrorProfile || !profile) {

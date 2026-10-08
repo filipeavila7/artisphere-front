@@ -27,6 +27,7 @@ import { CiShare2 } from "react-icons/ci";
 
 import "../../styles/post.css";
 import { useMe } from "../../hooks/useMe";
+import Loading from "../../components/layout/Loading";
 
 const breakpointColumns = {
   default: 4,
@@ -134,7 +135,7 @@ function PostDetails() {
 
 
   if (isLoading) {
-    return <p>Carregando...</p>;
+    return <Loading />;
   }
 
   if (isError || !data) {

@@ -8,11 +8,11 @@ import { FaBookmark, FaHeart, FaPlus, FaUserCheck } from "react-icons/fa6";
 import "../../styles/profile.css";
 import { IoIosDocument, IoIosShareAlt } from "react-icons/io";
 import MyPosts from "../../components/post/MyPosts";
-import { formatePfpL } from "../../utils/formateImgProfile";
 import LikedPosts from "../../components/likes/LikedPosts";
 import SavedPosts from "../../components/save/SavedPosts";
 import { useNavigate } from "react-router-dom";
 import StoryAvatar from "../../components/story/StoryAvatar";
+import Loading from "../../components/layout/Loading";
 
 type ProfileTab = "posts" | "liked" | "saved";
 
@@ -42,7 +42,7 @@ function Profile() {
   }
 
   if (isLoadingProfile) {
-    return <p>Carregando perfil...</p>;
+    return <Loading />;
   }
 
   if (isErrorProfile || !profile) {
