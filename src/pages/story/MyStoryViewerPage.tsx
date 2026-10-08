@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiArrowLeft, FiTrash2, FiX } from "react-icons/fi";
+import { FiArrowLeft, FiEye, FiTrash2, FiX } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -10,6 +10,8 @@ import {
 } from "../../service/story/StoryService";
 
 import type { MyStorySummaryResponse } from "../../types/story/StoryType";
+import type { StoryVisibilityResponse } from "../../types/story-visibility/StoryVisibilityResponse";
+import { getStoryVisibilities } from "../../service/story-visibility/StoryVisibilityService";
 
 import { formatePfpL } from "../../utils/formateImgProfile";
 
@@ -62,6 +64,10 @@ function MyStoryViewerPage() {
     const [imageLoading, setImageLoading] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
+    const [viewers, setViewers] = useState<StoryVisibilityResponse[]>([]);
+    const [viewersLoading, setViewersLoading] = useState(false);
+    const [showViewers, setShowViewers] = useState(false);
+    const activeStoryId = useRef<number | undefined>(undefined);
 
     const activeIndex = stories.findIndex(
         (story) => String(story.id) === storyId
@@ -72,9 +78,17 @@ function MyStoryViewerPage() {
             ? stories[activeIndex]
             : undefined;
 
+    activeStoryId.current = story?.id;
+
     const close = useCallback(() => {
         navigate("/story/me");
     }, [navigate]);
+
+    useEffect(() => {
+        setShowViewers(false);
+        setViewers([]);
+        setViewersLoading(false);
+    }, [story?.id]);
 
     useEffect(() => {
         if (
@@ -163,7 +177,8 @@ function MyStoryViewerPage() {
             isLoading ||
             isError ||
             !story ||
-            deleting
+            deleting ||
+            showViewers
         ) {
             return;
         }
@@ -181,8 +196,40 @@ function MyStoryViewerPage() {
         deleting,
         isError,
         isLoading,
+        showViewers,
         story
     ]);
+
+    const handleShowViewers = async () => {
+        if (!story) return;
+
+        if (showViewers) {
+            setShowViewers(false);
+            return;
+        }
+
+        const requestedStoryId = story.id;
+        setShowViewers(true);
+        setViewersLoading(true);
+
+        try {
+            const response = await getStoryVisibilities(
+                requestedStoryId,
+                0,
+                50
+            );
+
+            if (activeStoryId.current === requestedStoryId) {
+                setViewers(response.content);
+            }
+        } catch (error) {
+            console.error("Error loading story viewers:", error);
+        } finally {
+            if (activeStoryId.current === requestedStoryId) {
+                setViewersLoading(false);
+            }
+        }
+    };
 
     const handleDelete = async () => {
         if (!story || deleting) {
@@ -377,6 +424,16 @@ function MyStoryViewerPage() {
 
                     <div className="story-viewer-actions">
                         <button
+                            className="story-viewer-views"
+                            type="button"
+                            onClick={handleShowViewers}
+                            aria-label="Show viewers"
+                            aria-expanded={showViewers}
+                        >
+                            <FiEye />
+                            <span>{story.totalVisibilities}</span>
+                        </button>
+                        <button
                             className="my-story-delete"
                             type="button"
                             onClick={handleDelete}
@@ -387,6 +444,42 @@ function MyStoryViewerPage() {
                             <FiTrash2 />
                         </button>
                     </div>
+
+                    {showViewers && (
+                        <aside className="story-viewers-panel">
+                            <div className="story-viewers-header">
+                                <strong>Viewed by</strong>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowViewers(false)}
+                                    aria-label="Close viewers"
+                                >
+                                    <FiX />
+                                </button>
+                            </div>
+
+                            {viewersLoading ? (
+                                <p>Loading viewers…</p>
+                            ) : viewers.length === 0 ? (
+                                <p>No one has viewed this story yet.</p>
+                            ) : (
+                                <div className="story-viewers-list">
+                                    {viewers.map((viewer) => (
+                                        <div className="story-viewer-user" key={viewer.id}>
+                                            <img
+                                                src={formatePfpL(viewer.user.profileImageUrl)}
+                                                alt=""
+                                            />
+                                            <div>
+                                                <strong>{viewer.user.userName}</strong>
+                                                <span>{viewer.user.name}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </aside>
+                    )}
 
                     {deleteError && (
                         <p

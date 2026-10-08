@@ -1,10 +1,14 @@
 import api from "../../api/api";
-import type { StoryRequest, StoryResponse, StoryTextRequest } from "../../types/story/StoryType";
+import type {
+    MyStorySummaryResponse,
+    StoryRequest,
+    StoryResponse,
+    StoryTextRequest,
+} from "../../types/story/StoryType";
 import type { PageResponse } from "../../types/page/PageResponse";
-import type { MyStoriesResponse } from "../../types/story/StoryType";
 
-export async function getMyStories(): Promise<MyStoriesResponse> {
-    const response = await api.get<MyStoriesResponse>("/stories/me");
+export async function getMyStories(): Promise<MyStorySummaryResponse[]> {
+    const response = await api.get<MyStorySummaryResponse[]>("/stories/me");
     return response.data;
 }
 

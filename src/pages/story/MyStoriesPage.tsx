@@ -3,10 +3,10 @@ import { FiArrowLeft, FiX } from "react-icons/fi";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { getMyStories, getStoryImage } from "../../service/story/StoryService";
-import type { StoryResponse } from "../../types/story/StoryType";
+import type { MyStorySummaryResponse } from "../../types/story/StoryType";
 import "../../styles/story-page.css";
 
-function MyStoryThumbnail({ story }: { story: StoryResponse }) {
+function MyStoryThumbnail({ story }: { story: MyStorySummaryResponse }) {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     useEffect(() => {
@@ -35,7 +35,7 @@ function MyStoryThumbnail({ story }: { story: StoryResponse }) {
         ? imageUrl
             ? <img src={imageUrl} alt="" className="my-story-thumbnail-image" />
             : <span className="my-story-thumbnail-placeholder">Loading…</span>
-        : <span className="my-story-thumbnail-text">{story.text || story.description || "Text story"}</span>;
+        : <span className="my-story-thumbnail-text">{story.description || "Text story"}</span>;
 }
 
 function MyStoriesPage() {

@@ -9,6 +9,8 @@ export interface StoryResponse {
     imageUrl: string;
     createdAt: string;
     ownerUser: UserResponse;
+    /** Legacy property still read by StoryPage. */
+    OwerUser?: UserResponse;
     storyType: StoryType;
     storyVisibility: StoryVisibility;
     totalVisibilities: number;
