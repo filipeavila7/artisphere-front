@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiArrowLeft, FiEye, FiTrash2, FiX } from "react-icons/fi";
+import { FiArrowLeft, FiEye, FiHeart, FiTrash2, FiX } from "react-icons/fi";
+import { FaStar } from "react-icons/fa6";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -67,6 +68,7 @@ function MyStoryViewerPage() {
     const [viewers, setViewers] = useState<StoryVisibilityResponse[]>([]);
     const [viewersLoading, setViewersLoading] = useState(false);
     const [showViewers, setShowViewers] = useState(false);
+    const [showLikeBurst, setShowLikeBurst] = useState(false);
     const activeStoryId = useRef<number | undefined>(undefined);
 
     const activeIndex = stories.findIndex(
@@ -88,7 +90,48 @@ function MyStoryViewerPage() {
         setShowViewers(false);
         setViewers([]);
         setViewersLoading(false);
+        setShowLikeBurst(false);
     }, [story?.id]);
+
+    useEffect(() => {
+        if (!story) return;
+
+        let active = true;
+        const requestedStoryId = story.id;
+        setViewersLoading(true);
+
+        getStoryVisibilities(requestedStoryId, 0, 50)
+            .then((response) => {
+                if (active && activeStoryId.current === requestedStoryId) {
+                    setViewers(response.content);
+                }
+            })
+            .catch((error) => {
+                if (active) {
+                    console.error("Error loading story viewers:", error);
+                }
+            })
+            .finally(() => {
+                if (active && activeStoryId.current === requestedStoryId) {
+                    setViewersLoading(false);
+                }
+            });
+
+        return () => {
+            active = false;
+        };
+    }, [story?.id]);
+
+    useEffect(() => {
+        if (!viewers.some((viewer) => viewer.liked)) {
+            setShowLikeBurst(false);
+            return;
+        }
+
+        setShowLikeBurst(true);
+        const timer = window.setTimeout(() => setShowLikeBurst(false), 5_000);
+        return () => window.clearTimeout(timer);
+    }, [viewers, story?.id]);
 
     useEffect(() => {
         if (
@@ -200,35 +243,10 @@ function MyStoryViewerPage() {
         story
     ]);
 
-    const handleShowViewers = async () => {
+    const handleShowViewers = () => {
         if (!story) return;
 
-        if (showViewers) {
-            setShowViewers(false);
-            return;
-        }
-
-        const requestedStoryId = story.id;
-        setShowViewers(true);
-        setViewersLoading(true);
-
-        try {
-            const response = await getStoryVisibilities(
-                requestedStoryId,
-                0,
-                50
-            );
-
-            if (activeStoryId.current === requestedStoryId) {
-                setViewers(response.content);
-            }
-        } catch (error) {
-            console.error("Error loading story viewers:", error);
-        } finally {
-            if (activeStoryId.current === requestedStoryId) {
-                setViewersLoading(false);
-            }
-        }
+        setShowViewers((visible) => !visible);
     };
 
     const handleDelete = async () => {
@@ -290,6 +308,7 @@ function MyStoryViewerPage() {
     };
 
     const totalStories = stories.length;
+    console.log(story?.storyVisibility)
 
     return (
         <main
@@ -382,6 +401,18 @@ function MyStoryViewerPage() {
                                 story.createdAt
                             )}
                         </time>
+
+                      
+
+                        {story.storyVisibility === "CLOSE_FRIENDS" && (
+                            <span
+                                className="story-close-friends"
+                                title="Close friends story"
+                                aria-label="Close friends story"
+                            >
+                                <FaStar />
+                            </span>
+                        )}
                     </header>
 
                     <div className="story-viewer-content">
@@ -430,7 +461,15 @@ function MyStoryViewerPage() {
                             aria-label="Show viewers"
                             aria-expanded={showViewers}
                         >
-                            <FiEye />
+                            <span className="story-viewer-eye-icon">
+                                <FiEye />
+                            </span>
+                            {showLikeBurst && (
+                                <FiHeart
+                                    className="story-viewer-like-burst"
+                                    aria-hidden="true"
+                                />
+                            )}
                             <span>{story.totalVisibilities}</span>
                         </button>
                         <button
@@ -474,6 +513,13 @@ function MyStoryViewerPage() {
                                                 <strong>{viewer.user.userName}</strong>
                                                 <span>{viewer.user.name}</span>
                                             </div>
+                                            {viewer.liked && (
+                                                <FiHeart
+                                                    className="story-viewer-liked"
+                                                    aria-label="Liked this story"
+                                                    title="Liked this story"
+                                                />
+                                            )}
                                         </div>
                                     ))}
                                 </div>

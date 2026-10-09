@@ -23,6 +23,7 @@ import "../../styles/contacts.css";
 import MyFollows from "../../components/follow/MyFollows";
 import NotLogged from "../../components/auth/NotLogged";
 import Empty from "../../components/layout/Empty";
+import Loading from "../../components/layout/Loading";
 
 const PAGE_SIZE = 20;
 
@@ -192,7 +193,7 @@ function Contacts() {
     <main className="contact-lay">
 
       {isLoading && (
-        <p>Carregando conversas...</p>
+          <Loading />
       )}
 
       <div className="contact-list">

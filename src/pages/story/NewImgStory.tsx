@@ -4,10 +4,13 @@ import "../../styles/new-story-img.css"
 
 import type { StoryVisibility } from "../../types/story/StoryType";
 import { createStory, uploadStoryImage } from "../../service/story/StoryService";
+import { useQueryClient } from "@tanstack/react-query";
+
 
 function NewStoryImage() {
     const navigate = useNavigate();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const queryClient = useQueryClient();
 
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -55,6 +58,15 @@ function NewStoryImage() {
                 description: description.trim() || undefined,
             });
 
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: ["my-profile"],
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: ["profile"],
+                }),
+            ]);
+
             navigate("/feed");
         } catch (error) {
             console.error("Error creating story:", error);
@@ -87,9 +99,8 @@ function NewStoryImage() {
                 <div className="new-story-image-form">
 
                     <div
-                        className={`story-upload-area ${
-                            previewUrl ? "has-image" : ""
-                        }`}
+                        className={`story-upload-area ${previewUrl ? "has-image" : ""
+                            }`}
                         onClick={handleSelectImage}
                     >
                         <input
@@ -180,11 +191,10 @@ function NewStoryImage() {
 
                             <button
                                 type="button"
-                                className={`story-visibility-option ${
-                                    visibility === "EVERYONE"
+                                className={`story-visibility-option ${visibility === "EVERYONE"
                                         ? "selected"
                                         : ""
-                                }`}
+                                    }`}
                                 onClick={() =>
                                     setVisibility("EVERYONE")
                                 }
@@ -213,11 +223,10 @@ function NewStoryImage() {
 
                             <button
                                 type="button"
-                                className={`story-visibility-option ${
-                                    visibility === "CLOSE_FRIENDS"
+                                className={`story-visibility-option ${visibility === "CLOSE_FRIENDS"
                                         ? "selected"
                                         : ""
-                                }`}
+                                    }`}
                                 onClick={() =>
                                     setVisibility("CLOSE_FRIENDS")
                                 }

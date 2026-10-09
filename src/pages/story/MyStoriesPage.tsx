@@ -48,9 +48,9 @@ function MyStoriesPage() {
     return (
         <main className="my-stories-page">
             <header className="my-stories-header">
-                <button type="button" onClick={() => navigate(-1)} aria-label="Go back"><FiArrowLeft /></button>
+                <button type="button" onClick={() => navigate("/profile")} aria-label="Go back"><FiArrowLeft /></button>
                 <div><h1>My stories</h1><p>Your active stories</p></div>
-                <button type="button" onClick={() => navigate(-1)} aria-label="Close"><FiX /></button>
+                <button type="button" onClick={() => navigate("/profile")} aria-label="Close"><FiX /></button>
             </header>
 
             {isLoading ? <div className="my-stories-state" role="status">Loading your stories…</div>

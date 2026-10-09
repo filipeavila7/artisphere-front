@@ -37,6 +37,7 @@ import NotLogged from "../../components/auth/NotLogged";
 import { formatePfpL } from "../../utils/formateImgProfile";
 import Empty from "../../components/layout/Empty";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/layout/Loading";
 
 const PAGE_SIZE = 20;
 
@@ -283,7 +284,7 @@ function Notifications() {
   ]);
 
   if (isLoadingUser) {
-    return <p>Checking session...</p>;
+       return <Loading />;
   }
 
   if (isAuthError || !user) {
@@ -296,7 +297,7 @@ function Notifications() {
 
   return (
     <main className="notification-lay">
-      {isLoading && <p>Loading notifications...</p>}
+      {isLoading &&  <Loading />}
 
       <div className="notification-list">
         {!isLoading && notifications.length === 0 && (

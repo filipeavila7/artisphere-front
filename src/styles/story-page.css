@@ -320,6 +320,8 @@
 }
 
 .story-viewer-views {
+    position: relative;
+    overflow: visible;
     width: auto;
     min-width: 40px;
     padding: 0 12px;
@@ -329,6 +331,35 @@
 .story-viewer-views span {
     font-size: 12px;
     font-weight: 700;
+}
+
+.story-viewer-eye-icon {
+    display: grid;
+    place-items: center;
+}
+
+.story-viewer-views .story-viewer-eye-icon svg {
+    font-size: 19px;
+}
+
+.story-viewer-like-burst {
+    position: absolute;
+    z-index: 2;
+    top: -7px;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    color: #ff5a72;
+    fill: currentColor;
+    pointer-events: none;
+    animation: story-like-burst 5s ease-out forwards;
+}
+
+@keyframes story-like-burst {
+    0% { opacity: 0; transform: translate(-50%, 0) scale(.5); }
+    12% { opacity: 1; }
+    72% { opacity: .9; }
+    100% { opacity: 0; transform: translate(-50%, -48px) scale(1.15) rotate(-12deg); }
 }
 
 /* =========================
@@ -437,6 +468,14 @@
     font-size: 11px;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.story-viewer-liked {
+    flex: 0 0 auto;
+    margin-left: auto;
+    color: #ff5a72;
+    fill: currentColor;
+    font-size: 16px;
 }
 
 .story-viewers-panel > p {

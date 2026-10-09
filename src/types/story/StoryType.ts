@@ -25,6 +25,7 @@ export interface MyStorySummaryResponse {
     imageUrl: string;
     createdAt: string;
     storyType: StoryType;
+    storyVisibility?: StoryVisibility;
     description: string;
     ownerUser: UserResponse;
     totalVisibilities: number;
