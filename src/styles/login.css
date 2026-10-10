@@ -1,133 +1,474 @@
-.login-lay{
-    width: 100%;
-    height: 100vh;
-    display: flex;
+/* ================= LAYOUT ================= */
 
+.login-lay {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    overflow: hidden;
 }
 
+/* ================= LADO ESQUERDO ================= */
 
-.login-box-right{
-    width: 100%;
+.login-box-left {
+    position: relative;
+    width: 58%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 0 36px;
+    overflow: hidden;
+    color: var(--color-secundary);
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            color-mix(in srgb, white 16%, var(--color-primary)),
+            transparent 55%
+        ),
+        radial-gradient(
+            circle at 90% 95%,
+            color-mix(in srgb, black 30%, var(--color-primary)),
+            transparent 60%
+        ),
+        var(--color-primary);
+}
+
+/* bolhas flutuando no fundo */
+.login-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.35;
+    pointer-events: none;
+    background: var(--color-secundary);
+}
+
+.blob-1 {
+    width: 320px;
+    height: 320px;
+    top: -80px;
+    right: -60px;
+    animation: float-blob 12s ease-in-out infinite;
+}
+
+.blob-2 {
+    width: 260px;
+    height: 260px;
+    bottom: 120px;
+    left: -80px;
+    opacity: 0.2;
+    animation: float-blob 15s ease-in-out infinite reverse;
+}
+
+@keyframes float-blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(30px, 40px) scale(1.15); }
+}
+
+/* ---------- Marca (logo + nome) ---------- */
+
+.brand {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 56px;
+    animation: fade-down 0.7s ease both;
+}
+
+.brand-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.brand-name {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.brand-mobile {
+    display: none;
+    padding: 0;
+    color: var(--color-primary);
+    margin-bottom: 24px;
+}
+
+@keyframes fade-down {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 56px;
+}
+
+.hero-title {
+    display: flex;
+    flex-direction: column;
+    font-size: 64px;
+    line-height: 1.05;
+    font-weight: 800;
+}
+
+.hero-title .highlight {
+    width: fit-content;
+    background-image: linear-gradient(
+        transparent 78%,
+        rgba(255, 255, 255, 0.35) 78%
+    );
+}
+
+.hero-text {
+    margin-top: 18px;
+    max-width: 440px;
+    font-size: 20px;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+/* entrada escalonada: cada elemento usa --i como atraso */
+.reveal {
+    opacity: 0;
+    animation: reveal-up 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation-delay: calc(var(--i, 0) * 0.12s + 0.15s);
+}
+
+@keyframes reveal-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Ícones sociais ---------- */
+
+.login-icons-box {
+    display: flex;
+    gap: 14px;
+    padding-top: 28px;
+}
+
+.login-icon-box {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    background-color: var(--color-secundary);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.login-icon-box:hover {
+    transform: translateY(-5px) rotate(-4deg);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.login-icon {
+    color: var(--color-primary);
+    font-size: 24px;
+}
+
+/* ---------- Marquee de avatares ---------- */
+
+.avatar-marquee {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* esmaece as bordas esquerda e direita */
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 12%,
+        black 88%,
+        transparent
+    );
+    mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 12%,
+        black 88%,
+        transparent
+    );
+}
+
+.marquee-row {
+    overflow: hidden;
+}
+
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-left 35s linear infinite;
+}
+
+.marquee-track.reverse {
+    animation-name: marquee-right;
+    animation-duration: 42s;
+}
+
+.marquee-row:hover .marquee-track {
+    animation-play-state: paused;
+}
+
+.marquee-group {
+    display: flex;
+    flex-shrink: 0;
+}
+
+/* margin em vez de gap, pra animação de -50% fechar certinho */
+.marquee-avatar {
+    width: 76px;
+    height: 76px;
+    margin-right: 16px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.15);
+    user-select: none;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.marquee-avatar:hover {
+    transform: scale(1.18);
+    border-color: var(--color-secundary);
+}
+
+@keyframes marquee-left {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+@keyframes marquee-right {
+    from { transform: translateX(-50%); }
+    to   { transform: translateX(0); }
+}
+
+/* ================= LADO DIREITO ================= */
+
+.login-box-right {
+    width: 42%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 24px;
     background-color: var(--color-secundary);
     color: var(--color-primary);
+}
+
+.login-heading {
+    width: 100%;
+    max-width: 440px;
+    margin-bottom: 24px;
+    animation: reveal-up 0.7s ease both;
+}
+
+.login-heading h1 {
+    font-size: 42px;
+    font-weight: 800;
+    padding-bottom: 6px;
+}
+
+.login-heading p {
+    opacity: 0.7;
+    font-size: 16px;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 440px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 30px 20px;
-}
-
-.login-box-right h1{
-    font-size: 50px;
-    padding-bottom: 10px;
-}
-
-.login-box-left{
-    width: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 34px;
+    border-radius: 20px;
     background-color: var(--color-primary);
-    color: var(--color-secundary);
+    box-shadow: 0 24px 60px
+        color-mix(in srgb, var(--color-primary) 40%, transparent);
+    animation: reveal-up 0.8s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-.title-r-box{
+/* ---------- Form ---------- */
+
+.login-form {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.title-r-box h1{
-    font-size: 60px;
-}
-
-.title-r-box p{
-    font-size: 21px;
-}
-
-
-.p-r-box{
-    padding-top: 10px;
-    padding-bottom: 20px;
-    width: 400px;
-    border-bottom: 4px solid var(--color-secundary);
-}
-
-
-.login-box{
-   background-color: var(--color-primary);
-   width: 70%; 
-   height: 480px;
-   border-radius: 10px;
-   display: flex;
-   flex-direction: column;
-   padding: 30px;
-
-}
-
-
-.login-form{
-    display: flex;
-    color: var(--color-secundary);
     flex-direction: column;
     gap: 20px;
     width: 100%;
+    color: var(--color-secundary);
 }
 
-.login-form label{
-    font-size: 20px;
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.login-box input{
-    background-color: transparent;
+.login-form label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    color: var(--color-secundary);
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 12px;
     outline: none;
-    border: 1px solid rgb(233, 225, 225);
-    padding: 15px;
-    border-radius: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.login-box input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.login-box input:focus {
+    border-color: var(--color-secundary);
+    background-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.15);
+}
+
+/* ---------- Senha com botão de mostrar/ocultar ---------- */
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 48px;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    display: flex;
+    border: none;
+    background: transparent;
     color: var(--color-secundary);
     font-size: 18px;
-}
-
-.btn-login-box{
-    padding-top: 10px;
-}
-
-.line{
-    width: 100%;
-    margin-top: 20px;
-    height: 3px;
-    background-color: var(--color-secundary);
-}
-
-.sign-box{
-    padding-top: 20px;
+    opacity: 0.7;
     cursor: pointer;
-    text-decoration: underline;
-    text-align: center;
-    color: var(--color-secundary);
+    transition: opacity 0.2s ease;
 }
 
-.forgot-box{
+.toggle-password:hover {
+    opacity: 1;
+}
+
+/* ---------- Erro ---------- */
+
+.login-error {
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 10px;
+    background: rgba(255, 90, 90, 0.18);
+    border: 1px solid rgba(255, 130, 130, 0.6);
+    animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-6px); }
+    40%      { transform: translateX(6px); }
+    60%      { transform: translateX(-4px); }
+    80%      { transform: translateX(4px); }
+}
+
+/* ---------- Botão / links ---------- */
+
+.btn-login-box {
+    padding-top: 6px;
+}
+
+.forgot-box {
     display: flex;
     justify-content: center;
+}
+
+.link-btn {
+    border: none;
+    background: transparent;
+    color: var(--color-secundary);
+    font-size: 15px;
+    cursor: pointer;
     text-decoration: underline;
-    cursor: pointer;
+    text-underline-offset: 3px;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
 }
 
-.login-icons-box{
+.link-btn:hover {
+    opacity: 1;
+}
+
+.link-btn.strong {
+    font-weight: 700;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    margin-top: 24px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.sign-box {
     display: flex;
-    gap: 15px;
+    justify-content: center;
+    gap: 8px;
     padding-top: 20px;
+    color: var(--color-secundary);
+    font-size: 15px;
 }
 
-.login-icon-box{
-    padding: 15px 20px;
-    border-radius: 20px;
-    display: flex;
-    cursor: pointer;
-    background-color: var(--color-secundary);
+/* ================= RESPONSIVO ================= */
+
+@media (max-width: 900px) {
+    .login-box-left {
+        display: none;
+    }
+
+    .login-box-right {
+        width: 100%;
+        min-height: 100vh;
+    }
+
+    .brand-mobile {
+        display: flex;
+    }
+
+    .login-heading h1 {
+        font-size: 34px;
+    }
 }
 
-.login-icon{
-    color: var(--color-primary);
-    font-size: 30px;
+/* respeita quem desativou animações no sistema */
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .brand,
+    .login-heading,
+    .login-box,
+    .login-blob,
+    .marquee-track,
+    .login-error {
+        animation: none !important;
+        opacity: 1;
+    }
 }

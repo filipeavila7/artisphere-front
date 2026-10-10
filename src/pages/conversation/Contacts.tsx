@@ -27,6 +27,9 @@ import Loading from "../../components/layout/Loading";
 
 const PAGE_SIZE = 20;
 
+// limite do atraso da animação de entrada
+const MAX_STAGGER = 10;
+
 function Contacts() {
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -50,8 +53,7 @@ function Contacts() {
     queryKey: ["conversations"],
     initialPageParam: 0,
 
-    queryFn: ({ pageParam }) =>
-      getConversations(pageParam, PAGE_SIZE),
+    queryFn: ({ pageParam }) => getConversations(pageParam, PAGE_SIZE),
 
     getNextPageParam: (lastPage) =>
       lastPage.last ? undefined : lastPage.number + 1,
@@ -74,65 +76,54 @@ function Contacts() {
   const unreadByConversation = useMemo(
     () =>
       new Map(
-        unreadCounts.map((item) => [
-          item.conversationId,
-          item.unreadCount,
-        ])
+        unreadCounts.map((item) => [item.conversationId, item.unreadCount])
       ),
     [unreadCounts]
   );
 
   // Atualiza a última mensagem da conversa em tempo real
   useStompTopic<ConversationUpdateResponse>(
-    user
-      ? `/topic/conversations/${user.id}`
-      : undefined,
+    user ? `/topic/conversations/${user.id}` : undefined,
 
     (update) => {
       queryClient.setQueryData<
         InfiniteData<PageResponse<ConversationResponse>>
-      >(
-        ["conversations"],
-        (current) => {
-          if (!current) return current;
+      >(["conversations"], (current) => {
+        if (!current) return current;
 
-          let wasFound = false;
+        let wasFound = false;
 
-          const pages = current.pages.map((page) => ({
-            ...page,
+        const pages = current.pages.map((page) => ({
+          ...page,
 
-            content: page.content.map((conversation) => {
-              if (
-                conversation.conversationId !==
-                update.conversationId
-              ) {
-                return conversation;
-              }
+          content: page.content.map((conversation) => {
+            if (conversation.conversationId !== update.conversationId) {
+              return conversation;
+            }
 
-              wasFound = true;
+            wasFound = true;
 
-              return {
-                ...conversation,
-                lastMessage: update.lastMessage,
-                lastMessageAt: update.lastMessageAt,
-              };
-            }),
-          }));
+            return {
+              ...conversation,
+              lastMessage: update.lastMessage,
+              lastMessageAt: update.lastMessageAt,
+            };
+          }),
+        }));
 
-          // Se a conversa ainda não estiver carregada,
-          // busca novamente a lista.
-          if (!wasFound) {
-            void queryClient.invalidateQueries({
-              queryKey: ["conversations"],
-            });
-          }
-
-          return {
-            ...current,
-            pages,
-          };
+        // Se a conversa ainda não estiver carregada,
+        // busca novamente a lista.
+        if (!wasFound) {
+          void queryClient.invalidateQueries({
+            queryKey: ["conversations"],
+          });
         }
-      );
+
+        return {
+          ...current,
+          pages,
+        };
+      });
 
       // Atualiza a quantidade de mensagens não lidas
       void queryClient.invalidateQueries({
@@ -151,11 +142,7 @@ function Contacts() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (
-          entry.isIntersecting &&
-          hasNextPage &&
-          !isFetchingNextPage
-        ) {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
           void fetchNextPage();
         }
       },
@@ -168,11 +155,7 @@ function Contacts() {
     observer.observe(sentinel);
 
     return () => observer.disconnect();
-  }, [
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  ]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   // Ainda verificando o usuário
   if (isLoadingUser) {
@@ -191,117 +174,94 @@ function Contacts() {
 
   return (
     <main className="contact-lay">
+      <div className="contact-column">
+        <h1 className="contact-title">Messages</h1>
 
-      {isLoading && (
-          <Loading />
-      )}
+        {isLoading && <Loading />}
 
-      <div className="contact-list">
+        <div className="contact-list">
+          {!isLoading && conversations.length === 0 && <Empty />}
 
-        {!isLoading && conversations.length === 0 && (
-          <Empty />
-        )}
+          {conversations.map((conversation, index) => {
+            const unreadCount =
+              unreadByConversation.get(conversation.conversationId) ?? 0;
 
-        {conversations.map((conversation) => {
-          const unreadCount =
-            unreadByConversation.get(
-              conversation.conversationId
-            ) ?? 0;
+            const openConversation = () => {
+              navigate(`/messages/${conversation.conversationId}`, {
+                state: { conversation },
+              });
+            };
 
-          return (
-            <div
-              className="contact-box"
-              key={conversation.conversationId}
-              role="button"
-              tabIndex={0}
-
-              onClick={() => {
-                navigate(
-                  `/messages/${conversation.conversationId}`,
+            return (
+              <div
+                className={`contact-box ${unreadCount > 0 ? "unread" : ""}`}
+                key={conversation.conversationId}
+                role="button"
+                tabIndex={0}
+                style={
                   {
-                    state: { conversation },
-                  }
-                );
-              }}
-
-              onKeyDown={(event) => {
-                if (
-                  event.key === "Enter" ||
-                  event.key === " "
-                ) {
-                  navigate(
-                    `/messages/${conversation.conversationId}`,
-                    {
-                      state: { conversation },
-                    }
-                  );
+                    "--i": Math.min(index % PAGE_SIZE, MAX_STAGGER),
+                  } as React.CSSProperties
                 }
-              }}
-            >
+                onClick={openConversation}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    openConversation();
+                  }
+                }}
+              >
+                <div className="data-lay">
+                  <div className="contact-pfp-box">
+                    <img
+                      src={
+                        conversation.otherUserPhoto
+                          ? conversation.otherUserPhoto
+                          : "null-pfp.png"
+                      }
+                      alt=""
+                      className="contact-pfp"
+                      loading="lazy"
+                    />
+                  </div>
 
-              <div className="data-lay">
+                  <div className="contact-data-box">
+                    <p className="contact-name">
+                      {conversation.otherUserName}
+                    </p>
 
-                <div className="contact-pfp-box">
-                  <img
-                    src={
-                      conversation.otherUserPhoto
-                        ? conversation.otherUserPhoto
-                        : "null-pfp-l.png"
-                    }
-                    alt=""
-                    className="contact-pfp"
-                  />
+                    <p className="last-message">
+                      {conversation.lastMessage
+                        ? conversation.lastMessage
+                        : "Nenhuma mensagem"}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="contact-data-box">
+                <div className="message-at-box">
+                  <p>{formatTime(conversation.lastMessageAt)}</p>
 
-                  <p className="contact-name">
-                    {conversation.otherUserName}
-                  </p>
-
-                  <p className="last-message">
-                    {conversation.lastMessage
-                      ? conversation.lastMessage
-                      : "Nenhuma mensagem"}
-                  </p>
-
-                </div>
-
-              </div>
-
-              <div className="message-at-box">
-
-                <p>
-                  {formatTime(
-                    conversation.lastMessageAt
+                  {unreadCount > 0 && (
+                    <span className="contact-unread-badge">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
                   )}
-                </p>
-
-                {unreadCount > 0 && (
-                  <span className="contact-unread-badge">
-                    {unreadCount}
-                  </span>
-                )}
-
+                </div>
               </div>
+            );
+          })}
 
-            </div>
-          );
-        })}
+          {isFetchingNextPage && (
+            <p className="contact-loading-more">
+              Carregando mais conversas...
+            </p>
+          )}
 
+          {/* sentinela dentro da lista com scroll */}
+          <div ref={sentinelRef} style={{ height: "10px", flexShrink: 0 }} />
+        </div>
       </div>
 
       <MyFollows />
-
-      {isFetchingNextPage && (
-        <p>Carregando mais conversas...</p>
-      )}
-
-      <div
-        ref={sentinelRef}
-        style={{ height: "10px" }}
-      />
-
     </main>
   );
 }

@@ -30,7 +30,7 @@ import { useMe } from "../../hooks/useMe";
 import Loading from "../../components/layout/Loading";
 
 const breakpointColumns = {
-  default: 4,
+  default: 6,
   1200: 3,
   900: 3,
   640: 2,

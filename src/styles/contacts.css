@@ -1,178 +1,469 @@
+/* ================= LAYOUT ================= */
+
 .contact-lay {
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
     width: 100%;
-    gap: 10px;
+    gap: 16px;
+}
 
+.contact-column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
 
+.contact-title {
+    margin-bottom: 16px;
+    font-size: 28px;
+    font-weight: 800;
+    color: #1f2937;
+    animation: contact-fade-up 0.5s ease both;
 }
 
 .contact-list {
     width: 100%;
+    height: 500px;
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    height: 500px;
+    gap: 10px;
     overflow-y: auto;
+    padding: 4px 6px 4px 2px;
+
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-primary) 35%, transparent)
+        transparent;
 }
 
-.data-lay {
-    display: flex;
+.contact-list::-webkit-scrollbar {
+    width: 6px;
 }
 
+.contact-list::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+/* ================= CARD DA CONVERSA ================= */
 
 .contact-box {
+    position: relative;
+    flex-shrink: 0;
     display: flex;
-    color: white;
-    padding: 20px;
-    background-color: var(--color-primary);
-    width: 100%;
+    align-items: center;
     justify-content: space-between;
-    border-radius: 15px;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 18px;
+    overflow: hidden;
+    border-radius: 16px;
     cursor: pointer;
+    color: #1f2937;
+    background-color: var(--color-secundary);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    /* entrada escalonada: --i vem do TSX */
+    opacity: 0;
+    animation: contact-fade-up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation-delay: calc(var(--i, 0) * 45ms);
+
+    transition: transform 0.25s ease, box-shadow 0.25s ease,
+        border-color 0.25s ease, background-color 0.25s ease;
+}
+
+/* barrinha roxa que cresce no hover */
+.contact-box::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: var(--color-primary);
+    transform: scaleY(0);
+    transition: transform 0.25s ease;
 }
 
 .contact-box:hover {
-    filter: brightness(80%);
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+    box-shadow: 0 12px 28px
+        color-mix(in srgb, var(--color-primary) 14%, transparent);
 }
 
+.contact-box:hover::before {
+    transform: scaleY(1);
+}
 
+.contact-box:active {
+    transform: translateY(0) scale(0.99);
+}
+
+.contact-box:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+    outline-offset: 2px;
+}
+
+/* conversa com mensagens não lidas */
+.contact-box.unread {
+    background-color: color-mix(
+        in srgb,
+        var(--color-primary) 6%,
+        var(--color-secundary)
+    );
+    border-color: color-mix(in srgb, var(--color-primary) 28%, transparent);
+}
+
+.contact-box.unread::before {
+    transform: scaleY(1);
+}
+
+@keyframes contact-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================= DADOS ================= */
+
+.data-lay {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.contact-pfp-box {
+    flex-shrink: 0;
+}
 
 .contact-pfp {
-    width: 60px;
-    border-radius: 100px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
+    display: block;
+    border-radius: 50%;
     object-fit: cover;
+    border: 2px solid transparent;
+    transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
-.following-pfp-wrapper{
-    border-radius: 100px;
-    cursor: pointer;
-}
-
-.following-pfp-wrapper.has-unviewed-story{
-   border : 4px solid #efd8f3
-}
-
-
-.following-pfp-wrapper.has-viewed-story {
-    border: 4px solid #9f9b9b;
-    
+.contact-box:hover .contact-pfp {
+    transform: scale(1.05);
+    border-color: color-mix(in srgb, var(--color-primary) 55%, transparent);
 }
 
 .contact-data-box {
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    padding-left: 10px;
-
+    gap: 4px;
 }
 
 .contact-name {
-    font-size: 18px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .last-message {
-    padding-top: 5px;
-    margin-left: 8px;
     font-size: 14px;
-    color: rgb(212, 208, 208);
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
+.contact-box.unread .contact-name {
+    font-weight: 800;
+}
+
+.contact-box.unread .last-message {
+    color: #374151;
+    font-weight: 600;
+}
+
+/* ================= HORÁRIO + BADGE ================= */
 
 .message-at-box {
-    font-size: 14px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #9ca3af;
 }
 
+.contact-box.unread .message-at-box p {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.contact-unread-badge {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-secundary);
+    background-color: var(--color-primary);
+    border-radius: 999px;
+    animation:
+        contact-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+        contact-pulse 2.2s 0.6s ease-out infinite;
+}
+
+@keyframes contact-pop {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes contact-pulse {
+    0% {
+        box-shadow: 0 0 0 0
+            color-mix(in srgb, var(--color-primary) 45%, transparent);
+    }
+    70%, 100% {
+        box-shadow: 0 0 0 9px transparent;
+    }
+}
+
+/* ================= CARREGANDO MAIS ================= */
+
+.contact-loading-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.contact-loading-more::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+    border-top-color: var(--color-primary);
+    animation: contact-spin 0.7s linear infinite;
+}
+
+@keyframes contact-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ================= PAINEL MyFollows ================= */
 
 .contacts-panel {
     display: flex;
     height: 500px;
     overflow: hidden;
-    transition: width 0.3s ease;
-    color: white;
-
-}
-
-.btn-my-follows {
-    border: none;
-    background-color: #56336a;
-    color: white;
-    border-radius: 10px;
-    cursor: pointer;
+    color: #1f2937;
+    transition: width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .contacts-panel.open {
     width: 60%;
-    background-color: var(--color-primary);
-    border-radius: 15px;
+    border-radius: 16px;
+    background-color: var(--color-secundary);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .contacts-panel.closed {
     width: 20px;
 }
 
+.btn-my-follows {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    transition: background-color 0.2s ease, color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.btn-my-follows:hover {
+    color: var(--color-secundary);
+    background-color: var(--color-primary);
+}
+
+.btn-my-follows:active {
+    transform: scale(0.94);
+}
 
 .contacts-content {
-    padding: 30px 20px;
     width: 100%;
     display: flex;
     flex-direction: column;
-
-    gap: 50px;
+    gap: 40px;
+    padding: 28px 20px;
     overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-primary) 35%, transparent)
+        transparent;
 }
 
 .following {
     display: flex;
     gap: 20px;
     justify-content: space-between;
-
-
 }
 
 .following-data {
+    width: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    width: 100px;
+}
 
+/* anel do story: gradiente = não visto, cinza = visto */
+.following-pfp-wrapper {
+    display: flex;
+    padding: 3px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+}
+
+.following-pfp-wrapper:hover {
+    transform: scale(1.07);
+}
+
+.following-pfp-wrapper.has-unviewed-story {
+    background: linear-gradient(45deg, var(--color-primary), #ec4899);
+}
+
+.following-pfp-wrapper.has-viewed-story {
+    background: #d1d5db;
 }
 
 .following-pfp {
     width: 70px;
     height: 70px;
-    border-radius: 100px;
-}
-
-.message-status-box {
-    color: var(--color-primary);
-    background-color: white;
-    border-radius: 20px;
-    padding: 10px;
-    width: 60%;
-    cursor: pointer;
-    text-align: center;
-
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-secundary);
 }
 
 .following-name {
+    max-width: 100%;
+    font-size: 14px;
+    font-weight: 600;
     text-align: center;
+    color: #374151;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ---------- status (recado) ---------- */
+
+.message-status-box {
+    width: 60%;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 20px;
+    color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.message-status-box:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    transform: translateY(-1px);
 }
 
 .message-status-input {
-    color: var(--color-primary);
-    background-color: white;
-    border-radius: 20px;
-    padding: 10px;
     width: 60%;
     display: flex;
+    padding: 10px;
     resize: none;
     font-size: 17px;
     text-align: center;
+    border-radius: 20px;
+    outline: none;
+    color: #1f2937;
+    background-color: var(--color-secundary);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message-status-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px
+        color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
 
 .message-status {
     overflow-wrap: break-word;
 }
 
+/* ================= RESPONSIVO / ACESSIBILIDADE ================= */
 
+@media (max-width: 800px) {
+    .contact-lay {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .contacts-panel.open {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .contact-box {
+        padding: 12px 14px;
+    }
+
+    .contact-pfp {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .contact-box,
+    .contact-title,
+    .contact-unread-badge {
+        animation: none;
+        opacity: 1;
+    }
+
+    .contact-box,
+    .contact-pfp,
+    .contacts-panel,
+    .following-pfp-wrapper {
+        transition: none;
+    }
+}

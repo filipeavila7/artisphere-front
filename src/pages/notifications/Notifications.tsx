@@ -41,6 +41,9 @@ import Loading from "../../components/layout/Loading";
 
 const PAGE_SIZE = 20;
 
+// limite do atraso da animação de entrada (evita cards demorando muito pra aparecer)
+const MAX_STAGGER = 10;
+
 const notificationIconClasses: Record<NotificationType, string> = {
   COMMENT: "notification-icon comment",
   LIKE: "notification-icon like",
@@ -51,11 +54,7 @@ const notificationIconClasses: Record<NotificationType, string> = {
   REPLY: "notification-icon reply",
 };
 
-
-const notificationIcons: Record<
-  NotificationType,
-  React.ReactNode
-> = {
+const notificationIcons: Record<NotificationType, React.ReactNode> = {
   COMMENT: <FaComment />,
   LIKE: <FaHeart />,
   FOLLOW: <FaUserPlus />,
@@ -73,9 +72,10 @@ function Notifications() {
     Record<number, FollowRequestStatus>
   >({});
 
-  const [storyImages, setStoryImages] = useState<
-    Record<number, string>
-  >({});
+  const [storyImages, setStoryImages] = useState<Record<number, string>>({});
+
+  // guarda sempre a versão mais recente pra liberar os Object URLs só no unmount
+  const storyImagesRef = useRef<Record<number, string>>({});
 
   const queryClient = useQueryClient();
 
@@ -96,8 +96,7 @@ function Notifications() {
     queryKey: ["notifications"],
     initialPageParam: 0,
 
-    queryFn: ({ pageParam }) =>
-      getNotification(pageParam, PAGE_SIZE),
+    queryFn: ({ pageParam }) => getNotification(pageParam, PAGE_SIZE),
 
     getNextPageParam: (lastPage) =>
       lastPage.last ? undefined : lastPage.number + 1,
@@ -124,7 +123,7 @@ function Notifications() {
       const storyNotifications = notifications.filter(
         (notification) =>
           notification.storySummaryResponse &&
-          !storyImages[notification.id]
+          !storyImagesRef.current[notification.id]
       );
 
       for (const notification of storyNotifications) {
@@ -135,9 +134,9 @@ function Notifications() {
         }
 
         try {
-          const imageUrl = await getStoryImage(
-            story.imageUrl
-          );
+          const imageUrl = await getStoryImage(story.imageUrl);
+
+          storyImagesRef.current[notification.id] = imageUrl;
 
           setStoryImages((current) => ({
             ...current,
@@ -156,22 +155,21 @@ function Notifications() {
     };
 
     void loadStoryImages();
-  }, [notifications, storyImages]);
+  }, [notifications]);
 
   /*
-   * Libera os Object URLs quando o componente for desmontado.
+   * Libera os Object URLs somente quando o componente for desmontado.
    */
   useEffect(() => {
     return () => {
-      Object.values(storyImages).forEach((imageUrl) => {
+      Object.values(storyImagesRef.current).forEach((imageUrl) => {
         URL.revokeObjectURL(imageUrl);
       });
     };
-  }, [storyImages]);
+  }, []);
 
   const acceptMutation = useMutation({
-    mutationFn: (requestId: number) =>
-      acceptFollowRequest(requestId),
+    mutationFn: (requestId: number) => acceptFollowRequest(requestId),
 
     onMutate: (requestId) => {
       const notification = notifications.find(
@@ -214,8 +212,7 @@ function Notifications() {
   });
 
   const rejectMutation = useMutation({
-    mutationFn: (requestId: number) =>
-      rejectFollowRequest(requestId),
+    mutationFn: (requestId: number) => rejectFollowRequest(requestId),
 
     onMutate: (requestId) => {
       const notification = notifications.find(
@@ -260,11 +257,7 @@ function Notifications() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (
-          entry.isIntersecting &&
-          hasNextPage &&
-          !isFetchingNextPage
-        ) {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
           void fetchNextPage();
         }
       },
@@ -277,14 +270,10 @@ function Notifications() {
     observer.observe(sentinel);
 
     return () => observer.disconnect();
-  }, [
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  ]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   if (isLoadingUser) {
-       return <Loading />;
+    return <Loading />;
   }
 
   if (isAuthError || !user) {
@@ -297,65 +286,51 @@ function Notifications() {
 
   return (
     <main className="notification-lay">
-      {isLoading &&  <Loading />}
+      <h1 className="notification-title">Notifications</h1>
+
+      {isLoading && <Loading />}
 
       <div className="notification-list">
-        {!isLoading && notifications.length === 0 && (
-          <Empty />
-        )}
+        {!isLoading && notifications.length === 0 && <Empty />}
 
-        {notifications.map((notification) => {
-          const isFollowRequest =
-            notification.type === "FOLLOW_REQUEST";
+        {notifications.map((notification, index) => {
+          const isFollowRequest = notification.type === "FOLLOW_REQUEST";
 
-          const localAction =
-            followRequestActions[notification.id];
+          const localAction = followRequestActions[notification.id];
 
-          const status =
-            localAction ??
-            notification.followRequestStatus;
+          const status = localAction ?? notification.followRequestStatus;
 
           const isPending = status === "PENDING";
 
           const isAccepting =
             acceptMutation.isPending &&
-            acceptMutation.variables ===
-            notification.followRequestId;
+            acceptMutation.variables === notification.followRequestId;
 
           const isRejecting =
             rejectMutation.isPending &&
-            rejectMutation.variables ===
-            notification.followRequestId;
+            rejectMutation.variables === notification.followRequestId;
 
-          const storyImage =
-            storyImages[notification.id];
+          const storyImage = storyImages[notification.id];
 
           return (
             <div
               className="notification-box"
               key={notification.id}
+              style={
+                {
+                  "--i": Math.min(index % PAGE_SIZE, MAX_STAGGER),
+                } as React.CSSProperties
+              }
             >
               <div className="notification-data">
                 <div className="notification-data-lay-l">
                   <div className="img-noti-box">
-                    <div
-                      className={
-                        notificationIconClasses[
-                        notification.type
-                        ]
-                      }
-                    >
-                      {
-                        notificationIcons[
-                        notification.type
-                        ]
-                      }
+                    <div className={notificationIconClasses[notification.type]}>
+                      {notificationIcons[notification.type]}
                     </div>
 
                     <img
-                      src={formatePfpL(
-                        notification.senderPhoto
-                      )}
+                      src={formatePfpL(notification.senderPhoto)}
                       alt={notification.senderName}
                       className="notification-pfp"
                     />
@@ -363,14 +338,14 @@ function Notifications() {
 
                   <div className="notification-content-box">
                     <p className="notification-content">
-                      {notification.senderName +
-                        notification.content}
+                      <strong className="notification-sender">
+                        {notification.senderName}
+                      </strong>
+                      {notification.content}
                     </p>
 
                     <p className="notification-date">
-                      {formatTime(
-                        notification.createdAt
-                      )}
+                      {formatTime(notification.createdAt)}
                     </p>
 
                     {isFollowRequest && status && (
@@ -379,36 +354,26 @@ function Notifications() {
                           <>
                             <button
                               className="follow-request-confirm"
-                              disabled={
-                                isAccepting ||
-                                isRejecting
-                              }
+                              disabled={isAccepting || isRejecting}
                               onClick={() =>
                                 acceptMutation.mutate(
                                   notification.followRequestId!
                                 )
                               }
                             >
-                              {isAccepting
-                                ? "Accepting..."
-                                : "Confirm"}
+                              {isAccepting ? "Accepting..." : "Confirm"}
                             </button>
 
                             <button
                               className="follow-request-reject"
-                              disabled={
-                                isAccepting ||
-                                isRejecting
-                              }
+                              disabled={isAccepting || isRejecting}
                               onClick={() =>
                                 rejectMutation.mutate(
                                   notification.followRequestId!
                                 )
                               }
                             >
-                              {isRejecting
-                                ? "Rejecting..."
-                                : "Reject"}
+                              {isRejecting ? "Rejecting..." : "Reject"}
                             </button>
                           </>
                         ) : (
@@ -427,27 +392,32 @@ function Notifications() {
 
                 <div className="notification-data-lay-r">
                   {notification.post && (
-                    <img
-                      className="notification-post"
-                      src={notification.post.imageUrl}
-                      alt=""
+                    <div
+                      className="notification-thumb"
                       onClick={() =>
                         navigate(`/post/${notification.post!.id}`)
                       }
-                    />
+                    >
+                      <img
+                        className="notification-post"
+                        src={notification.post.imageUrl}
+                        alt=""
+                      />
+                    </div>
                   )}
 
-                  {notification.storySummaryResponse &&
-                    storyImage && (
+                  {notification.storySummaryResponse && storyImage && (
+                    <div
+                      className="notification-thumb"
+                      onClick={() => navigate(`/story/${user.userName}`)}
+                    >
                       <img
                         className="notification-post"
                         src={storyImage}
                         alt=""
-                        onClick={() =>
-                          navigate(`/story/${user.userName}`)
-                        }
                       />
-                    )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -456,13 +426,12 @@ function Notifications() {
       </div>
 
       {isFetchingNextPage && (
-        <p>Loading more notifications...</p>
+        <p className="notification-loading-more">
+          Loading more notifications...
+        </p>
       )}
 
-      <div
-        ref={sentinelRef}
-        style={{ height: "10px" }}
-      />
+      <div ref={sentinelRef} style={{ height: "10px" }} />
     </main>
   );
 }
