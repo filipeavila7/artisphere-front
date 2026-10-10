@@ -44,7 +44,7 @@ function Search() {
     const postsSentinelRef = useRef<HTMLDivElement | null>(null);
 
     const breakpointColumns = {
-        default: 4,
+        default: 6,
         1200: 3,
         900: 2,
         600: 1

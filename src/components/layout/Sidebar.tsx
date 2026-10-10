@@ -1,95 +1,65 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import "../../styles/side-bar.css";
 import { AiOutlineHome } from "react-icons/ai";
-import { IoSettingsOutline } from "react-icons/io5";
+import { IoSettingsOutline, IoNotificationsOutline } from "react-icons/io5";
 import { FaPlus, FaRegMessage } from "react-icons/fa6";
-import { IoNotificationsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
-import Button from "../button/Button";
 import UserSideBar from "./UserSideBar";
+
+import logo from "../../assets/logo.png";
+
+const links = [
+    { to: "/feed", label: "Feed", icon: <AiOutlineHome /> },
+    { to: "/contacts", label: "Messages", icon: <FaRegMessage /> },
+    { to: "/notifications", label: "Notifications", icon: <IoNotificationsOutline /> },
+    { to: "/profile", label: "Profile", icon: <FaRegUser /> },
+    { to: "/settings", label: "Settings", icon: <IoSettingsOutline /> },
+];
 
 function Sidebar() {
     const navigate = useNavigate();
+
     return (
-        <>
-            <aside className="sidebar">
-                <div className="side-title-box">
-                    <h2>Artisphere</h2>
-                </div>
-                <div className="side-box">
-                    <nav className="side-nav">
-                        <div className="side-btn-box">
-                            <Button onClick={()=> navigate("/new")} icon={<FaPlus />}>New post</Button>
-                        </div>
-                        <div className="side-lay">
-                            <NavLink
-                                to="/feed"
-                                className={({ isActive }) =>
-                                    isActive ? "side-link active" : "side-link"
-                                }
-                            >
-                                <AiOutlineHome className="side-icon" />
-                                Feed
-                            </NavLink>
-                        </div>
+        <aside className="sidebar">
+            <div className="side-title-box">
+                <Link to="/feed" className="side-brand">
+                    <img src={logo} alt="" className="side-brand-logo" />
+                    <h2 className="side-brand-name">Artisphere</h2>
+                </Link>
+            </div>
 
+            <div className="side-box">
+                <nav className="side-nav">
+                    <div className="side-btn-box">
+                        <button
+                            type="button"
+                            className="side-new-btn"
+                            onClick={() => navigate("/new")}
+                        >
+                            <FaPlus className="side-new-icon" />
+                            <span className="side-label">New post</span>
+                        </button>
+                    </div>
 
+                    {links.map((link, index) => (
+                        <NavLink
+                            key={link.to}
+                            to={link.to}
+                            title={link.label}
+                            style={{ "--i": index } as React.CSSProperties}
+                            className={({ isActive }) =>
+                                isActive ? "side-link active" : "side-link"
+                            }
+                        >
+                            <span className="side-icon">{link.icon}</span>
+                            <span className="side-label">{link.label}</span>
+                        </NavLink>
+                    ))}
+                </nav>
 
-                        <div className="side-lay">
-                            <NavLink
-                                to="/contacts"
-                                className={({ isActive }) =>
-                                    isActive ? "side-link active" : "side-link"
-                                }
-                            >
-                                <FaRegMessage className="side-icon" />
-                                Messages
-                            </NavLink>
-                        </div>
-
-                        <div className="side-lay">
-                            <NavLink
-                                to="/notifications"
-                                className={({ isActive }) =>
-                                    isActive ? "side-link active" : "side-link"
-                                }
-                            >
-                                <IoNotificationsOutline className="side-icon-g" />
-                                Notifications
-                            </NavLink>
-                        </div>
-
-                        <div className="side-lay">
-                            <NavLink
-                                to="/profile"
-                                className={({ isActive }) =>
-                                    isActive ? "side-link active" : "side-link"
-                                }
-                            >
-                                <FaRegUser className="side-icon" />
-                                Profile
-                            </NavLink>
-                        </div>
-
-                        <div className="side-lay">
-                            <NavLink
-                                to="/settings"
-                                className={({ isActive }) =>
-                                    isActive ? "side-link active" : "side-link"
-                                }
-                            >
-                                <IoSettingsOutline className="side-icon" />
-                                Settings
-                            </NavLink>
-                        </div>
-
-
-
-                    </nav>
-                    <UserSideBar />
-                </div>
-            </aside>
-        </>
+                <UserSideBar />
+            </div>
+        </aside>
     );
 }
 
