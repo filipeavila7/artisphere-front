@@ -1,112 +1,116 @@
 .profile-update {
     width: 100%;
-    max-width: 850px;
+    max-width: 780px;
     margin: 0 auto;
-   
+    padding: 0 20px 40px;
     box-sizing: border-box;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 
 .profile-update-header {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
+    animation: pu-fade-up 0.5s ease both;
 }
 
 .profile-update-header h1 {
     margin: 0;
-    color: #320C35;
-    font-family: "Playfair Display", serif;
-    font-size: 34px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
+    font-size: 28px;
+    font-weight: 800;
+    color: #111827;
 }
 
 .profile-update-header p {
-    margin: 7px 0 0;
-    color: #756b75;
-    font-family: "Quicksand", sans-serif;
+    margin: 6px 0 0;
     font-size: 15px;
+    color: #6b7280;
 }
 
+@keyframes pu-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-/* CARD */
+/* ================= CARD ================= */
 
 .profile-update-form {
-    background: #fffdf5;
-    border: 1px solid rgba(50, 12, 53, 0.08);
+    padding: 32px;
     border-radius: 20px;
-    padding: 35px;
-    box-shadow:
-        0 10px 35px rgba(50, 12, 53, 0.07),
-        0 2px 8px rgba(50, 12, 53, 0.04);
+    background: var(--color-secundary);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+    box-shadow: 0 10px 30px
+        color-mix(in srgb, var(--color-primary) 10%, transparent);
+    animation: pu-fade-up 0.6s 0.08s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-
-/* FOTO */
+/* ================= FOTO ================= */
 
 .profile-update-photo {
     display: flex;
     align-items: center;
     gap: 22px;
-
-    padding-bottom: 30px;
-    margin-bottom: 30px;
-
-    border-bottom: 1px solid rgba(50, 12, 53, 0.09);
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid
+        color-mix(in srgb, var(--color-primary) 10%, transparent);
 }
 
 .profile-image-wrapper {
     position: relative;
-
-    width: 105px;
-    height: 105px;
-
+    width: 104px;
+    height: 104px;
     flex-shrink: 0;
-
-    border-radius: 50%;
     overflow: hidden;
-
     cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid var(--color-secundary);
+    box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--color-primary) 45%, transparent),
+        0 8px 22px rgba(0, 0, 0, 0.12);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
 
-    border: 4px solid var(--color-primary);
-    box-shadow: 0 5px 18px rgba(50, 12, 53, 0.12);
+.profile-image-wrapper:hover {
+    transform: scale(1.04);
+    box-shadow:
+        0 0 0 3px var(--color-primary),
+        0 12px 28px color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .profile-image-wrapper img {
+    display: block;
     width: 100%;
     height: 100%;
-
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
 
-    display: block;
-
-    transition: transform 0.25s ease;
+.profile-image-wrapper:hover img {
+    transform: scale(1.08);
 }
 
 .profile-image-overlay {
     position: absolute;
-
     inset: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background: rgba(0, 0, 0, 0.48);
-
-    color: white;
-
+    color: #fff;
     opacity: 0;
-
+    background: color-mix(in srgb, var(--color-primary) 55%, transparent);
     transition: opacity 0.2s ease;
 }
 
 .profile-image-overlay svg {
     font-size: 24px;
-
     transform: scale(0.8);
-
-    transition: transform 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .profile-image-wrapper:hover .profile-image-overlay {
@@ -117,48 +121,38 @@
     transform: scale(1);
 }
 
-.profile-image-wrapper:hover img {
-    transform: scale(1.04);
-}
-
-
 /* input real fica escondido */
-
 #profile-image {
     display: none;
 }
-
-
-/* texto ao lado */
 
 .profile-photo-info {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-width: 0;
 }
 
 .profile-photo-info strong {
-    color: #320c35;
-
-    font-family: "Quicksand", sans-serif;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
+    color: #111827;
 }
 
 .profile-photo-info span {
-    color: #8d838d;
-
-    font-family: "Quicksand", sans-serif;
+    overflow: hidden;
     font-size: 13px;
+    color: #6b7280;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-
-/* CAMPOS */
+/* ================= CAMPOS ================= */
 
 .profile-update-fields {
     display: flex;
     flex-direction: column;
-    gap: 23px;
+    gap: 22px;
 }
 
 .profile-field {
@@ -169,161 +163,152 @@
 
 .profile-field label {
     margin-bottom: 8px;
-    color: var(--color-primary);
-    font-family: "Quicksand", sans-serif;
     font-size: 14px;
     font-weight: 700;
+    color: #374151;
+    transition: color 0.2s ease;
+}
+
+/* o label ganha a cor da marca quando o campo está em foco */
+.profile-field:focus-within label {
+    color: var(--color-primary);
 }
 
 .profile-field input,
 .profile-field textarea {
     width: 100%;
     box-sizing: border-box;
-
-    border: 1px solid #d9d1d8;
-    border-radius: 11px;
-
-    background: #fff;
-    color: #302b30;
-
-    font-family: "Quicksand", sans-serif;
+    font-family: inherit;
     font-size: 15px;
-
+    color: #111827;
     outline: none;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--color-primary) 3%, var(--color-secundary));
+    border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease,
         background-color 0.2s ease;
 }
 
 .profile-field input {
-    height: 45px;
+    height: 46px;
     padding: 0 14px;
 }
 
 .profile-field textarea {
     min-height: 105px;
     padding: 12px 14px;
-    resize: vertical;
     line-height: 1.5;
     resize: none;
 }
 
 .profile-field input:hover,
 .profile-field textarea:hover {
-    border-color: #b8aeb8;
+    border-color: color-mix(in srgb, var(--color-primary) 32%, transparent);
 }
 
 .profile-field input:focus,
 .profile-field textarea:focus {
+    background: var(--color-secundary);
     border-color: var(--color-primary);
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(50, 12, 53, 0.08);
+    box-shadow: 0 0 0 4px
+        color-mix(in srgb, var(--color-primary) 14%, transparent);
 }
 
-
-/* CONTADOR */
-
+/* contador */
 .profile-field span {
     align-self: flex-end;
     margin-top: 5px;
-
-    color: #948b94;
-    font-family: "Quicksand", sans-serif;
     font-size: 12px;
+    color: #9ca3af;
 }
 
-
-/* AÇÕES */
+/* ================= AÇÕES ================= */
 
 .profile-update-actions {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
+    justify-content: flex-end;
     gap: 12px;
-
-    margin-top: 35px;
-    padding-top: 25px;
-
-    border-top: 1px solid rgba(50, 12, 53, 0.09);
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid
+        color-mix(in srgb, var(--color-primary) 10%, transparent);
 }
 
 .profile-update-actions button {
-    height: 42px;
-    padding: 0 20px;
-
-    border-radius: 10px;
-
-    font-family: "Quicksand", sans-serif;
+    height: 44px;
+    padding: 0 24px;
+    border-radius: 12px;
+    font-family: inherit;
     font-size: 14px;
     font-weight: 700;
-
     cursor: pointer;
-
-    transition:
-        transform 0.15s ease,
-        box-shadow 0.2s ease,
+    transition: transform 0.15s ease, box-shadow 0.2s ease,
         background-color 0.2s ease;
 }
 
-.profile-update-actions button:first-child {
-    border: 1px solid #d5ccd5;
+.btn-cancel {
+    color: #4b5563;
     background: transparent;
-    color: #5f555f;
+    border: 1px solid #d1d5db;
 }
 
-.profile-update-actions button:first-child:hover {
-    background: rgba(50, 12, 53, 0.05);
+.btn-cancel:hover:not(:disabled) {
+    background: #f3f4f6;
 }
 
-.profile-update-actions button:last-child {
-    border: 1px solid #320c35;
-    background: var(--color-primary);
-    color: #fff;
-    box-shadow: 0 5px 14px rgba(50, 12, 53, 0.16);
+.btn-save {
+    border: none;
+    color: var(--color-secundary);
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        color-mix(in srgb, var(--color-primary) 70%, #ec4899)
+    );
+    box-shadow: 0 6px 16px
+        color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
-.profile-update-actions button:last-child:hover {
-    background: #320c34;
-    box-shadow: 0 7px 18px rgba(50, 12, 53, 0.22);
+.btn-save:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px
+        color-mix(in srgb, var(--color-primary) 40%, transparent);
 }
 
-.profile-update-actions button:active {
+.profile-update-actions button:active:not(:disabled) {
     transform: scale(0.96);
 }
 
 .profile-update-actions button:disabled {
     opacity: 0.55;
     cursor: not-allowed;
-    transform: none;
     box-shadow: none;
 }
 
+.profile-update-actions button:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+    outline-offset: 2px;
+}
 
-/* RESPONSIVO */
+/* ================= RESPONSIVO ================= */
 
 @media (max-width: 600px) {
     .profile-update {
-        padding: 30px 16px 45px;
+        padding: 0 16px 40px;
     }
 
     .profile-update-header h1 {
-        font-size: 29px;
+        font-size: 24px;
     }
 
     .profile-update-form {
-        padding: 24px 20px;
+        padding: 22px 18px;
         border-radius: 16px;
     }
 
-    .profile-update-photo {
-        align-items: flex-start;
-    }
-
-    .profile-update-photo img {
-        width: 85px;
-        height: 85px;
+    .profile-image-wrapper {
+        width: 84px;
+        height: 84px;
     }
 
     .profile-update-actions {
@@ -332,5 +317,19 @@
 
     .profile-update-actions button {
         width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .profile-update-header,
+    .profile-update-form {
+        animation: none;
+    }
+
+    .profile-image-wrapper,
+    .profile-image-wrapper img,
+    .profile-field input,
+    .profile-field textarea {
+        transition: none;
     }
 }

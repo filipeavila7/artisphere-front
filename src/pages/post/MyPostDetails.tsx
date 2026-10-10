@@ -9,6 +9,7 @@ import { createSave, deleteSave } from "../../service/save/SaveService";
 import PostDate from "../../components/post/PostDate";
 import CommentsModal from "../../components/post/CommentModal";
 import ConfirmationModal from "../../components/modal/ConfirmationModal";
+import Loading from "../../components/layout/Loading";
 
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import {
@@ -16,7 +17,8 @@ import {
   FaBookmark,
   FaRegBookmark,
   FaRegComment,
-  FaRegHeart
+  FaRegHeart,
+  FaCheck,
 } from "react-icons/fa6";
 import { CiShare2 } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
@@ -24,7 +26,6 @@ import { MdDeleteForever } from "react-icons/md";
 import "../../styles/post.css";
 
 function MyPostDetails() {
-
   const { postId } = useParams();
   const navigate = useNavigate();
 
@@ -33,132 +34,85 @@ function MyPostDetails() {
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-
 
   /*
    * POST
    */
-  const {
-    data,
-    isLoading,
-    isError
-  } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["mypost", postId],
     queryFn: () => getMyPostById(Number(postId)),
     enabled: !!postId,
   });
 
-
   /*
    * LIKE / UNLIKE
    */
   const likeMutation = useMutation({
-
     mutationFn: async () => {
-
       if (data?.likedByMe) {
         await unlikePost(Number(postId));
       } else {
         await likePost(Number(postId));
       }
-
     },
 
     onSuccess: () => {
-
-      queryClient.invalidateQueries({
-        queryKey: ["mypost", postId],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["feed"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["my-posts-liked"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["my-posts"],
-      });
-
+      queryClient.invalidateQueries({ queryKey: ["mypost", postId] });
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+      queryClient.invalidateQueries({ queryKey: ["my-posts-liked"] });
+      queryClient.invalidateQueries({ queryKey: ["my-posts"] });
     },
-
   });
 
-
   const handleLike = () => {
-
     if (likeMutation.isPending) {
       return;
     }
 
     likeMutation.mutate();
-
   };
-
 
   /*
    * SAVE / UNSAVE
    */
   const saveMutation = useMutation({
-
     mutationFn: async () => {
-
       if (data?.saveByMe) {
         await deleteSave(Number(postId));
       } else {
         await createSave(Number(postId));
       }
-
     },
 
     onSuccess: () => {
-
-      queryClient.invalidateQueries({
-        queryKey: ["mypost", postId],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["feed"],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["my-posts-saved"],
-      });
-
+      queryClient.invalidateQueries({ queryKey: ["mypost", postId] });
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+      queryClient.invalidateQueries({ queryKey: ["my-posts-saved"] });
     },
-
   });
 
-
   const handleSave = () => {
-
     if (saveMutation.isPending) {
       return;
     }
 
     saveMutation.mutate();
-
   };
-
 
   /*
    * CLOSE DROPDOWN WHEN CLICKING OUTSIDE
    */
   useEffect(() => {
-
     const handleClickOutside = (event: MouseEvent) => {
-
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsDropdownOpen(false);
       }
-
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -166,81 +120,69 @@ function MyPostDetails() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-
   }, []);
-
 
   /*
    * DELETE POST
    */
   const deletePostMutation = useMutation({
-
     mutationFn: () => deletePost(Number(postId)),
 
     onSuccess: async () => {
-
       setIsDeleteModalOpen(false);
 
-      await queryClient.invalidateQueries({
-        queryKey: ["mypost"],
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: ["my-posts"],
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: ["feed"],
-      });
+      await queryClient.invalidateQueries({ queryKey: ["mypost"] });
+      await queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+      await queryClient.invalidateQueries({ queryKey: ["feed"] });
 
       navigate("/profile");
     },
-
   });
 
-
   if (isLoading) {
-    return <p>Carregando...</p>;
+    return <Loading />;
   }
 
   if (isError || !data) {
     return <p>Erro ao carregar o post.</p>;
   }
 
-
   const handleDeleteClick = () => {
     setIsDropdownOpen(false);
     setIsDeleteModalOpen(true);
   };
 
-
   const handleConfirmDelete = () => {
     deletePostMutation.mutate();
   };
 
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `${window.location.origin}/post/${postId}`
+      );
+
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Erro ao copiar link do post:", error);
+    }
+  };
 
   return (
     <main className="feed-lay">
-
       <div className="post-details-box">
-
         <div className="post-details-content">
-
           <img
             className="post-details-img"
             src={data.imageUrl}
             alt={data.title}
           />
-
         </div>
 
-
         <div className="post-details-data-box">
-
           <div className="post-data-lay">
-
             <div className="post-user-data-box">
-
               <img
                 className="user-post-pfp"
                 src={data.user.profileImageUrl}
@@ -248,164 +190,118 @@ function MyPostDetails() {
               />
 
               <div className="post-user-data">
-
                 <p>{data.user.name}</p>
 
-                <span>
-                  @{data.user.userName}
-                </span>
+                <span>@{data.user.userName}</span>
 
                 <PostDate date={data.createdAt} />
-
               </div>
-
             </div>
 
-
             <div className="post-details-actions">
-
-              <div
-                className="post-options"
-                ref={dropdownRef}
-              >
-
+              <div className="post-options" ref={dropdownRef}>
                 <button
+                  type="button"
                   className="post-options-button"
-                  onClick={() =>
-                    setIsDropdownOpen((prev) => !prev)
-                  }
+                  aria-label="Post options"
+                  onClick={() => setIsDropdownOpen((prev) => !prev)}
                 >
                   <HiOutlineDotsVertical className="action-icon" />
                 </button>
 
-
                 {isDropdownOpen && (
-
                   <div className="post-options-dropdown">
-
                     <button
+                      type="button"
                       className="post-delete-option"
                       onClick={handleDeleteClick}
                     >
                       <MdDeleteForever />
                       Delete post
                     </button>
-
                   </div>
-
                 )}
-
               </div>
-
             </div>
-
           </div>
 
-
           <div className="post-data-content">
-
             <div className="post-title">
               <h3>{data.title}</h3>
             </div>
 
-
             <div className="post-tags">
-
               {data.tags.map((tag) => (
-                <span key={tag.id}>
-                  #{tag.name}
-                </span>
+                <span key={tag.id}>#{tag.name}</span>
               ))}
-
             </div>
-
 
             <div className="post-description-box-a">
-
               <p>{data.description}</p>
-
             </div>
 
-
             <div className="post-action-box">
-
               {/* LIKE */}
-              <div
-                className={`action ${
-                  data.likedByMe ? "action-liked" : ""
-                }`}
+              <button
+                type="button"
+                className={`action ${data.likedByMe ? "action-liked" : ""}`}
                 onClick={handleLike}
+                aria-pressed={data.likedByMe}
+                aria-label="Like"
               >
-
                 {data.likedByMe ? (
                   <FaHeart className="liked" />
                 ) : (
                   <FaRegHeart className="unliked" />
                 )}
 
-                <p>
-                  {data.likesCount}
-                </p>
-
-              </div>
-
+                <p>{data.likesCount}</p>
+              </button>
 
               {/* COMMENTS */}
-              <div
+              <button
+                type="button"
                 className="action"
                 onClick={() => setIsCommentsOpen(true)}
+                aria-label="Open comments"
               >
-
                 <FaRegComment />
 
-                <p>
-                  {data.commentsCount}
-                </p>
-
-              </div>
-
+                <p>{data.commentsCount}</p>
+              </button>
 
               {/* SHARE */}
-              <div className="action">
+              <button
+                type="button"
+                className={`action ${copied ? "copied" : ""}`}
+                onClick={handleShare}
+                aria-label="Copy post link"
+              >
+                {copied ? <FaCheck /> : <CiShare2 className="icon-share" />}
 
-                <CiShare2 className="icon-share" />
-
-                0
-
-              </div>
-
+                <p>{copied ? "Copied" : "Share"}</p>
+              </button>
 
               {/* SAVE */}
-              <div
-                className={`action-l ${
-                  data.saveByMe ? "action-saved" : ""
-                }`}
+              <button
+                type="button"
+                className={`action-l ${data.saveByMe ? "action-saved" : ""}`}
                 onClick={handleSave}
+                aria-pressed={data.saveByMe}
+                aria-label="Save"
               >
-
-                {data.saveByMe ? (
-                  <FaBookmark />
-                ) : (
-                  <FaRegBookmark />
-                )}
-
-              </div>
-
+                {data.saveByMe ? <FaBookmark /> : <FaRegBookmark />}
+              </button>
             </div>
-
           </div>
-
         </div>
-
       </div>
-
 
       <CommentsModal
         postId={Number(postId)}
         isOpen={isCommentsOpen}
         onClose={() => setIsCommentsOpen(false)}
       />
-
 
       <ConfirmationModal
         isOpen={isDeleteModalOpen}
@@ -417,10 +313,8 @@ function MyPostDetails() {
         onConfirm={handleConfirmDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
-
     </main>
   );
 }
-
 
 export default MyPostDetails;

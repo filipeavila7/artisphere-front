@@ -112,7 +112,7 @@ function UserPosts({
 
             <Masonry
                 breakpointCols={{
-                    default: 5,
+                    default: 6,
                     1200: 4,
                     900: 3,
                     640: 2,

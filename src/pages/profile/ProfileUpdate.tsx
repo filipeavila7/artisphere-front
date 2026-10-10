@@ -8,6 +8,7 @@ import { formatePfpL } from "../../utils/formateImgProfile";
 
 import "../../styles/profile-update.css";
 import { uploadFile } from "../../service/upload/UpdateService";
+import Loading from "../../components/layout/Loading";
 
 function ProfileUpdate() {
     const navigate = useNavigate();
@@ -41,16 +42,14 @@ function ProfileUpdate() {
     }, [imagePreview]);
 
     if (isLoading) {
-        return <p>Carregando perfil...</p>;
+        return <Loading />;
     }
 
     if (isError || !profile) {
         return <p>Erro ao carregar perfil.</p>;
     }
 
-    const handleImageChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
 
         if (!file) {
@@ -68,48 +67,41 @@ function ProfileUpdate() {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    try {
-        let imageUrl = profile.imageUrlProfile;
+        try {
+            let imageUrl = profile.imageUrlProfile;
 
-        if (imageFile) {
-            imageUrl = await uploadFile(imageFile);
+            if (imageFile) {
+                imageUrl = await uploadFile(imageFile);
+            }
+
+            updateProfileMutation.mutate({
+                name: name.trim(),
+                userName: userName.trim(),
+                bio: bio.trim(),
+                messageStatus: messageStatus.trim(),
+                imageUrlProfile: imageUrl,
+            });
+        } catch (error) {
+            console.error("Erro ao enviar imagem:", error);
         }
-
-        updateProfileMutation.mutate({
-            name: name.trim(),
-            userName: userName.trim(),
-            bio: bio.trim(),
-            messageStatus: messageStatus.trim(),
-            imageUrlProfile: imageUrl,
-        });
-    } catch (error) {
-        console.error("Erro ao enviar imagem:", error);
-    }
-};
+    };
 
     return (
         <div className="profile-update">
+            <div className="profile-update-header">
+                <h1>Edit profile</h1>
+                <p>Update how you appear to other artists on Artisphere.</p>
+            </div>
 
-            <form
-                className="profile-update-form"
-                onSubmit={handleSubmit}
-            >
-
+            <form className="profile-update-form" onSubmit={handleSubmit}>
                 {/* FOTO */}
 
                 <div className="profile-update-photo">
-
-                    <label
-                        htmlFor="profile-image"
-                        className="profile-image-wrapper"
-                    >
+                    <label htmlFor="profile-image" className="profile-image-wrapper">
                         <img
-                            src={
-                                imagePreview ??
-                                formatePfpL(profile.imageUrlProfile)
-                            }
+                            src={imagePreview ?? formatePfpL(profile.imageUrlProfile)}
                             alt="Foto de perfil"
                         />
 
@@ -126,30 +118,19 @@ function ProfileUpdate() {
                     />
 
                     <div className="profile-photo-info">
-                        <strong>Profile Picture</strong>
+                        <strong>Profile picture</strong>
 
-
-                        {imageFile && (
-                            <span>
-                                {imageFile.name}
-                            </span>
-                        )}
+                        <span>
+                            {imageFile ? imageFile.name : "Click the photo to change it"}
+                        </span>
                     </div>
-
                 </div>
-
 
                 {/* CAMPOS */}
 
                 <div className="profile-update-fields">
-
-                    {/* NOME */}
-
                     <div className="profile-field">
-
-                        <label htmlFor="name">
-                            Name
-                        </label>
+                        <label htmlFor="name">Name</label>
 
                         <input
                             id="name"
@@ -157,17 +138,10 @@ function ProfileUpdate() {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
-
                     </div>
 
-
-                    {/* USERNAME */}
-
                     <div className="profile-field">
-
-                        <label htmlFor="userName">
-                            UserName
-                        </label>
+                        <label htmlFor="userName">Username</label>
 
                         <input
                             id="userName"
@@ -175,17 +149,10 @@ function ProfileUpdate() {
                             value={userName}
                             onChange={(e) => setUserName(e.target.value)}
                         />
-
                     </div>
 
-
-                    {/* BIO */}
-
                     <div className="profile-field">
-
-                        <label htmlFor="bio">
-                            Bio
-                        </label>
+                        <label htmlFor="bio">Bio</label>
 
                         <textarea
                             id="bio"
@@ -195,46 +162,30 @@ function ProfileUpdate() {
                             rows={4}
                         />
 
-                        <span>
-                            {bio.length}/200
-                        </span>
-
+                        <span>{bio.length}/200</span>
                     </div>
 
-
-                    {/* STATUS */}
-
                     <div className="profile-field">
-
-                        <label htmlFor="messageStatus">
-                            Status
-                        </label>
+                        <label htmlFor="messageStatus">Status</label>
 
                         <input
                             id="messageStatus"
                             type="text"
                             value={messageStatus}
-                            onChange={(e) =>
-                                setMessageStatus(e.target.value)
-                            }
+                            onChange={(e) => setMessageStatus(e.target.value)}
                             maxLength={30}
                         />
 
-                        <span>
-                            {messageStatus.length}/30
-                        </span>
-
+                        <span>{messageStatus.length}/30</span>
                     </div>
-
                 </div>
-
 
                 {/* BOTÕES */}
 
                 <div className="profile-update-actions">
-
                     <button
                         type="button"
+                        className="btn-cancel"
                         onClick={() => navigate(-1)}
                         disabled={updateProfileMutation.isPending}
                     >
@@ -243,17 +194,13 @@ function ProfileUpdate() {
 
                     <button
                         type="submit"
+                        className="btn-save"
                         disabled={updateProfileMutation.isPending}
                     >
-                        {updateProfileMutation.isPending
-                            ? "Saving..."
-                            : "Save changes"}
+                        {updateProfileMutation.isPending ? "Saving..." : "Save changes"}
                     </button>
-
                 </div>
-
             </form>
-
         </div>
     );
 }

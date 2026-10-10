@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { FaCog, FaUserFriends } from "react-icons/fa";
+import { FaCheck, FaCog, FaUserFriends } from "react-icons/fa";
 import { FaUserCheck } from "react-icons/fa6";
 import { IoIosDocument, IoIosShareAlt } from "react-icons/io";
 
@@ -12,14 +12,8 @@ import ConfirmationModal from "../../components/modal/ConfirmationModal";
 import { useMe } from "../../hooks/useMe";
 import { useOtherProfile } from "../../hooks/useProfile";
 
-import {
-  followUser,
-  unfollowUser,
-} from "../../service/follow/FollowService";
-
+import { followUser, unfollowUser } from "../../service/follow/FollowService";
 import { openConversation } from "../../service/conversation/ConversationService";
-
-
 
 import "../../styles/profile.css";
 import UserPosts from "../../components/post/UserPosts";
@@ -36,6 +30,7 @@ function Profile() {
 
   const [activeTab] = useState<ProfileTab>("posts");
   const [isUnfollowModalOpen, setIsUnfollowModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const {
     data: user,
@@ -87,8 +82,6 @@ function Profile() {
     },
   });
 
-
-
   const handleFollow = () => {
     if (!profile) return;
 
@@ -113,8 +106,23 @@ function Profile() {
     navigate(`/messages/new/${profile.userName}`);
   };
 
+  const handleShare = async () => {
+    if (!profile) return;
+
+    try {
+      await navigator.clipboard.writeText(
+        `${window.location.origin}/user/${encodeURIComponent(profile.userName)}`
+      );
+
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Erro ao copiar link do perfil:", error);
+    }
+  };
+
   if (isLoadingUser) {
-    return <p>Carregando usuário...</p>;
+    return <Loading />;
   }
 
   if (isUserError || !user) {
@@ -132,148 +140,142 @@ function Profile() {
   const isMyProfile = profile.userName === user.userName;
 
   const canSeePosts =
-    !profile.isPrivateProfile ||
-    isMyProfile ||
-    profile.amIfollowing;
+    !profile.isPrivateProfile || isMyProfile || profile.amIfollowing;
 
   return (
     <div className="profile-lay">
       <div className="profile-box">
+        <div className="profile-cover" />
 
-        <div className="profile-content">
-
-
-
-          <StoryAvatar
-            imageUrl={profile.imageUrlProfile}
-            userName={profile.userName} 
-            hasStory={profile.hasStory}
-            hasUnviewedStory={profile.hasUnviewedStory}
-            hasUnviewedCloseFriendsStory={profile.hasUnviewedCloseFriendsStory}
-            size={170} />
-
-
-          <div className="profile-data-box">
-
-            <div className="profile-data">
-              <h1>{profile.name}</h1>
+        <div className="profile-main">
+          <div className="profile-content">
+            <div className="profile-pfp-box">
+              <StoryAvatar
+                imageUrl={profile.imageUrlProfile}
+                userName={profile.userName}
+                hasStory={profile.hasStory}
+                hasUnviewedStory={profile.hasUnviewedStory}
+                hasUnviewedCloseFriendsStory={profile.hasUnviewedCloseFriendsStory}
+                size={170}
+              />
             </div>
 
-            <div className="follow-data-box">
-
-              <div>
-                <div className="follow-content">
-                  <IoIosDocument className="profile-icon" />
-                  <p>{profile.postCount}</p>
-                </div>
-
-                <p className="follow-p">Posts</p>
+            <div className="profile-data-box">
+              <div className="profile-data">
+                <h1>{profile.name}</h1>
               </div>
 
-              <div>
-                <div className="follow-content">
-                  <FaUserFriends className="profile-icon" />
-                  <p>{profile.followerCount}</p>
+              <div className="username-lay">
+                <div className="username-box static">
+                  <p>@{profile.userName}</p>
                 </div>
 
-                <p className="follow-p">Followers</p>
+                <button
+                  type="button"
+                  className={`username-box ${copied ? "copied" : ""}`}
+                  onClick={handleShare}
+                >
+                  {copied ? (
+                    <>
+                      Link copied <FaCheck className="share-icon" />
+                    </>
+                  ) : (
+                    <>
+                      Share profile <IoIosShareAlt className="share-icon" />
+                    </>
+                  )}
+                </button>
               </div>
 
-              <div>
-                <div className="follow-content">
-                  <FaUserCheck className="profile-icon" />
-                  <p>{profile.followCount}</p>
+              <div className="follow-data-box">
+                <div>
+                  <div className="follow-content">
+                    <IoIosDocument className="profile-icon" />
+                    <p>{profile.postCount}</p>
+                  </div>
+
+                  <p className="follow-p">Posts</p>
                 </div>
 
-                <p className="follow-p">Follows</p>
-              </div>
+                <div>
+                  <div className="follow-content">
+                    <FaUserFriends className="profile-icon" />
+                    <p>{profile.followerCount}</p>
+                  </div>
 
+                  <p className="follow-p">Followers</p>
+                </div>
+
+                <div>
+                  <div className="follow-content">
+                    <FaUserCheck className="profile-icon" />
+                    <p>{profile.followCount}</p>
+                  </div>
+
+                  <p className="follow-p">Follows</p>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div className="username-lay">
+          <div className="profile-actions">
+            {!isMyProfile && (
+              <button
+                className="btn-profile outline"
+                onClick={handleMessage}
+                disabled={messageMutation.isPending}
+              >
+                {messageMutation.isPending ? "Opening..." : "Message"}
+              </button>
+            )}
 
-              <div className="username-box">
-                <p>@{profile.userName}</p>
-              </div>
+            {isMyProfile ? (
+              <button className="btn-profile outline">You</button>
+            ) : profile.amIfollowing ? (
+              <button
+                className="btn-profile-following"
+                onClick={handleUnfollow}
+                disabled={unfollowMutation.isPending}
+              >
+                Following
+              </button>
+            ) : profile.followRequestStatus === "PENDING" ? (
+              <button className="btn-profile outline" disabled>
+                Requested
+              </button>
+            ) : (
+              <button
+                className="btn-profile"
+                onClick={handleFollow}
+                disabled={followMutation.isPending}
+              >
+                {followMutation.isPending ? "Following..." : "Follow"}
+              </button>
+            )}
 
-              <div className="username-box">
-                <p>
-                  Share profile{" "}
-                  <IoIosShareAlt className="share-icon" />
-                </p>
-              </div>
-
+            <div className="profile-config">
+              <FaCog className="pfp-cog" />
             </div>
-
           </div>
         </div>
 
-        <div className="profile-actions">
-
-          {!isMyProfile && (
-            <button
-              className="btn-profile"
-              onClick={handleMessage}
-              disabled={messageMutation.isPending}
-            >
-              {messageMutation.isPending ? "Opening..." : "Message"}
-            </button>
-          )}
-
-          {isMyProfile ? (
-            <button className="btn-profile">
-              You
-            </button>
-          ) : profile.amIfollowing ? (
-            <button
-              className="btn-profile-following"
-              onClick={handleUnfollow}
-              disabled={unfollowMutation.isPending}
-            >
-              Following
-            </button>
-          ) : profile.followRequestStatus === "PENDING" ? (
-            <button
-              className="btn-profile"
-              disabled
-            >
-              Requested
-            </button>
-          ) : (
-            <button
-              className="btn-profile"
-              onClick={handleFollow}
-              disabled={followMutation.isPending}
-            >
-              {followMutation.isPending ? "Following..." : "Follow"}
-            </button>
-          )}
-
-          <div className="profile-config">
-            <FaCog className="pfp-cog" />
+        {profile.bio && (
+          <div className="bio-box">
+            <p className="bio">{profile.bio}</p>
           </div>
-
-        </div>
-
+        )}
       </div>
 
-      <div className="bio-box">
-        <p className="bio">{profile.bio}</p>
-      </div>
-
-
-
-      <div className="profile-tab-content">
-        {activeTab === "posts" && (
-          canSeePosts ? (
+      <div className="profile-tab-content" key={activeTab}>
+        {activeTab === "posts" &&
+          (canSeePosts ? (
             <UserPosts
               userName={profile.userName}
               canSeePosts={canSeePosts}
             />
           ) : (
             <PrivateProfile />
-          )
-        )}
+          ))}
       </div>
 
       <ConfirmationModal
@@ -286,7 +288,6 @@ function Profile() {
         onConfirm={handleConfirmUnfollow}
         onCancel={() => setIsUnfollowModalOpen(false)}
       />
-
     </div>
   );
 }

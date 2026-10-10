@@ -84,7 +84,7 @@ function SavedPosts() {
             )}
             <Masonry
                 breakpointCols={{
-                    default: 4,
+                    default: 6,
                     1200: 4,
                     900: 3,
                     640: 2,
