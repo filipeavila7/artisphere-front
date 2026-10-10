@@ -1,31 +1,76 @@
+
 .story-avatar {
-    padding: 2px;
+    position: relative;
+    padding: 3px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 100px;
-
+    box-sizing: border-box;
+    isolation: isolate;
 }
 
-.story-avatar.has-unviewed-story {
-    border: 3px solid #8915e8
+/* Anel que vai sendo desenhado */
+.story-avatar.has-unviewed-story::before,
+.story-avatar.has-unviewed-close-friends-story::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        transparent 360deg
+    );
+    z-index: -1;
 }
 
-.story-avatar.has-viewed-story {
-    border: 3px solid #848282
+/* Animação roxa */
+.story-avatar.has-unviewed-story::before {
+    background: conic-gradient(
+        from 0deg,
+        #8915e8 0deg,
+        #c77aff 360deg
+    );
+    animation: story-ring-progress 2s linear infinite;
 }
 
-.story-avatar.has-unviewed-close-friends-story {
-    border: 3px solid #e1d144; 
+/* Animação de melhores amigos */
+.story-avatar.has-unviewed-close-friends-story::before {
+    background: conic-gradient(
+        from 0deg,
+        #d83434 0deg,
+        #ff8585 360deg
+    );
+    animation: story-ring-progress 2s linear infinite;
 }
 
+/* Foto */
 .story-avatar-image {
+    position: relative;
+    z-index: 1;
     width: 100%;
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
     display: block;
-    border: 2px solid var(--background-color);
+    border: 3px solid var(--background-color);
+    box-sizing: border-box;
+}
+
+/* Story já visualizado */
+.story-avatar.has-viewed-story {
+    border: 3px solid #848282;
+}
+
+/* Uma volta completa */
+@keyframes story-ring-progress {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
