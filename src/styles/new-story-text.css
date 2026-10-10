@@ -1,0 +1,286 @@
+.new-story-text-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+    background: var(--color-secundary);
+}
+
+.new-story-text-container {
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Header */
+
+.new-story-text-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.new-story-text-header h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--color-primary);
+}
+
+.new-story-text-header p {
+    margin: 2px 0 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.new-story-text-back-button {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    color: var(--color-primary);
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.new-story-text-back-button:hover {
+    background: color-mix(in srgb, var(--color-primary) 20%, transparent);
+    transform: translateX(-2px);
+}
+
+/* Form */
+
+.new-story-text-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Canvas (preview estilo status do zap) */
+
+.story-text-canvas {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 14;
+    max-height: 62vh;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 28px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+    transition: background-color 0.35s ease;
+}
+
+.story-text-canvas::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at 30% 20%,
+        rgba(255, 255, 255, 0.14),
+        transparent 60%
+    );
+}
+
+.story-text-input {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    resize: none;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: center;
+    padding: 0;
+    /* centraliza verticalmente o texto dentro do textarea */
+    display: flex;
+    align-items: center;
+    transition: font-size 0.2s ease;
+}
+
+.story-text-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.story-text-input::-webkit-scrollbar {
+    display: none;
+}
+
+.story-text-color-button {
+    position: absolute;
+    z-index: 2;
+    top: 16px;
+    right: 16px;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.story-text-color-button:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: rotate(20deg) scale(1.05);
+}
+
+.story-text-color-button svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.story-text-counter {
+    position: absolute;
+    z-index: 2;
+    bottom: 16px;
+    right: 20px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* Paleta */
+
+.story-text-palette {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.story-text-swatch {
+    width: 34px;
+    height: 34px;
+    border: 3px solid var(--color-secundary);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.story-text-swatch:hover {
+    transform: scale(1.12);
+}
+
+.story-text-swatch.selected {
+    box-shadow: 0 0 0 3px var(--color-primary);
+    transform: scale(1.12);
+}
+
+/* Visibilidade */
+
+.story-text-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.story-text-field label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1f2937;
+}
+
+.story-text-visibility-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.story-text-visibility-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    background: var(--color-secundary);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.story-text-visibility-option:hover {
+    border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+}
+
+.story-text-visibility-option.selected {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.story-text-visibility-option strong {
+    display: block;
+    font-size: 0.95rem;
+    color: #111827;
+}
+
+.story-text-visibility-option span {
+    font-size: 0.82rem;
+    color: #6b7280;
+}
+
+.story-text-visibility-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.story-text-visibility-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: var(--color-primary);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Botão criar */
+
+.create-story-text-button {
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: var(--color-primary);
+    color: var(--color-secundary);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.create-story-text-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    opacity: 0.92;
+}
+
+.create-story-text-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}

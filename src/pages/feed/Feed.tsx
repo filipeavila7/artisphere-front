@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 const PAGE_SIZE = 12;
 
 const breakpointColumns = {
-    default: 5,
+    default: 6,
     1200: 4,
     900: 3,
     640: 2,

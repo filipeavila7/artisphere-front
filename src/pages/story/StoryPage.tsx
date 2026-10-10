@@ -537,7 +537,12 @@ function StoryPage() {
                                 </div>
                             )
                         ) : (
-                            <div className="story-viewer-text">
+                            <div
+                                className="story-viewer-text"
+                                style={{
+                                    backgroundColor: story.backgroundColor ?? "#320C35",
+                                }}
+                            >
                                 {story.description || ""}
                             </div>
                         )}

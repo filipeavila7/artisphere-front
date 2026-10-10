@@ -80,7 +80,7 @@ function MyPosts() {
             )}
             <Masonry
                 breakpointCols={{
-                    default: 4,
+                    default: 5,
                     1200: 4,
                     900: 3,
                     640: 2,

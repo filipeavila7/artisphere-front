@@ -359,20 +359,18 @@ function MyStoryViewerPage() {
                                 key={item.id}
                             >
                                 <span
-                                    className={`story-progress-fill ${
-                                        index < activeIndex
+                                    className={`story-progress-fill ${index < activeIndex
                                             ? "is-complete"
                                             : ""
-                                    } ${
-                                        index === activeIndex
+                                        } ${index === activeIndex
                                             ? "is-active"
                                             : ""
-                                    }`}
+                                        }`}
                                     style={
                                         index === activeIndex
                                             ? {
-                                                  animationDuration: `${STORY_DURATION}ms`
-                                              }
+                                                animationDuration: `${STORY_DURATION}ms`
+                                            }
                                             : undefined
                                     }
                                 />
@@ -402,7 +400,7 @@ function MyStoryViewerPage() {
                             )}
                         </time>
 
-                      
+
 
                         {story.storyVisibility === "CLOSE_FRIENDS" && (
                             <span
@@ -440,7 +438,12 @@ function MyStoryViewerPage() {
                                 </div>
                             )
                         ) : (
-                            <div className="story-viewer-text">
+                            <div
+                                className="story-viewer-text"
+                                style={{
+                                    backgroundColor: story.backgroundColor ?? "#320C35",
+                                }}
+                            >
                                 {story.description || ""}
                             </div>
                         )}

@@ -35,7 +35,16 @@ function MyStoryThumbnail({ story }: { story: MyStorySummaryResponse }) {
         ? imageUrl
             ? <img src={imageUrl} alt="" className="my-story-thumbnail-image" />
             : <span className="my-story-thumbnail-placeholder">Loading…</span>
-        : <span className="my-story-thumbnail-text">{story.description || "Text story"}</span>;
+        : (
+            <span
+                className="my-story-thumbnail-text"
+                style={{
+                    backgroundColor: story.backgroundColor,
+                }}
+            >
+                {story.description || "Text story"}
+            </span>
+        );
 }
 
 function MyStoriesPage() {

@@ -9,7 +9,6 @@ export interface StoryResponse {
     imageUrl: string;
     createdAt: string;
     ownerUser: UserResponse;
-    /** Legacy property still read by StoryPage. */
     OwerUser?: UserResponse;
     storyType: StoryType;
     storyVisibility: StoryVisibility;
@@ -18,6 +17,7 @@ export interface StoryResponse {
     description?: string | null;
     text?: string | null;
     viewed: boolean;
+    backgroundColor: string;
 }
 
 export interface MyStorySummaryResponse {
@@ -29,6 +29,7 @@ export interface MyStorySummaryResponse {
     description: string;
     ownerUser: UserResponse;
     totalVisibilities: number;
+    backgroundColor: string;
 }
 
 export interface StoryRequest {
@@ -40,4 +41,5 @@ export interface StoryRequest {
 export interface StoryTextRequest {
     text?: string;
     visibility: StoryVisibility;
+    backgroundColor: string;
 }
