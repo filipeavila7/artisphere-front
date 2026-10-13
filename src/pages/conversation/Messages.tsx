@@ -20,7 +20,9 @@ import {
 } from "react-router-dom";
 import {
   FaArrowLeft,
+  FaCheck,
   FaCheckDouble,
+  FaChevronDown,
   FaPaperPlane,
 } from "react-icons/fa6";
 
@@ -38,6 +40,7 @@ import { formatTime } from "../../utils/formateData";
 import type { PageResponse } from "../../types/page/PageResponse";
 import type { MessageResponse } from "../../types/message/MessageResponse";
 import type { ConversationResponse } from "../../types/conversation/ConversationResponse";
+import Loading from "../../components/layout/Loading";
 import "../../styles/messages.css";
 
 interface ConversationState {
@@ -54,7 +57,13 @@ interface ReadEvent {
 
 type ChatListItem =
   | { kind: "separator"; id: string; label: string }
-  | { kind: "message"; id: number; message: MessageResponse };
+  | {
+      kind: "message";
+      id: number;
+      message: MessageResponse;
+      isFirst: boolean;
+      isLast: boolean;
+    };
 
 const PAGE_SIZE = 50;
 
@@ -113,11 +122,13 @@ function Messages() {
   )?.conversation;
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const composerRef = useRef<HTMLTextAreaElement>(null);
   const shouldScrollToBottom = useRef(true);
   const initiallyMarkedRead = useRef<number | null>(null);
 
   const [newMessage, setNewMessage] = useState("");
   const [unseenMessages, setUnseenMessages] = useState(0);
+  const [showScrollDown, setShowScrollDown] = useState(false);
 
   /*
    * ============================
@@ -314,15 +325,18 @@ function Messages() {
 
   /*
    * ============================
-   * MENSAGENS + SEPARADORES
+   * MENSAGENS + SEPARADORES + AGRUPAMENTO
    * ============================
+   *
+   * isFirst: primeira mensagem de uma sequência do mesmo remetente
+   * isLast:  última mensagem da sequência (mostra avatar e "rabinho")
    */
 
   const chatItems = useMemo<ChatListItem[]>(() => {
     const items: ChatListItem[] = [];
     let lastDateKey: string | null = null;
 
-    messages.forEach((message) => {
+    messages.forEach((message, index) => {
       const messageDate = new Date(
         message.createdAt
       );
@@ -330,7 +344,9 @@ function Messages() {
       const dateKey =
         messageDate.toDateString();
 
-      if (dateKey !== lastDateKey) {
+      const isNewDay = dateKey !== lastDateKey;
+
+      if (isNewDay) {
         items.push({
           kind: "separator",
           id: `sep-${dateKey}`,
@@ -340,10 +356,26 @@ function Messages() {
         lastDateKey = dateKey;
       }
 
+      const previous = messages[index - 1];
+      const next = messages[index + 1];
+
+      const isFirst =
+        isNewDay ||
+        !previous ||
+        previous.senderId !== message.senderId;
+
+      const isLast =
+        !next ||
+        next.senderId !== message.senderId ||
+        new Date(next.createdAt).toDateString() !==
+        dateKey;
+
       items.push({
         kind: "message",
         id: message.id,
         message,
+        isFirst,
+        isLast,
       });
     });
 
@@ -720,7 +752,8 @@ function Messages() {
 
     if (
       content &&
-      otherUserId
+      otherUserId &&
+      !sendMutation.isPending
     ) {
       sendMutation.mutate(content);
     }
@@ -743,6 +776,38 @@ function Messages() {
       });
     }
   }, [messages.length]);
+
+  /*
+   * Auto-resize do campo de mensagem
+   */
+
+  useLayoutEffect(() => {
+    const textarea = composerRef.current;
+
+    if (!textarea) {
+      return;
+    }
+
+    textarea.style.height = "auto";
+
+    textarea.style.height = `${Math.min(
+      textarea.scrollHeight,
+      120
+    )}px`;
+  }, [newMessage]);
+
+  const scrollToBottom = () => {
+    shouldScrollToBottom.current = true;
+
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current
+        .scrollHeight,
+      behavior: "smooth",
+    });
+
+    setUnseenMessages(0);
+    setShowScrollDown(false);
+  };
 
   const loadOlderMessages =
     async () => {
@@ -785,6 +850,10 @@ function Messages() {
     shouldScrollToBottom.current =
       distanceFromBottom < 120;
 
+    setShowScrollDown(
+      distanceFromBottom > 300
+    );
+
     if (
       shouldScrollToBottom.current
     ) {
@@ -825,13 +894,7 @@ function Messages() {
     isNewConversation &&
     isLoadingProfile
   ) {
-    return (
-      <main className="messages-page">
-        <p className="messages-feedback">
-          Carregando contato...
-        </p>
-      </main>
-    );
+    return <Loading />;
   }
 
   /*
@@ -852,6 +915,12 @@ function Messages() {
       </main>
     );
   }
+
+  const showEmptyState =
+    isNewConversation ||
+    (!isLoading &&
+      !isError &&
+      messages.length === 0);
 
   return (
     <main className="messages-page">
@@ -892,7 +961,9 @@ function Messages() {
 
             {otherUserName && (
               <span>
-                Conversa privada
+                {otherUserUsername
+                  ? `@${otherUserUsername}`
+                  : "Conversa privada"}
               </span>
             )}
           </div>
@@ -911,9 +982,10 @@ function Messages() {
           )}
 
           {isLoading && (
-            <p className="messages-feedback">
+            <div className="chat-loading">
+              <span className="chat-spinner" />
               Carregando conversa...
-            </p>
+            </div>
           )}
 
           {isError && (
@@ -923,24 +995,7 @@ function Messages() {
             </p>
           )}
 
-          {!isNewConversation &&
-            !isLoading &&
-            !isError &&
-            messages.length === 0 && (
-              <div className="chat-empty">
-                <span>✦</span>
-
-                <p>
-                  Sem mensagens por aqui.
-                </p>
-
-                <small>
-                  Comece a conversa sobre arte.
-                </small>
-              </div>
-            )}
-
-          {isNewConversation && (
+          {showEmptyState && (
             <div className="chat-empty">
               <span>✦</span>
 
@@ -970,8 +1025,11 @@ function Messages() {
               );
             }
 
-            const message =
-              item.message;
+            const {
+              message,
+              isFirst,
+              isLast,
+            } = item;
 
             const isMine =
               message.senderId ===
@@ -983,31 +1041,34 @@ function Messages() {
                 className={`chat-message-row${isMine
                   ? " chat-message-row--mine"
                   : ""
+                  }${isFirst
+                    ? " chat-message-row--first"
+                    : ""
                   }`}
               >
-                {!isMine && (
-                  <img
-                    className="chat-message-avatar"
-                    src={formatePfpL(
-                      message.senderPhoto ??
-                      undefined
-                    )}
-                    alt=""
-                  />
-                )}
+                {!isMine &&
+                  (isLast ? (
+                    <img
+                      className="chat-message-avatar"
+                      src={formatePfpL(
+                        message.senderPhoto ??
+                        undefined
+                      )}
+                      alt=""
+                    />
+                  ) : (
+                    <div className="chat-message-avatar-spacer" />
+                  ))}
 
                 <div
                   className={`chat-bubble${isMine
                     ? " chat-bubble--mine"
                     : ""
+                    }${isLast
+                      ? " chat-bubble--tail"
+                      : ""
                     }`}
                 >
-                  {!isMine && (
-                    <span className="chat-sender-name">
-                      {message.senderName}
-                    </span>
-                  )}
-
                   <p>
                     {message.content}
                   </p>
@@ -1018,12 +1079,17 @@ function Messages() {
                     )}
 
                     {isMine &&
-                      message.readAt && (
+                      (message.readAt ? (
                         <FaCheckDouble
-                          className="chat-read-icon"
+                          className="chat-read-icon read"
                           aria-label="Lida"
                         />
-                      )}
+                      ) : (
+                        <FaCheck
+                          className="chat-read-icon"
+                          aria-label="Enviada"
+                        />
+                      ))}
                   </span>
                 </div>
               </div>
@@ -1031,25 +1097,25 @@ function Messages() {
           })}
         </div>
 
-        {unseenMessages > 0 && (
+        {(showScrollDown ||
+          unseenMessages > 0) && (
           <button
             type="button"
-            className="chat-new-messages"
-            onClick={() => {
-              shouldScrollToBottom.current =
-                true;
-
-              scrollRef.current?.scrollTo({
-                top: scrollRef.current
-                  .scrollHeight,
-                behavior: "smooth",
-              });
-
-              setUnseenMessages(0);
-            }}
+            className="chat-scroll-down"
+            onClick={scrollToBottom}
+            aria-label={
+              unseenMessages > 0
+                ? `Ir para o fim (${unseenMessages} novas mensagens)`
+                : "Ir para o fim"
+            }
           >
-            Novas mensagens (
-            {unseenMessages})
+            {unseenMessages > 0 && (
+              <span className="chat-scroll-badge">
+                {unseenMessages}
+              </span>
+            )}
+
+            <FaChevronDown />
           </button>
         )}
 
@@ -1061,6 +1127,7 @@ function Messages() {
           }}
         >
           <textarea
+            ref={composerRef}
             value={newMessage}
             onChange={(event) =>
               setNewMessage(
@@ -1081,10 +1148,8 @@ function Messages() {
                 ? "Escreva uma mensagem..."
                 : "Carregando contato..."
             }
-            disabled={
-              !otherUserId ||
-              sendMutation.isPending
-            }
+            disabled={!otherUserId}
+            readOnly={sendMutation.isPending}
             rows={1}
           />
 
@@ -1097,7 +1162,11 @@ function Messages() {
             }
             aria-label="Enviar mensagem"
           >
-            <FaPaperPlane />
+            {sendMutation.isPending ? (
+              <span className="chat-send-spinner" />
+            ) : (
+              <FaPaperPlane />
+            )}
 
             {sendMutation.isPending && (
               <span className="sr-only">
