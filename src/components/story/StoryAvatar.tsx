@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { formatePfpL } from "../../utils/formateImgProfile";
+import { formatePfpD } from "../../utils/formateImgProfile";
 import { useMe } from "../../hooks/useMe";
 
 import "../../styles/story-avatar.css";
@@ -66,7 +66,7 @@ function StoryAvatar({
         >
             <img
                 className="story-avatar-image"
-                src={formatePfpL(imageUrl)}
+                src={formatePfpD(imageUrl)}
                 alt=""
             />
         </div>

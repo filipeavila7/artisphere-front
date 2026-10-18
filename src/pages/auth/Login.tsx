@@ -92,7 +92,7 @@ function Login() {
             </div>
 
             <div className="forgot-box">
-              <button type="button" className="link-btn">
+              <button onClick={() => navigate("/forgot-password")} type="button" className="link-btn">
                 Forgot your password?
               </button>
             </div>

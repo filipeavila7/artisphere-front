@@ -1,21 +1,34 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
-import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import Button from "../../components/button/Button";
 import AuthShowcase from "../../components/auth/AuthShowcase";
+import FormField from "../../components/auth/FormField";
+import PasswordStrength from "../../components/auth/PasswordStrength";
+import { useDebounce } from "../../hooks/useDebounce";
+import {
+  EMAIL_REGEX,
+  MIN_PASSWORD_LENGTH,
+  USERNAME_REGEX,
+} from "../../utils/authValidation";
 
 // ajuste os caminhos conforme o seu projeto
-import { createUser } from "../../service/user/UserService";
+import {
+  createUser,
+  validateEmail,
+  validateUsername,
+} from "../../service/user/UserService";
+import type { UserRequest } from "../../types/user/UserRequest"
 
 import logo from "../../assets/logo.png";
 import "../../styles/login.css";
 import "../../styles/register.css";
-import type { UserRequest } from "../../types/user/UserRequest";
 
-const MIN_PASSWORD_LENGTH = 8;
+const DEBOUNCE_MS = 500;
+const MAX_SUGGESTIONS = 5;
 
 type FieldName =
   | "name"
@@ -26,9 +39,6 @@ type FieldName =
 
 type FormValues = Record<FieldName, string>;
 type FormErrors = Partial<Record<FieldName, string>>;
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const USERNAME_REGEX = /^[a-zA-Z0-9_.]{3,20}$/;
 
 function validate(values: FormValues): FormErrors {
   const errors: FormErrors = {};
@@ -56,22 +66,6 @@ function validate(values: FormValues): FormErrors {
   return errors;
 }
 
-/* 0 = vazio, 1 = fraca ... 4 = forte */
-function getPasswordStrength(password: string): number {
-  if (password.length === 0) return 0;
-  if (password.length < MIN_PASSWORD_LENGTH) return 1;
-
-  let score = 1;
-
-  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-  if (/\d/.test(password)) score++;
-  if (/[^A-Za-z0-9]/.test(password)) score++;
-
-  return score;
-}
-
-const strengthLabels = ["", "Weak", "Fair", "Good", "Strong"];
-
 function getErrorMessage(error: unknown): string {
   if (isAxiosError(error)) {
     if (error.response?.status === 409) {
@@ -87,76 +81,6 @@ function getErrorMessage(error: unknown): string {
 
   return "Couldn't create your account. Please try again.";
 }
-
-/* ================= CAMPO REUTILIZÁVEL ================= */
-
-type FormFieldProps = {
-  id: string;
-  label: string;
-  type?: string;
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur: () => void;
-  error?: string;
-  showValid?: boolean;
-  autoComplete?: string;
-  placeholder?: string;
-  index: number;
-  trailing?: React.ReactNode;
-  children?: React.ReactNode;
-};
-
-function FormField({
-  id,
-  label,
-  type = "text",
-  value,
-  onChange,
-  onBlur,
-  error,
-  showValid,
-  autoComplete,
-  placeholder,
-  index,
-  trailing,
-  children,
-}: FormFieldProps) {
-  const state = error ? " invalid" : showValid ? " valid" : "";
-
-  return (
-    <div
-      className={`field${state}`}
-      style={{ "--i": index } as React.CSSProperties}
-    >
-      <label htmlFor={id}>{label}</label>
-
-      <div className="input-wrapper">
-        <input
-          id={id}
-          type={type}
-          value={value}
-          onChange={onChange}
-          onBlur={onBlur}
-          autoComplete={autoComplete}
-          placeholder={placeholder}
-          aria-invalid={!!error}
-        />
-
-        {trailing ?? (showValid && <FaCheck className="valid-icon" />)}
-      </div>
-
-      {error && (
-        <p className="field-error" role="alert">
-          {error}
-        </p>
-      )}
-
-      {children}
-    </div>
-  );
-}
-
-/* ================= PÁGINA ================= */
 
 const emptyValues: FormValues = {
   name: "",
@@ -188,7 +112,69 @@ function Register() {
   });
 
   const errors = useMemo(() => validate(values), [values]);
-  const strength = getPasswordStrength(values.password);
+
+  /*
+   * ============================
+   * DISPONIBILIDADE EM TEMPO REAL
+   * ============================
+   *
+   * A consulta só roda quando:
+   *  1. o valor já passou na validação de formato
+   *  2. o usuário parou de digitar por DEBOUNCE_MS
+   */
+
+  const trimmedEmail = values.email.trim();
+
+  const debouncedUserName = useDebounce(values.userName, DEBOUNCE_MS);
+  const debouncedEmail = useDebounce(trimmedEmail, DEBOUNCE_MS);
+
+  const userNameFormatOk = USERNAME_REGEX.test(values.userName);
+  const emailFormatOk = EMAIL_REGEX.test(trimmedEmail);
+
+  const userNameQuery = useQuery({
+    queryKey: ["validate-username", debouncedUserName],
+    queryFn: () => validateUsername(debouncedUserName),
+    enabled: USERNAME_REGEX.test(debouncedUserName),
+    staleTime: 60 * 1000,
+    retry: false,
+  });
+
+  const emailQuery = useQuery({
+    queryKey: ["validate-email", debouncedEmail],
+    queryFn: () => validateEmail(debouncedEmail),
+    enabled: EMAIL_REGEX.test(debouncedEmail),
+    staleTime: 60 * 1000,
+    retry: false,
+  });
+
+  // "settled" = o valor digitado já é o mesmo que foi consultado
+  const userNameSettled =
+    userNameFormatOk && debouncedUserName === values.userName;
+
+  const emailSettled = emailFormatOk && debouncedEmail === trimmedEmail;
+
+  const isCheckingUserName =
+    userNameFormatOk && (!userNameSettled || userNameQuery.isFetching);
+
+  const isCheckingEmail =
+    emailFormatOk && (!emailSettled || emailQuery.isFetching);
+
+  const userNameResult =
+    userNameSettled && !userNameQuery.isFetching ? userNameQuery.data : undefined;
+
+  const emailResult =
+    emailSettled && !emailQuery.isFetching ? emailQuery.data : undefined;
+
+  const isUserNameTaken = userNameResult?.available === false;
+  const isUserNameAvailable = userNameResult?.available === true;
+
+  const isEmailTaken = emailResult?.available === false;
+  const isEmailAvailable = emailResult?.available === true;
+
+  const userNameSuggestions = (userNameResult?.suggestions ?? []).slice(
+    0,
+    MAX_SUGGESTIONS
+  );
 
   // depois de criar a conta, vai pro login sozinho
   useEffect(() => {
@@ -214,11 +200,26 @@ function Register() {
     setTouched((current) => ({ ...current, [field]: true }));
   };
 
+  const handleSelectSuggestion = (suggestion: string) => {
+    setValues((current) => ({ ...current, userName: suggestion }));
+    setTouched((current) => ({ ...current, userName: true }));
+  };
+
+  // erros de formato aparecem depois do blur;
+  // "já em uso" aparece em tempo real, assim que a consulta responde
   const getError = (field: FieldName) =>
     touched[field] ? errors[field] : undefined;
 
   const isValid = (field: FieldName) =>
     touched[field] && !errors[field] && values[field].length > 0;
+
+  const userNameError =
+    getError("userName") ??
+    (isUserNameTaken ? `@${values.userName} is already taken.` : undefined);
+
+  const emailError =
+    getError("email") ??
+    (isEmailTaken ? "This email is already registered." : undefined);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -231,14 +232,19 @@ function Register() {
       confirmPassword: true,
     });
 
-    if (Object.keys(errors).length > 0 || registerMutation.isPending) {
+    if (
+      Object.keys(errors).length > 0 ||
+      isUserNameTaken ||
+      isEmailTaken ||
+      registerMutation.isPending
+    ) {
       return;
     }
 
     registerMutation.mutate({
       name: values.name.trim(),
       userName: values.userName.trim(),
-      email: values.email.trim(),
+      email: trimmedEmail,
       password: values.password,
     });
   }
@@ -313,11 +319,33 @@ function Register() {
                 value={values.userName}
                 onChange={handleChange("userName")}
                 onBlur={handleBlur("userName")}
-                error={getError("userName")}
-                showValid={isValid("userName")}
+                error={userNameError}
+                showValid={isUserNameAvailable}
+                checking={isCheckingUserName}
+                successMessage={
+                  isUserNameAvailable ? "Username available" : undefined
+                }
                 autoComplete="username"
                 placeholder="your_username"
-              />
+              >
+                {isUserNameTaken && userNameSuggestions.length > 0 && (
+                  <div className="suggestions">
+                    <span className="suggestions-label">Try:</span>
+
+                    {userNameSuggestions.map((suggestion, index) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        className="suggestion-chip"
+                        style={{ "--i": index } as React.CSSProperties}
+                        onClick={() => handleSelectSuggestion(suggestion)}
+                      >
+                        @{suggestion}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </FormField>
 
               <FormField
                 index={2}
@@ -327,11 +355,22 @@ function Register() {
                 value={values.email}
                 onChange={handleChange("email")}
                 onBlur={handleBlur("email")}
-                error={getError("email")}
-                showValid={isValid("email")}
+                error={emailError}
+                showValid={isEmailAvailable}
+                checking={isCheckingEmail}
                 autoComplete="email"
                 placeholder="you@email.com"
-              />
+              >
+                {isEmailTaken && (
+                  <button
+                    type="button"
+                    className="field-link"
+                    onClick={() => navigate("/login")}
+                  >
+                    Already have an account? Log in
+                  </button>
+                )}
+              </FormField>
 
               <FormField
                 index={3}
@@ -346,22 +385,7 @@ function Register() {
                 placeholder="••••••••"
                 trailing={passwordToggle}
               >
-                {values.password && (
-                  <div className={`strength level-${strength}`}>
-                    <div className="strength-bars">
-                      {[1, 2, 3, 4].map((level) => (
-                        <span
-                          key={level}
-                          className={`strength-bar${level <= strength ? " on" : ""}`}
-                        />
-                      ))}
-                    </div>
-
-                    <span className="strength-label">
-                      {strengthLabels[strength]}
-                    </span>
-                  </div>
-                )}
+                <PasswordStrength password={values.password} />
               </FormField>
 
               <FormField

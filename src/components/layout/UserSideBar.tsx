@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useMe } from "../../hooks/useMe";
 import "../../styles/side-bar.css";
-import { formatePfpL } from "../../utils/formateImgProfile";
+import { formatePfpD } from "../../utils/formateImgProfile";
 
 function UserSideBar() {
     const { data: user, isLoading, error } = useMe();
@@ -38,7 +38,7 @@ function UserSideBar() {
             <div className="user-side-lay">
                 <img
                     className="user-side-img"
-                    src={formatePfpL(user?.profileImageUrl)}
+                    src={formatePfpD(user?.profileImageUrl)}
                     alt={user?.name ?? ""}
                 />
 

@@ -48,6 +48,25 @@
     }
 }
 
+/* spinner de "verificando disponibilidade" */
+.field-spinner {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--color-secundary);
+    animation: field-spin 0.7s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes field-spin {
+    to { transform: rotate(360deg); }
+}
+
 /* ================= ESTADOS DO CAMPO ================= */
 
 .register-box .field.valid input {
@@ -71,6 +90,17 @@
     animation: field-error-in 0.25s ease both;
 }
 
+.field-hint {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    animation: field-error-in 0.25s ease both;
+}
+
+.field-hint.success {
+    color: #86efac;
+}
+
 @keyframes field-error-in {
     from {
         opacity: 0;
@@ -80,6 +110,81 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* ================= SUGESTÕES DE USERNAME ================= */
+
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.suggestions-label {
+    font-size: 13px;
+    opacity: 0.75;
+}
+
+.suggestion-chip {
+    padding: 5px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--color-secundary);
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    animation: chip-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation-delay: calc(var(--i, 0) * 60ms);
+    transition: background-color 0.2s ease, color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.suggestion-chip:hover {
+    color: var(--color-primary);
+    background: var(--color-secundary);
+    transform: translateY(-2px);
+}
+
+.suggestion-chip:active {
+    transform: scale(0.95);
+}
+
+@keyframes chip-in {
+    from {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* link "Already have an account?" no email duplicado */
+.field-link {
+    align-self: flex-start;
+    padding: 0;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    color: var(--color-secundary);
+    background: none;
+    opacity: 0.9;
+    animation: field-error-in 0.25s ease both;
+    transition: opacity 0.2s ease;
+}
+
+.field-link:hover {
+    opacity: 1;
 }
 
 /* ================= FORÇA DA SENHA ================= */
@@ -134,7 +239,7 @@
     gap: 14px;
     padding: 44px 34px;
     text-align: center;
-    color: var(--color-secundary);
+    color: var(--color-secundario, var(--color-secundary));
 }
 
 .register-success h2 {
@@ -192,10 +297,17 @@
 @media (prefers-reduced-motion: reduce) {
     .register-box .field,
     .field-error,
+    .field-hint,
+    .field-link,
     .strength,
-    .valid-icon {
+    .valid-icon,
+    .suggestion-chip {
         animation: none;
         opacity: 1;
+    }
+
+    .field-spinner {
+        animation-duration: 1.6s;
     }
 
     .success-circle,
