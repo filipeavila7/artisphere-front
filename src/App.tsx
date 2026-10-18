@@ -28,6 +28,7 @@ import NewImgStory from "./pages/story/NewImgStory";
 import StoryPage from "./pages/story/StoryPage";
 import MyStoriesPage from "./pages/story/MyStoriesPage";
 import MyStoryViewerPage from "./pages/story/MyStoryViewerPage";
+import Register from "./pages/auth/Register";
 
 function RootLayout() {
     return (
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
         element: <RootLayout />,
         children: [
             { path: "/login", element: <Login /> },
+            { path: "/register", element: <Register /> },
             { path: "/story/:userName", element: <StoryPage /> },
             { path: "/story/me/:storyId", element: <MyStoryViewerPage /> },
             { path: "/story/me", element: <MyStoriesPage /> },

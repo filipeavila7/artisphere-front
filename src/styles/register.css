@@ -1,0 +1,206 @@
+/* ================= CARD ================= */
+
+.register-box {
+    max-width: 480px;
+    padding: 30px 34px;
+}
+
+.register-box .login-form {
+    gap: 16px;
+}
+
+/* campos entram em cascata */
+.register-box .field {
+    opacity: 0;
+    animation: reveal-up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation-delay: calc(var(--i, 0) * 70ms + 250ms);
+}
+
+/* ================= INPUT + ÍCONE ================= */
+
+.input-wrapper {
+    position: relative;
+}
+
+.register-box .input-wrapper input {
+    padding-right: 46px;
+}
+
+.valid-icon {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    font-size: 14px;
+    color: #86efac;
+    transform: translateY(-50%);
+    animation: register-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    pointer-events: none;
+}
+
+@keyframes register-pop {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) scale(0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+}
+
+/* ================= ESTADOS DO CAMPO ================= */
+
+.register-box .field.valid input {
+    border-color: rgba(134, 239, 172, 0.7);
+}
+
+.register-box .field.invalid input {
+    border-color: #fca5a5;
+    background-color: rgba(248, 113, 113, 0.1);
+}
+
+.register-box .field.invalid input:focus {
+    border-color: #fca5a5;
+    box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.22);
+}
+
+.field-error {
+    margin: 0;
+    font-size: 13px;
+    color: #fecaca;
+    animation: field-error-in 0.25s ease both;
+}
+
+@keyframes field-error-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================= FORÇA DA SENHA ================= */
+
+.strength {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 2px;
+    animation: field-error-in 0.25s ease both;
+}
+
+.strength-bars {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.strength-bar {
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.strength-bar.on {
+    transform: scaleY(1.25);
+}
+
+.strength-label {
+    min-width: 46px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.strength.level-1 .strength-bar.on { background: #f87171; }
+.strength.level-2 .strength-bar.on { background: #fb923c; }
+.strength.level-3 .strength-bar.on { background: #facc15; }
+.strength.level-4 .strength-bar.on { background: #4ade80; }
+
+.strength.level-1 .strength-label { color: #fca5a5; }
+.strength.level-2 .strength-label { color: #fdba74; }
+.strength.level-3 .strength-label { color: #fde047; }
+.strength.level-4 .strength-label { color: #86efac; }
+
+/* ================= SUCESSO ================= */
+
+.register-success {
+    align-items: center;
+    gap: 14px;
+    padding: 44px 34px;
+    text-align: center;
+    color: var(--color-secundary);
+}
+
+.register-success h2 {
+    margin: 6px 0 0;
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.register-success p {
+    margin: 0 0 8px;
+    max-width: 320px;
+    line-height: 1.5;
+    opacity: 0.85;
+}
+
+.success-check {
+    width: 84px;
+    height: 84px;
+}
+
+.success-circle,
+.success-tick {
+    fill: none;
+    stroke: var(--color-secundary);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.success-circle {
+    stroke-width: 2.5;
+    stroke-dasharray: 151;
+    stroke-dashoffset: 151;
+    animation: success-draw 0.6s ease forwards;
+}
+
+.success-tick {
+    stroke-width: 4;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    animation: success-draw 0.4s 0.5s ease forwards;
+}
+
+@keyframes success-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 900px) {
+    .register-box {
+        padding: 26px 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .register-box .field,
+    .field-error,
+    .strength,
+    .valid-icon {
+        animation: none;
+        opacity: 1;
+    }
+
+    .success-circle,
+    .success-tick {
+        animation: none;
+        stroke-dashoffset: 0;
+    }
+}

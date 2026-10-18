@@ -35,7 +35,7 @@ import { getConversations } from "../../service/conversation/ConversationService
 import { GetUserProfile } from "../../service/profile/ProfileService";
 import { useMe } from "../../hooks/useMe";
 import { useStompTopic } from "../../hooks/useStompTopic";
-import { formatePfpL } from "../../utils/formateImgProfile";
+import { formatePfpD, formatePfpL } from "../../utils/formateImgProfile";
 import { formatTime } from "../../utils/formateData";
 import type { PageResponse } from "../../types/page/PageResponse";
 import type { MessageResponse } from "../../types/message/MessageResponse";
@@ -940,7 +940,7 @@ function Messages() {
 
           <img
             className="chat-header-avatar"
-            src={formatePfpL(
+            src={formatePfpD(
               otherUserPhoto
             )}
             alt=""
