@@ -36,7 +36,8 @@ import { getStoryImage } from "../../service/story/StoryService";
 import NotLogged from "../../components/auth/NotLogged";
 import { formatePfpL } from "../../utils/formateImgProfile";
 import Empty from "../../components/layout/Empty";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getCurrentRoute, withRouteOrigin } from "../../utils/routeOrigin";
 import Loading from "../../components/layout/Loading";
 
 const PAGE_SIZE = 20;
@@ -67,6 +68,8 @@ const notificationIcons: Record<NotificationType, React.ReactNode> = {
 function Notifications() {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentRoute = getCurrentRoute(location);
 
   const [followRequestActions, setFollowRequestActions] = useState<
     Record<number, FollowRequestStatus>
@@ -395,7 +398,7 @@ function Notifications() {
                     <div
                       className="notification-thumb"
                       onClick={() =>
-                        navigate(`/post/${notification.post!.id}`)
+                        navigate(`/post/${notification.post!.id}`, { state: withRouteOrigin(location.state, currentRoute) })
                       }
                     >
                       <img

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   useQuery,
   useMutation,
@@ -26,9 +26,11 @@ import {
 } from "react-icons/fa6";
 import { CiShare2 } from "react-icons/ci";
 
+import "../../styles/route-navigation.css";
 import "../../styles/post.css";
 import { useMe } from "../../hooks/useMe";
 import Loading from "../../components/layout/Loading";
+import { getCurrentRoute, getRouteOrigin, getRouteOriginState, withRouteOrigin } from "../../utils/routeOrigin";
 
 const breakpointColumns = {
   default: 6,
@@ -41,7 +43,10 @@ function PostDetails() {
   const { data: me } = useMe();
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { postId } = useParams();
+  const currentRoute = getCurrentRoute(location);
+  const returnTo = getRouteOrigin(location.state, "/feed", currentRoute);
 
   const queryClient = useQueryClient();
 
@@ -101,7 +106,19 @@ function PostDetails() {
   }
 
   if (isError || !data) {
-    return <p>Erro ao carregar o post.</p>;
+    return (
+      <main className="feed-lay">
+        <button
+          type="button"
+          className="route-back-button"
+          onClick={() => navigate(returnTo, { state: getRouteOriginState(location.state) })}
+          aria-label="Go back"
+        >
+          ←
+        </button>
+        <p>Erro ao carregar o post.</p>
+      </main>
+    );
   }
 
   const isOwner = me?.id === data.post.user.id;
@@ -137,6 +154,14 @@ function PostDetails() {
 
   return (
     <main className="feed-lay">
+      <button
+        type="button"
+        className="route-back-button"
+        onClick={() => navigate(returnTo, { state: getRouteOriginState(location.state) })}
+        aria-label="Go back"
+      >
+        ←
+      </button>
       <div className="post-details-box">
         <div className="post-details-content">
           <img
@@ -270,7 +295,7 @@ function PostDetails() {
               <PostCard
                 key={post.id}
                 post={post}
-                onClick={(post) => navigate(`/post/${post.id}`)}
+                onClick={(post) => navigate(`/post/${post.id}`, { state: withRouteOrigin(location.state, currentRoute) })}
               />
             ))}
           </Masonry>

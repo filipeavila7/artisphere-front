@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import "../../styles/new-story-text.css";
 
@@ -30,6 +30,7 @@ function getFontSize(length: number): string {
 
 function NewStoryText() {
     const navigate = useNavigate();
+    const location = useLocation();
     const queryClient = useQueryClient();
 
     const [text, setText] = useState("");
@@ -88,8 +89,8 @@ function NewStoryText() {
 
                 <div className="new-story-text-header">
                     <button
-                        className="new-story-text-back-button"
-                        onClick={() => navigate("/new/story")}
+                        className="new-story-back-button"
+                        onClick={() => navigate("/new/story", { state: location.state })}
                         type="button"
                     >
                         ←

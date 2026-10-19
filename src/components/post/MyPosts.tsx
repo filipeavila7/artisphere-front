@@ -5,7 +5,8 @@ import Masonry from "react-masonry-css";
 import { getMyPosts } from "../../service/post/PostService";
 import PostCard from "../../components/feed/PostCard";
 import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getCurrentRoute, withRouteOrigin } from "../../utils/routeOrigin";
 import "../../styles/post.css";
 import EmptyPosts from "./EmptyPosts";
 
@@ -13,7 +14,9 @@ const PAGE_SIZE = 12;
 
 function MyPosts() {
     const sentinelRef = useRef<HTMLDivElement>(null);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
+    const currentRoute = getCurrentRoute(location);
 
     const {
         data,
@@ -101,7 +104,7 @@ function MyPosts() {
                     <PostCard
                         key={post.id}
                         post={post}
-                        onClick={(post) => navigate(`/my/post/${post.id}`)}
+                        onClick={(post) => navigate(`/my/post/${post.id}`, { state: withRouteOrigin(location.state, currentRoute, { profileTab: "posts" }) })}
                     />
                 ))}
 

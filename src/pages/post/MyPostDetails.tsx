@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { getMyPostById, deletePost } from "../../service/post/PostService";
@@ -22,12 +22,17 @@ import {
 } from "react-icons/fa6";
 import { CiShare2 } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
+import { getCurrentRoute, getRouteOrigin, getRouteOriginState } from "../../utils/routeOrigin";
 
+import "../../styles/route-navigation.css";
 import "../../styles/post.css";
 
 function MyPostDetails() {
   const { postId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentRoute = getCurrentRoute(location);
+  const returnTo = getRouteOrigin(location.state, "/profile", currentRoute);
 
   const queryClient = useQueryClient();
 
@@ -135,7 +140,7 @@ function MyPostDetails() {
       await queryClient.invalidateQueries({ queryKey: ["my-posts"] });
       await queryClient.invalidateQueries({ queryKey: ["feed"] });
 
-      navigate("/profile");
+      navigate(returnTo, { state: getRouteOriginState(location.state) });
     },
   });
 
@@ -144,7 +149,19 @@ function MyPostDetails() {
   }
 
   if (isError || !data) {
-    return <p>Erro ao carregar o post.</p>;
+    return (
+      <main className="feed-lay">
+        <button
+          type="button"
+          className="route-back-button"
+          onClick={() => navigate(returnTo, { state: getRouteOriginState(location.state) })}
+          aria-label="Go back"
+        >
+          ←
+        </button>
+        <p>Erro ao carregar o post.</p>
+      </main>
+    );
   }
 
   const handleDeleteClick = () => {
@@ -171,6 +188,14 @@ function MyPostDetails() {
 
   return (
     <main className="feed-lay">
+      <button
+        type="button"
+        className="route-back-button"
+        onClick={() => navigate(returnTo, { state: getRouteOriginState(location.state) })}
+        aria-label="Go back"
+      >
+        ←
+      </button>
       <div className="post-details-box">
         <div className="post-details-content">
           <img

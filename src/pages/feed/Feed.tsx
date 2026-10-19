@@ -5,7 +5,8 @@ import { getFeed } from "../../service/post/PostService";
 import PostCard from "../../components/feed/PostCard";
 import "../../styles/feed.css";
 import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getCurrentRoute, withRouteOrigin } from "../../utils/routeOrigin";
 
 const PAGE_SIZE = 12;
 
@@ -19,7 +20,9 @@ const breakpointColumns = {
 function Feed() {
     const sentinelRef = useRef<HTMLDivElement>(null);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
+    const currentRoute = getCurrentRoute(location);
 
     const {
         data,
@@ -70,7 +73,7 @@ function Feed() {
                     <PostCardSkeleton key={`initial-${index}`} />
                 ))}
 
-                {posts.map((post) => <PostCard onClick={(post) => navigate(`/post/${post.id}`)} key={post.id} post={post} />)}
+                {posts.map((post) => <PostCard onClick={(post) => navigate(`/post/${post.id}`, { state: withRouteOrigin(location.state, currentRoute) })} key={post.id} post={post} />)}
 
                 {isFetchingNextPage && Array.from({ length: 5 }).map((_, index) => (
                     <PostCardSkeleton key={`next-${index}`} />

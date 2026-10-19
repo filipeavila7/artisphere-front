@@ -1,6 +1,6 @@
 
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import {
     useInfiniteQuery,
     useMutation,
@@ -22,10 +22,15 @@ import { formatePfpD } from "../../utils/formateImgProfile";
 
 import "../../styles/search.css";
 import { useMe } from "../../hooks/useMe";
+import { getCurrentRoute, getRouteOrigin, getRouteOriginState, withRouteOrigin } from "../../utils/routeOrigin";
+import "../../styles/route-navigation.css";
 
 function Search() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const currentRoute = getCurrentRoute(location);
+    const returnTo = getRouteOrigin(location.state, "/feed", currentRoute);
     const queryClient = useQueryClient();
 
     const { data: user } = useMe();
@@ -289,9 +294,10 @@ function Search() {
     if (isInitialLoading) {
         return (
             <main className="search-page">
-                <h1>
-                    Search results for "{query}"
-                </h1>
+                <div className="route-page-heading">
+                    <button type="button" className="route-back-button" onClick={() => navigate(returnTo, { state: getRouteOriginState(location.state) })} aria-label="Go back">←</button>
+                    <h1>Search results for "{query}"</h1>
+                </div>
 
                 <section>
                     <h2>Artists</h2>
@@ -323,10 +329,10 @@ function Search() {
 
     return (
         <main className="search-page">
-
-            <h1>
-                Search results for "{query}"
-            </h1>
+            <div className="route-page-heading">
+                <button type="button" className="route-back-button" onClick={() => navigate(returnTo, { state: getRouteOriginState(location.state) })} aria-label="Go back">←</button>
+                <h1>Search results for "{query}"</h1>
+            </div>
 
             {/* =========================
                 ARTISTS
@@ -344,7 +350,8 @@ function Search() {
                                 key={profile.userId}
                                 onClick={() =>
                                     navigate(
-                                        `/user/${profile.userName}`
+                                        `/user/${profile.userName}`,
+                                        { state: withRouteOrigin(location.state, currentRoute) }
                                     )
                                 }
                             >
@@ -469,7 +476,8 @@ function Search() {
                                 post={post}
                                 onClick={(post) =>
                                     navigate(
-                                        `/post/${post.id}`
+                                        `/post/${post.id}`,
+                                        { state: withRouteOrigin(location.state, currentRoute) }
                                     )
                                 }
                             />

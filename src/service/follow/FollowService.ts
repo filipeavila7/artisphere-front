@@ -6,29 +6,29 @@ import type { UserResponse } from "../../types/user/UserResponse";
 
 
 export async function getMyFollowing(
-    page : number,
-    size : number
+  page: number,
+  size: number
 ): Promise<PageResponse<FollowingProfileResponse>> {
 
-    const response = await api.get<PageResponse<FollowingProfileResponse>>(
-        "/follow/me/following",
-        {
-            params: {page, size}
-        }
-    )
-    return response.data
-    
+  const response = await api.get<PageResponse<FollowingProfileResponse>>(
+    "/follow/me/following",
+    {
+      params: { page, size }
+    }
+  )
+  return response.data
+
 }
 
 
 export async function followUser(userId: number): Promise<FollowResponse> {
-    const response = await api.post<FollowResponse>(`/follow/${userId}`);
+  const response = await api.post<FollowResponse>(`/follow/${userId}`);
 
-    return response.data;
+  return response.data;
 }
 
 export async function unfollowUser(userId: number): Promise<void> {
-    await api.delete(`/follow/unfollow/${userId}`);
+  await api.delete(`/follow/unfollow/${userId}`);
 }
 
 
@@ -45,4 +45,77 @@ export async function getMyConnections(
   });
 
   return response.data;
+}
+
+
+
+
+// Perfis que o usuário logado segue
+export async function getLoggedFollowing(
+  page = 0,
+  size = 12
+): Promise<PageResponse<FollowingProfileResponse>> {
+  const response = await api.get("/follow/me/following", {
+    params: {
+      page,
+      size,
+    },
+  });
+
+  return response.data;
+}
+
+// Seguidores do usuário logado
+export async function getLoggedFollowers(
+  page = 0,
+  size = 12
+): Promise<PageResponse<FollowingProfileResponse>> {
+  const response = await api.get("/follow/me/followers", {
+    params: {
+      page,
+      size,
+    },
+  });
+
+  return response.data;
+}
+
+
+
+// Perfis que determinado usuário segue
+export async function getUserFollowing(
+  userId: number,
+  page = 0,
+  size = 12
+): Promise<PageResponse<FollowingProfileResponse>> {
+  const response = await api.get(`/follow/${userId}/following`, {
+    params: {
+      page,
+      size,
+    },
+  });
+
+  return response.data;
+}
+
+// Seguidores de determinado usuário
+export async function getUserFollowers(
+  userId: number,
+  page = 0,
+  size = 12
+): Promise<PageResponse<FollowingProfileResponse>> {
+  const response = await api.get(`/follow/${userId}/followers`, {
+    params: {
+      page,
+      size,
+    },
+  });
+
+  return response.data;
+}
+
+
+// Remover um seguidor
+export async function removeFollower(followerId: number): Promise<void> {
+  await api.delete(`/follow/remove-follower/${followerId}`);
 }

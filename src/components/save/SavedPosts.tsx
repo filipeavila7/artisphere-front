@@ -10,14 +10,17 @@ import "../../styles/post.css";
 import PostCardNew from "../feed/PostCardNew";
 import { getMySavedPosts } from "../../service/save/SaveService";
 import EmptyPostsA from "../post/EmptyPostsA";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getCurrentRoute, withRouteOrigin } from "../../utils/routeOrigin";
 
 const PAGE_SIZE = 12;
 
 function SavedPosts() {
     const sentinelRef = useRef<HTMLDivElement>(null);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
+    const currentRoute = getCurrentRoute(location);
 
     const {
         data,
@@ -103,7 +106,7 @@ function SavedPosts() {
                 {/* Posts */}
                 {posts.map((post) => (
                     <PostCardNew
-                         onClick={(post) => navigate(`/my/post/${post.id}`)}
+                         onClick={(post) => navigate(`/my/post/${post.id}`, { state: withRouteOrigin(location.state, currentRoute, { profileTab: "saved" }) })}
                         key={post.postResponse.id}
                         post={post.postResponse}
                     />

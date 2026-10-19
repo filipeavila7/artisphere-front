@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { FaCheck, FaCog, FaUserFriends } from "react-icons/fa";
@@ -15,17 +15,22 @@ import { useOtherProfile } from "../../hooks/useProfile";
 import { followUser, unfollowUser } from "../../service/follow/FollowService";
 import { openConversation } from "../../service/conversation/ConversationService";
 
+import "../../styles/route-navigation.css";
 import "../../styles/profile.css";
 import UserPosts from "../../components/post/UserPosts";
 import PrivateProfile from "../../components/post/PrivateProfile";
 import StoryAvatar from "../../components/story/StoryAvatar";
 import Loading from "../../components/layout/Loading";
+import { getCurrentRoute, getRouteOrigin, getRouteOriginState } from "../../utils/routeOrigin";
 
 type ProfileTab = "posts";
 
 function Profile() {
   const { userName } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentRoute = getCurrentRoute(location);
+  const returnTo = getRouteOrigin(location.state, "/feed", currentRoute);
   const queryClient = useQueryClient();
 
   const [activeTab] = useState<ProfileTab>("posts");
@@ -134,7 +139,19 @@ function Profile() {
   }
 
   if (isErrorProfile || !profile) {
-    return <p>Erro ao carregar perfil.</p>;
+    return (
+      <main>
+        <button
+          type="button"
+          className="route-back-button"
+          onClick={() => navigate(returnTo, { state: getRouteOriginState(location.state) })}
+          aria-label="Go back"
+        >
+          ←
+        </button>
+        <p>Erro ao carregar perfil.</p>
+      </main>
+    );
   }
 
   const isMyProfile = profile.userName === user.userName;
@@ -144,6 +161,14 @@ function Profile() {
 
   return (
     <div className="profile-lay">
+      <button
+        type="button"
+        className="route-back-button"
+        onClick={() => navigate(returnTo, { state: getRouteOriginState(location.state) })}
+        aria-label="Go back"
+      >
+        ←
+      </button>
       <div className="profile-box">
         <div className="profile-cover" />
 

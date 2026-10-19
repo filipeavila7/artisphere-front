@@ -1,17 +1,24 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { FaHashtag, FaRegImage, FaSearch, FaTimes } from "react-icons/fa";
 
 import { getSearchSuggestions } from "../../service/search/SearchService";
 
 import "../../styles/nav-bar.css";
+import { getCurrentRoute, getRouteOrigin, withRouteOrigin } from "../../utils/routeOrigin";
 
 function NavBar() {
   const [query, setQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentRoute = getCurrentRoute(location);
+  const originFor = (destination: string) =>
+    destination.split("#")[0] === currentRoute.split("#")[0]
+      ? getRouteOrigin(location.state, "/feed", currentRoute)
+      : currentRoute;
   const searchRef = useRef<HTMLDivElement>(null);
 
   const { data: suggestions, isLoading } = useQuery({
@@ -54,7 +61,8 @@ function NavBar() {
 
     setShowSuggestions(false);
 
-    navigate(`/search?q=${encodeURIComponent(value)}`);
+    const destination = `/search?q=${encodeURIComponent(value)}`;
+    navigate(destination, { state: withRouteOrigin(location.state, originFor(destination)) });
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -70,21 +78,24 @@ function NavBar() {
   const handleProfileClick = (userName: string) => {
     setShowSuggestions(false);
 
-    navigate(`/user/${encodeURIComponent(userName)}`);
+    const destination = `/user/${encodeURIComponent(userName)}`;
+    navigate(destination, { state: withRouteOrigin(location.state, originFor(destination)) });
   };
 
   const handlePostClick = (title: string) => {
     setShowSuggestions(false);
     setQuery(title);
 
-    navigate(`/search?q=${encodeURIComponent(title)}`);
+    const destination = `/search?q=${encodeURIComponent(title)}`;
+    navigate(destination, { state: withRouteOrigin(location.state, originFor(destination)) });
   };
 
   const handleTagClick = (name: string) => {
     setShowSuggestions(false);
     setQuery(name);
 
-    navigate(`/search?q=${encodeURIComponent(name)}`);
+    const destination = `/search?q=${encodeURIComponent(name)}`;
+    navigate(destination, { state: withRouteOrigin(location.state, originFor(destination)) });
   };
 
   const handleClear = () => {

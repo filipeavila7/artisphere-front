@@ -1,4 +1,5 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { getCurrentRoute, withRouteOrigin } from "../../utils/routeOrigin";
 import "../../styles/side-bar.css";
 import { AiOutlineHome } from "react-icons/ai";
 import { IoSettingsOutline, IoNotificationsOutline } from "react-icons/io5";
@@ -18,6 +19,8 @@ const links = [
 
 function Sidebar() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const currentRoute = getCurrentRoute(location);
 
     return (
         <aside className="sidebar">
@@ -34,7 +37,7 @@ function Sidebar() {
                         <button
                             type="button"
                             className="side-new-btn"
-                            onClick={() => navigate("/new")}
+                            onClick={() => navigate("/new", { state: withRouteOrigin(location.state, currentRoute) })}
                         >
                             <FaPlus className="side-new-icon" />
                             <span className="side-label">New post</span>

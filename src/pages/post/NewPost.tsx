@@ -186,6 +186,13 @@ function NewPost() {
 
     return (
         <main className="new-post-page">
+            <button
+                className="new-story-back-button"
+                onClick={() => navigate(-1)}
+                type="button"
+            >
+                ←
+            </button>
             <form
                 className="new-post-layout"
                 onSubmit={handleSubmit}

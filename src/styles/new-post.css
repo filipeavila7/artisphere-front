@@ -5,6 +5,7 @@
     display: flex;
     justify-content: center;
     box-sizing: border-box;
+    gap: 20px;
 }
 
 .new-post-layout {

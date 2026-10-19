@@ -9,14 +9,17 @@ import "../../styles/post.css";
 import { getMyLikedPosts } from "../../service/like/likeService";
 import PostCardNew from "../feed/PostCardNew";
 import EmptyPostsB from "../post/EmptyPostsB";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getCurrentRoute, withRouteOrigin } from "../../utils/routeOrigin";
 
 const PAGE_SIZE = 12;
 
 function LikedPosts() {
     const sentinelRef = useRef<HTMLDivElement>(null);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
+    const currentRoute = getCurrentRoute(location);
 
     const {
         data,
@@ -104,7 +107,7 @@ function LikedPosts() {
                     <PostCardNew
                         key={post.post.id}
                         post={post.post}
-                        onClick={(post) => navigate(`/my/post/${post.id}`)}
+                        onClick={(post) => navigate(`/my/post/${post.id}`, { state: withRouteOrigin(location.state, currentRoute, { profileTab: "liked" }) })}
                     />
                 ))}
 

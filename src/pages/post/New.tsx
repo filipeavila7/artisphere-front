@@ -1,9 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/new.css";
+import { withRouteOriginIfMissing } from "../../utils/routeOrigin";
 
 function New() {
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <div className="new-page">
@@ -15,7 +17,7 @@ function New() {
 
       <div className="new-options">
 
-        <div onClick={()=> navigate("/new/story")} className="new-option">
+        <div onClick={()=> navigate("/new/story", { state: withRouteOriginIfMissing(location.state, "/feed") })} className="new-option">
           <div className="new-option-image">
             <img src="/avatar-7.png" alt="" />
           </div>

@@ -9,6 +9,12 @@
     stroke-linejoin: round;
 }
 
+.header-btn-lay{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .new-story-option-preview.text-preview svg {
     width: 58px;
     height: 58px;

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getCurrentRoute, withRouteOrigin } from "../../utils/routeOrigin";
 
 import NotLogged from "../../components/auth/NotLogged";
 import { useMe } from "../../hooks/useMe";
@@ -19,10 +20,17 @@ import Loading from "../../components/layout/Loading";
 type ProfileTab = "posts" | "liked" | "saved";
 
 function Profile() {
-  const [activeTab, setActiveTab] = useState<ProfileTab>("posts");
+  const location = useLocation();
+  const requestedProfileTab = (location.state as { profileTab?: unknown } | null)?.profileTab;
+  const initialProfileTab: ProfileTab =
+    requestedProfileTab === "liked" || requestedProfileTab === "saved"
+      ? requestedProfileTab
+      : "posts";
+  const [activeTab, setActiveTab] = useState<ProfileTab>(initialProfileTab);
   const [copied, setCopied] = useState(false);
 
   const navigate = useNavigate();
+  const currentRoute = getCurrentRoute(location);
 
   const {
     data: user,
@@ -87,7 +95,7 @@ function Profile() {
                 className="pfp-new"
                 aria-label="Create story"
                 title="Create story"
-                onClick={() => navigate("/new/story")}
+                onClick={() => navigate("/new/story", { state: withRouteOrigin(location.state, currentRoute) })}
               >
                 <FaPlus />
               </button>

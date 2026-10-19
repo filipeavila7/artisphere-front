@@ -37,6 +37,7 @@ import { useMe } from "../../hooks/useMe";
 import { useStompTopic } from "../../hooks/useStompTopic";
 import { formatePfpD, formatePfpL } from "../../utils/formateImgProfile";
 import { formatTime } from "../../utils/formateData";
+import { getCurrentRoute, withRouteOrigin } from "../../utils/routeOrigin";
 import type { PageResponse } from "../../types/page/PageResponse";
 import type { MessageResponse } from "../../types/message/MessageResponse";
 import type { ConversationResponse } from "../../types/conversation/ConversationResponse";
@@ -113,6 +114,7 @@ function Messages() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const currentRoute = getCurrentRoute(location);
   const queryClient = useQueryClient();
 
   const { data: me } = useMe();
@@ -947,7 +949,7 @@ function Messages() {
             onClick={() => {
               if (otherUserUsername) {
                 navigate(
-                  `/user/${otherUserUsername}`
+                  `/user/${otherUserUsername}`, { state: withRouteOrigin(location.state, currentRoute) }
                 );
               }
             }}

@@ -1,23 +1,42 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import "../../styles/route-navigation.css";
 import "../../styles/new-story.css"
+import { getCurrentRoute, getRouteOrigin, getRouteOriginState } from "../../utils/routeOrigin";
 
 function NewStory() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const currentRoute = getCurrentRoute(location);
+    const returnTo = getRouteOrigin(location.state, "/feed", currentRoute);
 
     return (
         <div className="new-story-page">
             <div className="new-story-container">
                 <div className="new-story-header">
-                    <h1>Create a story</h1>
-                    <p>
-                        Choose how you want to share your moment.
-                    </p>
+                    <div className="header-btn-lay">
+                        <button
+                            className="new-story-back-button"
+                            onClick={() => navigate(returnTo, { state: getRouteOriginState(location.state) })}
+                            type="button"
+                        >
+                            ←
+                        </button>
+                        <div className="header-title-header">
+
+                            <h1>Create a story</h1>
+                            <p>
+                                Choose how you want to share your moment.
+                            </p>
+                        </div>
+                    </div>
+
+
                 </div>
 
                 <div className="new-story-options">
                     <button
                         className="new-story-option"
-                        onClick={() => navigate("/new/story/image")}
+                        onClick={() => navigate("/new/story/image", { state: location.state })}
                     >
                         <div className="new-story-option-preview image-preview">
                             <svg
@@ -50,7 +69,7 @@ function NewStory() {
 
                     <button
                         className="new-story-option"
-                        onClick={() => navigate("/new/story/text")}
+                        onClick={() => navigate("/new/story/text", { state: location.state })}
                     >
                         <div className="new-story-option-preview text-preview">
                             <svg

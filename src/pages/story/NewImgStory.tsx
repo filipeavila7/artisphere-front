@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/new-story-img.css"
 
 import type { StoryVisibility } from "../../types/story/StoryType";
@@ -9,6 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 function NewStoryImage() {
     const navigate = useNavigate();
+    const location = useLocation();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const queryClient = useQueryClient();
 
@@ -82,7 +83,7 @@ function NewStoryImage() {
                 <div className="new-story-image-header">
                     <button
                         className="new-story-back-button"
-                        onClick={() => navigate("/new/story")}
+                        onClick={() => navigate("/new/story", { state: location.state })}
                         type="button"
                     >
                         ←

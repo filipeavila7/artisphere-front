@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import Masonry from "react-masonry-css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getCurrentRoute, withRouteOrigin } from "../../utils/routeOrigin";
 
 import { getPostsByUserName } from "../../service/post/PostService";
 import PostCard from "../../components/feed/PostCard";
@@ -24,6 +25,8 @@ function UserPosts({
 }: UserPostsProps) {
     const sentinelRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
+    const location = useLocation();
+    const currentRoute = getCurrentRoute(location);
 
     const {
         data,
@@ -134,7 +137,7 @@ function UserPosts({
                         key={post.id}
                         post={post}
                         onClick={(post) =>
-                            navigate(`/user/post/${post.id}`)
+                            navigate(`/user/post/${post.id}`, { state: withRouteOrigin(location.state, currentRoute) })
                         }
                     />
                 ))}
